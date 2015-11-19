@@ -10,8 +10,20 @@
  * - 'nobulbs' constant - use 1 or 1 * 100 / 60 * 50?
  */
 
-// the scenario to run
-var scenario = 11;
+// import Math functions
+var pow = Math.pow;
+var sqrt = Math.sqrt;
+var log = Math.log;
+
+// square function for cleaner calculations in the model code
+var square = function(num) {
+	return pow(num, 2);
+};
+
+// log 10 function, which some browsers (older browsers + all Internet Explorer versions) don't support
+var log10 = Math.log10 || function(x) {
+	return Math.log(x) / Math.LN10;
+};
 
 // time step (years)
 var DT = 1 / 12; // needs to be small otherwise ocean chanistry calculations become unstable
@@ -60,7 +72,7 @@ var dr0 = 0.024625; //0.025;  percentage/yr decomposition rate of soil
 var e = 0.5;      // proportion of vegetation that forms soil (remainder goes to atmosphere)
 
 // constant for Aragonite calculation
-var Ksp = Math.pow(10, -6.19); // = 6.4565e-7 (aragonite dissolution constant at 25degC)
+var Ksp = pow(10, -6.19); // = 6.4565e-7 (aragonite dissolution constant at 25degC)
 
 // Constants for methane model
 var tau_ch4_pi = 8; // pre industrial methane decay
@@ -69,8 +81,8 @@ var alpha_ch4 = -0.12;
 // Constants for internal variability model
 var iv_autocorr = 0.5;    // 1 month autocorrelation of observed global surface (land + ocean) temperature
 var iv_var = 0.012;       // variance of observed global surface (land + ocean) temperature
-var iv_alpha = Math.pow(iv_autocorr, 12 * DT); //  autoregressive model parameter (autocorrelation for one model timestep)
-var iv_beta = Math.sqrt(iv_var) * Math.sqrt(1 - (iv_alpha * iv_alpha)); //  autoregressive model parameter
+var iv_alpha = pow(iv_autocorr, 12 * DT); //  autoregressive model parameter (autocorrelation for one model timestep)
+var iv_beta = sqrt(iv_var) * sqrt(1 - square(iv_alpha)); //  autoregressive model parameter
 
 // Constants for semi-empirical sea level model
 // NB these values are different to those given by Rahmstorf et al 2011. Given that initial time is considered to be equilbrium conditions
