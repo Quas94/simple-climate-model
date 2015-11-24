@@ -5,8 +5,6 @@
  * - SPECIAL SCENARIOS (5 - 9 inclusive) - setup ignored for now
  *   -- figure out how the Matlab function 'interp1' works
  *   -- figure out why 'clear OT* E*' requires the asterisks
- *   -- figure out what *0 after function call means (surely not multiply by zero?)
- *	  eg: emissionCH4=rcp_hist_RF_CO2eI(51,:)*0; % line 165 of Matlab source
  * - investigate: aragonite_saturation not used in the plotting?
  * - randn (line ~172)
  */
@@ -33,11 +31,26 @@ var mTSI = 0;
 // albedo
 var alb = [];
 
-// special config for scenarios 5-9 inclusive
-if (scenarioId >= 5 && scenarioId <= 9) {
-	// @TODO:
-	// load 'rcp_hist_RF_CO2e.xls'
-	// set var years = all values in the first row, in increments of 'DT' (1/12)
+// years for simulation
+var years = [];
+
+// setup common forcings for scenarios 1-4 and 10-17 inclusive (IPCC scenarios)
+if (scenarioId <= 4 || scenarioId >= 10) {
+	var rcph = XLS_DATA.rcph[0].slice();
+	var firstYear = rcph[0];
+	var lastYear = rcph[rcph.length - 1];
+	for (var i = firstYear; i < lastYear; i++) {
+		// the following code must be updated if the DT denominator is changed to be less than 1
+		for (var j = 0; j < DT_DENOMINATOR; j++) {
+			years.push(i + (j * DT));
+		}
+	}
+	years.push(lastYear); // lastYear can't be included in above for loop because of inner +DT nested loop
+
+	if (scenarioId == 13) {
+		// @TODO special case for scenario 13
+		// years=rcp_hist_RF_CO2e(1,1):DT:2200
+	}
 
 	// loop from 1 to length of first column (= number of rows...?)
 	// for each row: if any cells in this row evaluate to false/zero
@@ -57,9 +70,6 @@ if (scenarioId >= 5 && scenarioId <= 9) {
 	// mTSI = nanmean(TSI) - mean of all non-NaN elements inside TSI
 	// if TSI has NaN elements, set it to equal mTSI
 }
-
-// @TODO initialise years properly
-var years = [ 1, 2, 3, 4, 5 ];
 
 // initialise albedo array @TODO figure out the value of 'years'
 for (var i = 0; i < years.length; i++) {
@@ -146,6 +156,7 @@ var bulbs_out_lw = [ 0 ]; // change in black body radiation
 var bulbs_in_sw = [ 0 ];
 var bulbs_out_sw = [ 0 ];
 
+// actual stepping through of the simulation
 // @TODO determine how 'years' array is set (same as line 55)
 // @TODO determine whether to use y or years[y] in calculations
 for (var y = 1; y < years.length; y++) {
@@ -170,15 +181,10 @@ for (var y = 1; y < years.length; y++) {
 	aragonite_saturation[y] = 1e-2 * co3 / Ksp;
 
 	// carbon budget
-	Cat[y] = Cat[y - 1] + (F1 * DT *
-		emissions.CO2[y - 1]) +
-	(F1 * DT * (-ka *
-		Cat[y - 1] - A * B *
-		Cup[y - 1]))
+	Cat[y] = Cat[y - 1] + (F1 * DT * emissions.CO2[y - 1]) + (F1 * DT * (-ka * Cat[y - 1] - A * B * Cup[y - 1]))
 			 + (F1 * DT * (-P[y - 1] + (1 - e) * m * N[y - 1] + dr0 * So[y - 1])); // svirezhev
 	Cup[y] = Cup[y - 1] + F1 * DT * ka * (Cat[y - 1] - A * B * Cup[y - 1]) - kd * (Cup[y - 1] - Clo[y - 1] / d);
-
-	Clo[y] = Clo[y - 1] + F1 * DT *										  kd * (Cup[y - 1] - Clo[y - 1] / d);
+	Clo[y] = Clo[y - 1] + F1 * DT *	kd * (Cup[y - 1] - Clo[y - 1] / d);
 
 	// convert CO2 emissions to RF
 	C_CO2[y] = Cat[y] / 2.13;

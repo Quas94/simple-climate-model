@@ -1,13 +1,7 @@
 /**
  * Constants file
  *
- * @TODOs:
- * - check value of 'iv_alpha' - determine effect of caret operator ^ in Matlab
- * - 'scenario' is not a constant
- * - figure out octal or decimal trailings for the following 2 lines (lines 48/49)
- *   var kh = 1.0548e+03;  // at 15oC; ratio of the molar concentrations of CO2 in atmosphere and ocean (Henry's Law)
- *   var var k1 = 8.7184e-07;  // at 15oC; dissociation constant
- * - 'nobulbs' constant - use 1 or 1 * 100 / 60 * 50?
+ * Contains a bunch of simulation constants as well as imported/modified Math library functions.
  */
 
 // import Math functions
@@ -25,8 +19,10 @@ var log10 = Math.log10 || function(x) {
 	return Math.log(x) / Math.LN10;
 };
 
+// time step denominator - MUST be greater than 1 otherwise setup code in app.js will be broken
+var DT_DENOMINATOR = 12;
 // time step (years)
-var DT = 1 / 12; // needs to be small otherwise ocean chanistry calculations become unstable
+var DT = 1 / DT_DENOMINATOR; // needs to be small otherwise ocean chanistry calculations become unstable
 
 // switches for forcing
 var F1 = 1; //CO2
