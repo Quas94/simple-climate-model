@@ -1,23 +1,8 @@
 /**
  * Constants file
  *
- * Contains a bunch of simulation constants as well as imported/modified Math library functions.
+ * Contains simulation constants.
  */
-
-// import Math functions
-var pow = Math.pow;
-var sqrt = Math.sqrt;
-var log = Math.log;
-
-// square function for cleaner calculations in the model code
-var square = function(num) {
-	return pow(num, 2);
-};
-
-// log 10 function, which some browsers (older browsers + all Internet Explorer versions) don't support
-var log10 = Math.log10 || function(x) {
-	return Math.log(x) / Math.LN10;
-};
 
 // time step denominator - MUST be greater than 1 otherwise setup code in app.js will be broken
 var DT_DENOMINATOR = 12;

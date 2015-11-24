@@ -34,7 +34,7 @@ var years = [];
 
 // setup common forcings for scenarios 1-4 and 10-17 inclusive (IPCC scenarios)
 if (scenarioId <= 4 || scenarioId >= 10) {
-	var firstYear = XLS_RCPH[0][3];
+	var firstYear = XLS_RCPH[0][0];
 	var lastYear = XLS_RCPH[0][XLS_RCPH_COLS - 1];
 	for (var i = firstYear; i < lastYear; i++) {
 		// the following code must be updated if the DT denominator is changed to be less than 1
@@ -51,11 +51,13 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 	}
 
 	for (var i = 0; i < XLS_RCPH_ROWS; i++) {
-		var row = XLS_RCPH[i];
-		if (row[0] !== 'Scenario') { // don't want to interpolate years
-			// @TODO interp1
-			// make this row = interp1(row1, rowCurrent, years)
+		XLS_RCPH[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
+		console.log("interpolated row number " + i + ", it has " + XLS_RCPH[i].length + " elements now");
+		var logstring = '';
+		for (var a = 0; a < XLS_RCPH[i].length; a++) {
+			logstring += XLS_RCPH[i][a] + ' ';
 		}
+		console.log(logstring);
 	}
 
 	// @TODO volcanic and solar stuff
@@ -148,7 +150,6 @@ var aragonite_saturation = [ 0 ];
 // for use with solar
 var R_sol = [ 0 ];
 // for use with temperature model
-// @TODO figure out correct initial value for the first index of this RF_ var
 var RF_ = [ 0 ];
 // for use with volcanic aerosols - same question as RF_
 var R_volc = [ 0 ];
