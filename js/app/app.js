@@ -2,9 +2,7 @@
  * Main application source file
  *
  * @TODOs:
- * - SPECIAL SCENARIOS (5 - 9 inclusive) - setup ignored for now
  *   -- figure out how the Matlab function 'interp1' works
- *   -- figure out why 'clear OT* E*' requires the asterisks
  * - investigate: aragonite_saturation not used in the plotting?
  * - randn (line ~172)
  */
@@ -36,13 +34,13 @@ var years = [];
 
 // setup common forcings for scenarios 1-4 and 10-17 inclusive (IPCC scenarios)
 if (scenarioId <= 4 || scenarioId >= 10) {
-	var rcph = XLS_DATA.rcph[0].slice();
-	var firstYear = rcph[0];
-	var lastYear = rcph[rcph.length - 1];
+	var firstYear = XLS_RCPH[0][3];
+	var lastYear = XLS_RCPH[0][XLS_RCPH_COLS - 1];
 	for (var i = firstYear; i < lastYear; i++) {
 		// the following code must be updated if the DT denominator is changed to be less than 1
 		for (var j = 0; j < DT_DENOMINATOR; j++) {
 			years.push(i + (j * DT));
+			// console.log('pushed ' + years[years.length - 1]);
 		}
 	}
 	years.push(lastYear); // lastYear can't be included in above for loop because of inner +DT nested loop
@@ -52,17 +50,22 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 		// years=rcp_hist_RF_CO2e(1,1):DT:2200
 	}
 
-	// loop from 1 to length of first column (= number of rows...?)
-	// for each row: if any cells in this row evaluate to false/zero
-	// make this row = interp1(row1, rowCurrent, years)
+	for (var i = 0; i < XLS_RCPH_ROWS; i++) {
+		var row = XLS_RCPH[i];
+		if (row[0] !== 'Scenario') { // don't want to interpolate years
+			// @TODO interp1
+			// make this row = interp1(row1, rowCurrent, years)
+		}
+	}
 
+	// @TODO volcanic and solar stuff
 	// VOLCANIC
 	// load 'tau.line_2012.12.txt'
 	// set var OT = interp1(col1, col2, years)
 	// if (isnan(OT)) OT = 0
 	// set var emissions.volc = central_diff(OT, years) + (OT / vtau);
 	// ^^^ central_diff is second-order differential eqn!!!
-	// if (emissions.volc < 0) emissions.volc = 0;
+	emissions.volc = (emissions.volc < 0) ? 0 : emissions.volc; // set to 0 if negative
 
 	// SOLAR
 	// load 'TSI_WLS_ann_1610_2008.xls'
