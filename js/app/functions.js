@@ -2,6 +2,8 @@
  * Functions file
  *
  * Imports, modifies and defines a bunch of mathematical functions for use by the application.
+ *
+ * @TODO: account for the fact that somme browsers (IE, Safari) don't support Number.EPSILON
  */
 
 // import Math functions
@@ -33,12 +35,12 @@ var binarySearch = function(arr, searchElement) {
         currentIndex = (minIndex + maxIndex) / 2 | 0;
         currentElement = arr[currentIndex];
  
-        if (currentElement < searchElement) {
+ 		if (Math.abs(currentElement - searchElement) <= Number.EPSILON) {
+ 			return currentIndex;
+        } else if (currentElement < searchElement) {
             minIndex = currentIndex + 1;
         } else if (currentElement > searchElement) {
             maxIndex = currentIndex - 1;
-        } else {
-            return currentIndex;
         }
     }
     var insertionPoint = Number.NaN;
@@ -57,16 +59,14 @@ var binarySearch = function(arr, searchElement) {
 
 // linear interpolation
 var interp1 = function(x, y, xi) {
-	var dx = [];
-	var dy = [];
 	var slope = [];
 	var intercept = [];
 
 	// calculate the line equation (i.e. slope and intercept) between each point
     for (var i = 0; i < x.length - 1; i++) {
-	    dx[i] = x[i + 1] - x[i];
-	    dy[i] = y[i + 1] - y[i];
-	    slope[i] = dy[i] / dx[i];
+	    var dx = x[i + 1] - x[i];
+	    var dy = y[i + 1] - y[i];
+	    slope[i] = dy / dx;
 	    intercept[i] = y[i] - x[i] * slope[i];
     }
 
@@ -74,7 +74,7 @@ var interp1 = function(x, y, xi) {
     var yi = [];
     for (var i = 0; i < xi.length; i++) {
     	if ((xi[i] > x[x.length - 1]) || (xi[i] < x[0])) {
-    		yi[i] = Number.NaN;
+    		yi[i] = 'ERROR';
     	} else {
     		var loc = binarySearch(x, xi[i]); // binary search
     		if (loc < -1) {

@@ -32,6 +32,9 @@ var alb = [];
 // years for simulation
 var years = [];
 
+// interpolated values of RCPH
+var XLS_RCPH_I = [];
+
 // setup common forcings for scenarios 1-4 and 10-17 inclusive (IPCC scenarios)
 if (scenarioId <= 4 || scenarioId >= 10) {
 	var firstYear = XLS_RCPH[0][0];
@@ -51,13 +54,16 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 	}
 
 	for (var i = 0; i < XLS_RCPH_ROWS; i++) {
-		XLS_RCPH[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
-		console.log("interpolated row number " + i + ", it has " + XLS_RCPH[i].length + " elements now");
+		XLS_RCPH_I[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
+		/*
+		// debug interpolated values
+		console.log("interpolated row number " + i + ", it has " + XLS_RCPH_I[i].length + " elements now");
 		var logstring = '';
-		for (var a = 0; a < XLS_RCPH[i].length; a++) {
-			logstring += XLS_RCPH[i][a] + ' ';
+		for (var a = 0; a < XLS_RCPH_I[i].length; a++) {
+			logstring += XLS_RCPH_I[i][a] + ' ';
 		}
 		console.log(logstring);
+		*/
 	}
 
 	// @TODO volcanic and solar stuff
