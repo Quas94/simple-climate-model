@@ -98,13 +98,16 @@ for (var i = 0; i < years.length; i++) {
 }
 
 switch (scenarioId) {
-	// scenarios deal with extracting information from 'rcp_hist_RF_CO2e.xls'
+	// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'
 	case 1:
 		scenario = 'RCP6';
-		emissions.CH4 = [ row_51_elements ]; // @TODO
-		emissions.CO2 = [ row_50_elements ]; // @TODO
-		emissions.SO2 = [ row_64_elements ]; // @TODO
-		// TSI(:) = TSI(1); // @TODO what does this line mean?
+		emissions.CH4 = [ rcphi[48] ];
+		emissions.CO2 = [ rcphi[47] ];
+		emissions.SO2 = [ rcphi[60] ];
+		// set all elements in TSI equal to the first one
+		for (var i = 1; i < TSI.length; i++) {
+			TSI[i] = TSI[0];
+		}
 		break;
 	case 2:
 		scenario = 'RCP45';
@@ -116,14 +119,10 @@ switch (scenarioId) {
 		break;
 	case 4:
 		scenario = 'RCP85';
-		/*
-		emissions.CH4 = [ row_60_elements ]; // @TODO
-		emissions.CO2 = [ row_59_elements ]; // @TODO
-		emissions.SO2 = [ row_67_elements ]; // @TODO
-		*/
-		emissions.CH4 = [ 0 ]; // @TODO
-		emissions.CO2 = [ 0 ]; // @TODO
-		emissions.SO2 = [ 0 ]; // @TODO
+		emissions.CH4 = [ rcphi[57] ];
+		emissions.CO2 = [ rcphi[56] ];
+		emissions.SO2 = [ rcphi[63] ];
+		// @TODO: solar increase / albedo increase needed? commented outlines in matlab code
 		break;
 	case 5:
 	case 6:
