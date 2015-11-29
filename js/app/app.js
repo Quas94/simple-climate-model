@@ -101,9 +101,9 @@ switch (scenarioId) {
 	// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'
 	case 1:
 		scenario = 'RCP6';
-		emissions.CH4 = [ rcphi[48] ];
-		emissions.CO2 = [ rcphi[47] ];
-		emissions.SO2 = [ rcphi[60] ];
+		emissions.CH4 = rcphi[48];
+		emissions.CO2 = rcphi[47];
+		emissions.SO2 = rcphi[60];
 		// set all elements in TSI equal to the first one
 		for (var i = 1; i < TSI.length; i++) {
 			TSI[i] = TSI[0];
@@ -119,9 +119,9 @@ switch (scenarioId) {
 		break;
 	case 4:
 		scenario = 'RCP85';
-		emissions.CH4 = [ rcphi[57] ];
-		emissions.CO2 = [ rcphi[56] ];
-		emissions.SO2 = [ rcphi[63] ];
+		emissions.CH4 = rcphi[57];
+		emissions.CO2 = rcphi[56];
+		emissions.SO2 = rcphi[63];
 		// @TODO: solar increase / albedo increase needed? commented outlines in matlab code
 		break;
 	case 5:
@@ -202,16 +202,18 @@ for (var y = 1; y < years.length; y++) {
 	aragonite_saturation[y] = 1e-2 * co3 / Ksp;
 
 	// carbon budget
+//console.log('emissions.CO2[y - 1] = ' + emissions.CO2[y - 1] + '. (y-1=' + (y-1) + ')');
 	Cat[y] = Cat[y - 1] + (F1 * DT * emissions.CO2[y - 1]) + (F1 * DT * (-ka * Cat[y - 1] - A * B * Cup[y - 1]))
 			 + (F1 * DT * (-P[y - 1] + (1 - e) * m * N[y - 1] + dr0 * So[y - 1])); // svirezhev
 	Cup[y] = Cup[y - 1] + F1 * DT * ka * (Cat[y - 1] - A * B * Cup[y - 1]) - kd * (Cup[y - 1] - Clo[y - 1] / d);
 	Clo[y] = Clo[y - 1] + F1 * DT *	kd * (Cup[y - 1] - Clo[y - 1] / d);
 
-	// pause... ???
-
 	// convert CO2 emissions to RF
 	C_CO2[y] = Cat[y] / 2.13;
 	R_CO2[y] = 5.35 * log(C_CO2[y] / C_CO2pi);
+	if (isNaN(R_CO2[y])) R_CO2[y] = 0;
+//console.log('R_CO2[' + y + '] = ' + R_CO2[y] + ', C_CO2[y]=' + C_CO2[y] + ',C_CO2pi=' + C_CO2pi +
+//	', divided=' + (C_CO2[y] / C_CO2pi) + ', log=' + log(C_CO2[y] / C_CO2pi));
 
 	// convert CH4 emissions to RF
 	var T = tau_ch4_pi * pow((C_CH4pi / (C_CH4[y - 1] + C_CH4pi)), alpha_ch4);
@@ -232,10 +234,14 @@ for (var y = 1; y < years.length; y++) {
 	R_sol[y] = ((TSI[y] - mTSI) / 4) * (1 - alb[y]) - TSI[y] / 4 * (alb[y] - alb0);
 
 	// temperature model
+//console.log(R_CO2[y - 1] + ', ' + R_CH4[y - 1]);
 	var RF_GG = F1 * R_CO2[y - 1] + F2 * R_CH4[y - 1];
 	RF_[y] = RF_GG + F3 * R_SO2[y - 1] + F4 * R_volc[y - 1] + F5 * R_sol[y];
+//console.log(RF_GG + ', ' + R_SO2[y - 1] + ', ' + R_volc[y - 1] + ', ' + R_sol[y] + '(y = ' + y + ')');
 	Ts[y] = Ts[y - 1] + DT * (RF_[y - 1] - L * Ts[y - 1] - g * (Ts[y - 1] - To[y - 1])) / Cs;
 	To[y] = To[y - 1] + DT * (g * (Ts[y - 1] - To[y - 1])) / Co;
+//console.log(Ts[y] + ', ' + F6 + ', ' + deltaT[y] + '(y = ' + y + ')');
+if (isNaN(Ts[y]) || isNaN(F6) || isNaN(deltaT[y])) throw new Error('there was a NaN');
 	Tsurf[y] = Ts[y] + F6 * deltaT[y];
 
 	// SL
@@ -255,5 +261,25 @@ for (var y = 1; y < years.length; y++) {
 
 // -------------------------------------- END OF MODEL -------------------------------------- \\
 
-// @TODO plotting graphs
+// actual plotting
 
+// bounds of x-axis plotting
+var xl = [ years[0], years[years.length - 1] ];
+
+// plot surface temperature
+// create data object
+var surfTempData = {
+	labels: [],
+	series: [ [] ] // 2d array
+};
+// set labels
+var str = '';
+for (var i = 0; i < years.length; i++) {
+	surfTempData.labels[i] = round(years[i], 2);
+	surfTempData.series[0][i] = Tsurf[i];
+	str += Tsurf[i] + ' ';
+}
+console.log(str);
+
+// actually show graph
+new Chartist.Line('#surface-temperature', surfTempData);

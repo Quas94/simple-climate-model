@@ -17,59 +17,11 @@
 	<script type="text/javascript" src="js/app/functions.js"></script>
 	<!-- Constants file -->
 	<script type="text/javascript" src="js/app/constants.js"></script>
-	<!-- App -->
-	<script type="text/javascript" src="js/app/app.js"></script>
 </head>
 <body>
-	<div id="sample-chart" style="max-height:400px;max-width:800px;"></div>
+	<div id="surface-temperature" style="max-height:720px;max-width:1280px;"></div>
 
-	<script type="text/javascript">
-		
-	</script>
-
-	<script type="text/javascript">
-		// SAMPLE CODE COPIED FROM THE FRONT OF THE CHARTIST PAGE!
-		/* Add a basic data series with six labels and values */
-		var data = {
-		  labels: ['1', '2', '3', '4', '5', '6'],
-		  series: [
-		    {
-		      data: [1, 2, 3, 5, 8, 13]
-		    }
-		  ]
-		};
-
-		/* Set some base options (settings will override the default settings in Chartist.js *see default settings*). We are adding a basic label interpolation function for the xAxis labels. */
-		var options = {
-		  axisX: {
-		    labelInterpolationFnc: function(value) {
-		      return 'Calendar Week ' + value;
-		    }
-		  }
-		};
-
-		/* Now we can specify multiple responsive settings that will override the base settings based on order and if the media queries match. In this example we are changing the visibility of dots and lines as well as use different label interpolations for space reasons. */
-		var responsiveOptions = [
-		  ['screen and (min-width: 641px) and (max-width: 1024px)', {
-		    showPoint: false,
-		    axisX: {
-		      labelInterpolationFnc: function(value) {
-		        return 'Week ' + value;
-		      }
-		    }
-		  }],
-		  ['screen and (max-width: 640px)', {
-		    showLine: false,
-		    axisX: {
-		      labelInterpolationFnc: function(value) {
-		        return 'W' + value;
-		      }
-		    }
-		  }]
-		];
-
-		/* Initialize the chart with the above settings */
-		new Chartist.Line('#sample-chart', data, options, responsiveOptions);
-	</script>
+	<!-- App - executed in body -->
+	<script type="text/javascript" src="js/app/app.js"></script>
 </body>
 </html>

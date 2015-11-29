@@ -23,6 +23,11 @@ var log10 = Math.log10 || function(x) {
 	return Math.log(x) / Math.LN10;
 };
 
+// rounds the given number to the given number of decimal places
+var round = function(number, places) {
+    return +(Math.round(number + 'e+' + places)  + 'e-' + places);
+}
+
 // binary search implementation. returns index of searchElement in arr
 // if not found, returns (-insertionPoint - 1) where insertionPoint is the position
 // in the array the element would be inserted
