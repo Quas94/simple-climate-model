@@ -168,6 +168,8 @@ var R_sol = [ 0 ];
 var RF_ = [ 0 ];
 // for use with volcanic aerosols - same question as RF_
 var R_volc = [ 0 ];
+// ocean pH
+var pH = [ 0 ];
 
 // bulbs
 var bulbs_in_lw = [ 0 ];
@@ -185,7 +187,7 @@ for (var y = 1; y < years.length; y++) {
 	var oma = 1 - a; // 1 minus 'a'
 	var om2a = 1 - (2 * a); // 1 minus 2 times 'a'
 	var H = (-k1 * oma + sqrt(square(k1) * square(oma) - 4 * k1 * k2 * om2a)) / 2; // hydrogen concentration
-	var pH = -log10(H); // ocean pH
+	pH[y] = -log10(H);
 	var B = 1 / (1 + (k1 / H) + (k1 * k2 / square(H))); // ratio of dissolved CO2 to total oceanic carbon (B=B(pH))
 
 	// terrestrial from Svirezhev
@@ -205,6 +207,8 @@ for (var y = 1; y < years.length; y++) {
 	Cup[y] = Cup[y - 1] + F1 * DT * ka * (Cat[y - 1] - A * B * Cup[y - 1]) - kd * (Cup[y - 1] - Clo[y - 1] / d);
 	Clo[y] = Clo[y - 1] + F1 * DT *	kd * (Cup[y - 1] - Clo[y - 1] / d);
 
+	// pause... ???
+
 	// convert CO2 emissions to RF
 	C_CO2[y] = Cat[y] / 2.13;
 	R_CO2[y] = 5.35 * log(C_CO2[y] / C_CO2pi);
@@ -222,8 +226,7 @@ for (var y = 1; y < years.length; y++) {
 	R_volc[y] = VF * OpTkhkV[y];
 
 	// internal variability
-	var MATLAB_RANDN = 1; // @TODO: correctly implement randn
-	deltaT[y] = iv_alpha * deltaT[y - 1] + iv_beta * MATLAB_RANDN;
+	deltaT[y] = iv_alpha * deltaT[y - 1] + iv_beta * randn();
 
 	// solar
 	R_sol[y] = ((TSI[y] - mTSI) / 4) * (1 - alb[y]) - TSI[y] / 4 * (alb[y] - alb0);

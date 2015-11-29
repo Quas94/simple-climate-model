@@ -25,7 +25,7 @@ var log10 = Math.log10 || function(x) {
 
 // binary search implementation. returns index of searchElement in arr
 // if not found, returns (-insertionPoint - 1) where insertionPoint is the position
-// in the array the element would be inserted (see )
+// in the array the element would be inserted
 var binarySearch = function(arr, searchElement) {
     var minIndex = 0;
     var maxIndex = arr.length - 1;
@@ -55,7 +55,7 @@ var binarySearch = function(arr, searchElement) {
     	insertionPoint = arr.length;
     }
     return (-insertionPoint - 1);
-}
+};
 
 // linear interpolation
 var interp1 = function(x, y, xi) {
@@ -87,7 +87,7 @@ var interp1 = function(x, y, xi) {
     }
 
     return yi;
-}
+};
 
 // mean ignoring NaN values
 var nanmean = function(array) {
@@ -100,4 +100,19 @@ var nanmean = function(array) {
         }
     }
     return (total / nums);
+};
+
+// generates a random number
+// right now this function just generates 4 random numbers between 0 and 3 and chooses the smallest one
+// positive or negative is then randomly generated and tacked on before returning
+var randn = function() {
+    var a = Math.random() * 3;
+    var b = Math.random() * 3;
+    var c = Math.random() * 3;
+    var d = Math.random() * 3;
+    var num = Math.min(Math.min(a, b), Math.min(c, d));
+    if (Math.random() >= 0.5) { // ~50% chance of negative
+        num = -num;
+    }
+    return num;
 }
