@@ -20,11 +20,11 @@ var emissions = {
 	CH4: null,
 	CO2: null,
 	SO2: null,
-	volc: 0, // @TODO figure out if this needs to be an array (probably will)
+	volc: null,
 };
-// TSI - loaded from .xls file for special scenarios 5-9, don't seem to matter otherwise?
+// TSI
 var TSI = [ 0 ];
-// set to nanmean(TSI) - mean of all non-Nan elements inside TSI - but only for special scenarios 5-9
+// set to nanmean(TSI) - mean of all non-Nan elements inside TSI
 var mTSI = 0;
 // albedo
 var alb = [];
@@ -32,8 +32,8 @@ var alb = [];
 // years for simulation
 var years = [];
 
-// interpolated values of RCPH
-var XLS_RCPH_I = [];
+// interpolated values of XLS_RCPH
+var rcphi = [];
 
 // setup common forcings for scenarios 1-4 and 10-17 inclusive (IPCC scenarios)
 if (scenarioId <= 4 || scenarioId >= 10) {
@@ -54,9 +54,9 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 	}
 
 	for (var i = 0; i < XLS_RCPH_ROWS; i++) {
-		XLS_RCPH_I[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
+		rcphi[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
 		/*
-		// debug interpolated values
+		// debug display for interpolated values
 		console.log("interpolated row number " + i + ", it has " + XLS_RCPH_I[i].length + " elements now");
 		var logstring = '';
 		for (var a = 0; a < XLS_RCPH_I[i].length; a++) {
@@ -73,13 +73,23 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 	// if (isnan(OT)) OT = 0
 	// set var emissions.volc = central_diff(OT, years) + (OT / vtau);
 	// ^^^ central_diff is second-order differential eqn!!!
-	emissions.volc = (emissions.volc < 0) ? 0 : emissions.volc; // set to 0 if negative
+	// emissions.volc = (emissions.volc < 0) ? 0 : emissions.volc; // set to 0 if negative
+
+	// Volcanic stuff precalculated by Matlab and plugged into TAU_LINE constant (defined in data.js)
+	// may need to be altered in the future depending on specifics of custom data input
+	emissions.volc = TAU_LINE;
 
 	// SOLAR
 	// load 'TSI_WLS_ann_1610_2008.xls'
-	// TSI = interp1(col1, col3, years)
-	// mTSI = nanmean(TSI) - mean of all non-NaN elements inside TSI
-	// if TSI has NaN elements, set it to equal mTSI
+	TSI = interp1(XLS_TSI[0], XLS_TSI[2], years);
+	// mTSI is equal to the mean of all the non-NaN elements of TSI
+	mTSI = nanmean(TSI);
+	// if TSI has NaN elements, set those to equal mTSI
+	for (var i = 0; i < TSI.length; i++) {
+		if (isNaN(TSI[i])) {
+			TSI[i] = mTSI;
+		}
+	}
 }
 
 // initialise albedo array @TODO figure out the value of 'years'

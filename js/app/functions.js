@@ -73,8 +73,8 @@ var interp1 = function(x, y, xi) {
     // perform the interpolation
     var yi = [];
     for (var i = 0; i < xi.length; i++) {
-    	if ((xi[i] > x[x.length - 1]) || (xi[i] < x[0])) {
-    		yi[i] = 'ERROR';
+    	if (xi[i] > x[x.length - 1] || xi[i] < x[0]) {
+    		yi[i] = Number.NaN;
     	} else {
     		var loc = binarySearch(x, xi[i]); // binary search
     		if (loc < -1) {
@@ -87,4 +87,17 @@ var interp1 = function(x, y, xi) {
     }
 
     return yi;
+}
+
+// mean ignoring NaN values
+var nanmean = function(array) {
+    var total = 0;
+    var nums = 0;
+    for (var i = 0; i < array.length; i++) {
+        if (!isNaN(array[i])) {
+            total += array[i];
+            nums++;
+        }
+    }
+    return (total / nums);
 }
