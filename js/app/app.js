@@ -8,7 +8,7 @@
  */
 
 // the scenario to run
-var scenarioId = 4;
+var scenarioId = 1;
 // name of the scenario
 var scenario;
 
@@ -202,18 +202,19 @@ for (var y = 1; y < years.length; y++) {
 	aragonite_saturation[y] = 1e-2 * co3 / Ksp;
 
 	// carbon budget
-//console.log('emissions.CO2[y - 1] = ' + emissions.CO2[y - 1] + '. (y-1=' + (y-1) + ')');
-	Cat[y] = Cat[y - 1] + (F1 * DT * emissions.CO2[y - 1]) + (F1 * DT * (-ka * Cat[y - 1] - A * B * Cup[y - 1]))
+//console.log('y = ' + y + ', Cat[y-1] = ' + Cat[y-1] + ', Cup[y-1] = ' + Cup[y-1] +
+//', -P[y-1] = ' + (-P[y-1]) + ', N[y-1] = ' + N[y-1] + ', So[y-1] = ' + So[y-1]);
+	Cat[y] = Cat[y - 1] + (F1 * DT * emissions.CO2[y - 1]) + (F1 * DT * (-ka * (Cat[y - 1] - A * B * Cup[y - 1])))
 			 + (F1 * DT * (-P[y - 1] + (1 - e) * m * N[y - 1] + dr0 * So[y - 1])); // svirezhev
 	Cup[y] = Cup[y - 1] + F1 * DT * ka * (Cat[y - 1] - A * B * Cup[y - 1]) - kd * (Cup[y - 1] - Clo[y - 1] / d);
 	Clo[y] = Clo[y - 1] + F1 * DT *	kd * (Cup[y - 1] - Clo[y - 1] / d);
 
 	// convert CO2 emissions to RF
+//console.log('DEBUG: y = ' + y + ', Cat[y-1] = ' + Cat[y-1]);
 	C_CO2[y] = Cat[y] / 2.13;
 	R_CO2[y] = 5.35 * log(C_CO2[y] / C_CO2pi);
-	if (isNaN(R_CO2[y])) R_CO2[y] = 0;
-//console.log('R_CO2[' + y + '] = ' + R_CO2[y] + ', C_CO2[y]=' + C_CO2[y] + ',C_CO2pi=' + C_CO2pi +
-//	', divided=' + (C_CO2[y] / C_CO2pi) + ', log=' + log(C_CO2[y] / C_CO2pi));
+	//if (isNaN(R_CO2[y])) R_CO2[y] = 0;
+//console.log('DEBUG: y = ' + y + ', R_CO2(y) = ' + R_CO2[y] + ', C_CO2[y] = ' + C_CO2[y] + ', C_CO2pi = ' + C_CO2pi + ', log = ' + log(C_CO2[y] / C_CO2pi));
 
 	// convert CH4 emissions to RF
 	var T = tau_ch4_pi * pow((C_CH4pi / (C_CH4[y - 1] + C_CH4pi)), alpha_ch4);
@@ -241,7 +242,7 @@ for (var y = 1; y < years.length; y++) {
 	Ts[y] = Ts[y - 1] + DT * (RF_[y - 1] - L * Ts[y - 1] - g * (Ts[y - 1] - To[y - 1])) / Cs;
 	To[y] = To[y - 1] + DT * (g * (Ts[y - 1] - To[y - 1])) / Co;
 //console.log(Ts[y] + ', ' + F6 + ', ' + deltaT[y] + '(y = ' + y + ')');
-if (isNaN(Ts[y]) || isNaN(F6) || isNaN(deltaT[y])) throw new Error('there was a NaN');
+if (isNaN(Ts[y])) throw new Error('there was a NaN');
 	Tsurf[y] = Ts[y] + F6 * deltaT[y];
 
 	// SL
