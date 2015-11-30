@@ -1,10 +1,8 @@
 /**
  * Main application source file
  *
- * @TODOs:
- *   -- figure out how the Matlab function 'interp1' works
  * - investigate: aragonite_saturation not used in the plotting?
- * - randn (line ~172)
+ * - implement a better version of randn
  */
 
 // the scenario to run
@@ -43,7 +41,6 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 		// the following code must be updated if the DT denominator is changed to be less than 1
 		for (var j = 0; j < DT_DENOMINATOR; j++) {
 			years.push(i + (j * DT));
-			// console.log('pushed ' + years[years.length - 1]);
 		}
 	}
 	years.push(lastYear); // lastYear can't be included in above for loop because of inner +DT nested loop
@@ -55,15 +52,6 @@ if (scenarioId <= 4 || scenarioId >= 10) {
 
 	for (var i = 0; i < XLS_RCPH_ROWS; i++) {
 		rcphi[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
-		/*
-		// debug display for interpolated values
-		console.log("interpolated row number " + i + ", it has " + XLS_RCPH_I[i].length + " elements now");
-		var logstring = '';
-		for (var a = 0; a < XLS_RCPH_I[i].length; a++) {
-			logstring += XLS_RCPH_I[i][a] + ' ';
-		}
-		console.log(logstring);
-		*/
 	}
 
 	// @TODO volcanic and solar stuff
@@ -177,18 +165,14 @@ var bulbs_out_lw = [ 0 ]; // change in black body radiation
 var bulbs_in_sw = [ 0 ];
 var bulbs_out_sw = [ 0 ];
 
-// actual stepping through of the simulation
-// @TODO determine how 'years' array is set (same as line 55)
-// @TODO determine whether to use y or years[y] in calculations
+// step through model simulation
 for (var y = 1; y < years.length; y++) {
 	// carbon cycle
 	// ocean from glotter
 	var a = Cup[y - 1] / Alk;
-	var oma = 1 - a; // 1 minus 'a'
-	var om2a = 1 - (2 * a); // 1 minus 2 times 'a'
-	var H = (-k1 * oma + sqrt(square(k1) * square(oma) - 4 * k1 * k2 * om2a)) / 2; // hydrogen concentration
+	var H = (-k1 * (1 - a) + sqrt(square(k1) * square(1 - a) - 4 * k1 * k2 * (1 - 2 * a))) / 2; // hydrogen concentration
 	pH[y] = -log10(H);
-	var B = 1 / (1 + (k1 / H) + (k1 * k2 / square(H))); // ratio of dissolved CO2 to total oceanic carbon (B=B(pH))
+	var B = 1 / (1 + k1 / H + k1 * k2 / square(H)); // ratio of dissolved CO2 to total oceanic carbon (B=B(pH))
 
 	// terrestrial from Svirezhev
 	P[y] = P[0] * (1 + a2 * (Cat[y - 1] - Cat[0])); // NPP with fertilisation effects
@@ -197,24 +181,19 @@ for (var y = 1; y < years.length; y++) {
 
 	// aragonite saturation - not used?
 	var h1 = pow(10, -pH[y]);
-	var s = (2400e-6) / (1.2023e-6 / h1);
+	var s = 2400e-6 / (1.2023e-6 / h1);
 	var co3 = s * (1 + 1.2023e-6 / h1) / (1 + h1 / 8.0206e-10);
 	aragonite_saturation[y] = 1e-2 * co3 / Ksp;
 
 	// carbon budget
-//console.log('y = ' + y + ', Cat[y-1] = ' + Cat[y-1] + ', Cup[y-1] = ' + Cup[y-1] +
-//', -P[y-1] = ' + (-P[y-1]) + ', N[y-1] = ' + N[y-1] + ', So[y-1] = ' + So[y-1]);
-	Cat[y] = Cat[y - 1] + (F1 * DT * emissions.CO2[y - 1]) + (F1 * DT * (-ka * (Cat[y - 1] - A * B * Cup[y - 1])))
-			 + (F1 * DT * (-P[y - 1] + (1 - e) * m * N[y - 1] + dr0 * So[y - 1])); // svirezhev
-	Cup[y] = Cup[y - 1] + F1 * DT * ka * (Cat[y - 1] - A * B * Cup[y - 1]) - kd * (Cup[y - 1] - Clo[y - 1] / d);
-	Clo[y] = Clo[y - 1] + F1 * DT *	kd * (Cup[y - 1] - Clo[y - 1] / d);
+	Cat[y] = Cat[y - 1] + F1 * DT * emissions.CO2[y - 1] + F1 * DT * (-ka * (Cat[y - 1] - A * B * Cup[y - 1]))
+			 + F1 * DT * (-P[y - 1] + (1 - e) * m * N[y - 1] + dr0 * So[y - 1]); // svirezhev
+	Cup[y] = Cup[y - 1] + F1 * DT * (ka * (Cat[y - 1] - A * B * Cup[y - 1]) - kd * (Cup[y - 1] - Clo[y - 1] / d));
+	Clo[y] = Clo[y - 1] + F1 * DT *	(kd * (Cup[y - 1] - Clo[y - 1] / d));
 
 	// convert CO2 emissions to RF
-//console.log('DEBUG: y = ' + y + ', Cat[y-1] = ' + Cat[y-1]);
 	C_CO2[y] = Cat[y] / 2.13;
 	R_CO2[y] = 5.35 * log(C_CO2[y] / C_CO2pi);
-	//if (isNaN(R_CO2[y])) R_CO2[y] = 0;
-//console.log('DEBUG: y = ' + y + ', R_CO2(y) = ' + R_CO2[y] + ', C_CO2[y] = ' + C_CO2[y] + ', C_CO2pi = ' + C_CO2pi + ', log = ' + log(C_CO2[y] / C_CO2pi));
 
 	// convert CH4 emissions to RF
 	var T = tau_ch4_pi * pow((C_CH4pi / (C_CH4[y - 1] + C_CH4pi)), alpha_ch4);
@@ -235,14 +214,10 @@ for (var y = 1; y < years.length; y++) {
 	R_sol[y] = ((TSI[y] - mTSI) / 4) * (1 - alb[y]) - TSI[y] / 4 * (alb[y] - alb0);
 
 	// temperature model
-//console.log(R_CO2[y - 1] + ', ' + R_CH4[y - 1]);
 	var RF_GG = F1 * R_CO2[y - 1] + F2 * R_CH4[y - 1];
 	RF_[y] = RF_GG + F3 * R_SO2[y - 1] + F4 * R_volc[y - 1] + F5 * R_sol[y];
-//console.log(RF_GG + ', ' + R_SO2[y - 1] + ', ' + R_volc[y - 1] + ', ' + R_sol[y] + '(y = ' + y + ')');
 	Ts[y] = Ts[y - 1] + DT * (RF_[y - 1] - L * Ts[y - 1] - g * (Ts[y - 1] - To[y - 1])) / Cs;
 	To[y] = To[y - 1] + DT * (g * (Ts[y - 1] - To[y - 1])) / Co;
-//console.log(Ts[y] + ', ' + F6 + ', ' + deltaT[y] + '(y = ' + y + ')');
-if (isNaN(Ts[y])) throw new Error('there was a NaN');
 	Tsurf[y] = Ts[y] + F6 * deltaT[y];
 
 	// SL
@@ -279,8 +254,9 @@ for (var i = 0; i < years.length; i++) {
 	surfTempData.labels[i] = round(years[i], 2);
 	surfTempData.series[0][i] = Tsurf[i];
 	str += Tsurf[i] + ' ';
+	if (i % 100 == 0) str += ' <- %%%' + i + '%%%';
 }
-console.log(str);
+//console.log(str);
 
 // actually show graph
 new Chartist.Line('#surface-temperature', surfTempData);
