@@ -4,6 +4,9 @@
 
 	<!-- Chartist.js minified CSS file -->
 	<link rel="stylesheet" type="text/css" href="css/chartist.min.css">
+	<!-- Custom app CSS file -->
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+
 	<!-- Chartist.js minified js library -->
 	<script type="text/javascript" src="js/chartist.min.js"></script>
 
@@ -19,9 +22,21 @@
 	<script type="text/javascript" src="js/app/constants.js"></script>
 </head>
 <body>
-	<div id="surface-temperature" style="max-height:720px;max-width:1280px;"></div>
+	<div class="main">
+		<div class="rcp-selection">
+			<button onclick="simulate(1);">Run RCP6</button>
+			<button onclick="simulate(4);">Run RCP85</button>
+			<span id="model-status-text"></span>
+		</div>
+		<h2>Surface and Ocean temperature</h2>
+		<div class="ct-chart" id="chart-temperatures"></div>
+		<h2>CO2 Concentration (PPM)</h2>
+		<div class="ct-chart" id="chart-cco2"></div>
+		<h2>CO2 Emissions</h2>
+		<div class="ct-chart" id="chart-emissions-co2"></div>
+	</div>
 
-	<!-- App - executed in body -->
+	<!-- App - executed at the end -->
 	<script type="text/javascript" src="js/app/app.js"></script>
 </body>
 </html>

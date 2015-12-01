@@ -44,7 +44,7 @@ var k1 = 8.7184e-07;  // at 15oC; dissociation constant
 var k2 = 5.4426e-10;  // at 15oC; dissociation constant
 var A = kh * AM / (OM / (d + 1)); // A is the ratio of mass of CO2 in atmospheric to upper ocean dissolved CO2, percentage i.e. A is inversely proportional to
 // CO2 solubility. A is temperature dependent, however the percentage effect is small and has been neglected here.
-var A = 132.216074 // Slightly different to above in order to have equilibrium at 1850
+var A = 132.216074; // Slightly different to above in order to have equilibrium at 1850
 
 // Constants for Terrestrial model (Svirezhev)
 var m = 8.7e-2;   // /yr  1/residence time of carbon in vegetation
