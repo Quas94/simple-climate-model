@@ -13,6 +13,8 @@ var sqrt = Math.sqrt;
 
 var log = Math.log;
 
+var cos = Math.cos;
+
 // square function for cleaner calculations in the model code
 var square = function(num) {
 	return pow(num, 2);
@@ -94,6 +96,22 @@ var interp1 = function(x, y, xi) {
     return yi;
 };
 
+// returns a new array with values equivalent to Matlab term 'start:interval:end'
+var interpC = function(start, interval, end) {
+    var denominator = Math.round(1 / interval);
+
+    var array = [];
+
+    for (var i = start; i < end; i++) {
+        for (var j = 0; j < denominator; j++) {
+            array.push(i + (j * interval));
+        }
+    }
+    array.push(end); // end can't be included in above for loop because of how the inner loop works
+
+    return array;
+};
+
 // mean ignoring NaN values
 var nanmean = function(array) {
     var total = 0;
@@ -120,4 +138,13 @@ var randn = function() {
         num = -num;
     }
     return num;
-}
+};
+
+// returns a deep copy of the array (no references)
+var arrcpy = function(original) {
+    var newArray = [];
+    for (var i = 0; i < original.length; i++) {
+        newArray[i] = original[i];
+    }
+    return newArray;
+};

@@ -3,29 +3,31 @@
 	<title>Simple Climate Model - UNSW CCRC</title>
 
 	<!-- Chartist.js minified CSS file -->
-	<link rel="stylesheet" type="text/css" href="css/chartist.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/chartist.min.css">
 	<!-- Custom app CSS file -->
-	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="./css/app.css">
 
 	<!-- Chartist.js minified js library -->
-	<script type="text/javascript" src="js/chartist.min.js"></script>
+	<script type="text/javascript" src="./js/chartist.min.js"></script>
 
 	<!-- Angular.js minified js library -->
-	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="./js/angular.min.js"></script>
 
 	<!-- Our sources -->
 	<!-- Input data (ported from XLS) -->
-	<script type="text/javascript" src="js/app/data.js"></script>
+	<script type="text/javascript" src="./js/app/data.js"></script>
 	<!-- Function imports and definitions -->
-	<script type="text/javascript" src="js/app/functions.js"></script>
+	<script type="text/javascript" src="./js/app/functions.js"></script>
 	<!-- Constants file -->
-	<script type="text/javascript" src="js/app/constants.js"></script>
+	<script type="text/javascript" src="./js/app/constants.js"></script>
 </head>
 <body>
 	<div class="main">
 		<div class="rcp-selection">
 			<button onclick="simulate(1);">Run RCP6</button>
 			<button onclick="simulate(4);">Run RCP85</button>
+			<button onclick="simulate(7);">Run CO2 Pulse</button>
+			<button onclick="simulate(8);">Run CH4 Pulse</button>
 			<span id="model-status-text"></span>
 		</div>
 		<h2>Surface and Ocean temperature</h2>

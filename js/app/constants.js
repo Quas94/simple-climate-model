@@ -4,10 +4,8 @@
  * Contains simulation constants.
  */
 
-// time step denominator - MUST be greater than 1 otherwise setup code in app.js will be broken
-var DT_DENOMINATOR = 12;
 // time step (years)
-var DT = 1 / DT_DENOMINATOR; // needs to be small otherwise ocean chanistry calculations become unstable
+var DT = 1 / 12; // needs to be small otherwise ocean chanistry calculations become unstable
 
 // switches for forcing
 var F1 = 1; //CO2
@@ -76,3 +74,13 @@ var si_To = 0;
 
 // radiative forcing to bulb conversion (assume 60W bulb and 100x50m football pitch)
 var nobulbs = 1; // 100*50/60; // no of bulbs/(W/m2)
+
+// sets the forcing switches back to their default values
+var forcingDefaults = function() {
+	F1 = 1;
+	F2 = 1;
+	F3 = 1;
+	F4 = 1;
+	F5 = 1;
+	F6 = 0;
+};

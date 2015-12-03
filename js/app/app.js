@@ -14,13 +14,13 @@ var simulate = function(scenarioId) {
 	modelStatusText.innerHTML = 'Running simulation...';
 	modelStatusText.style.color = 'red';
 
+	// revert constants back to their default values
+	forcingDefaults();
+
 	// ------------------------------------ BEGINNING OF MODEL ------------------------------------ \\
 
 	// name of the scenario
 	var scenario;
-
-	// doesn't seem to be used until it is randomised farther down
-	// var col;
 
 	// emission values
 	var emissions = {
@@ -46,13 +46,7 @@ var simulate = function(scenarioId) {
 	if (scenarioId <= 4 || scenarioId >= 10) {
 		var firstYear = XLS_RCPH[0][0];
 		var lastYear = XLS_RCPH[0][XLS_RCPH_COLS - 1];
-		for (var i = firstYear; i < lastYear; i++) {
-			// the following code must be updated if the DT denominator is changed to be less than 1
-			for (var j = 0; j < DT_DENOMINATOR; j++) {
-				years.push(i + (j * DT));
-			}
-		}
-		years.push(lastYear); // lastYear can't be included in above for loop because of inner +DT nested loop
+		years = interpC(firstYear, DT, lastYear); // equivalent to firstYear:DT:lastYear in Matlab syntax
 
 		if (scenarioId == 13) {
 			// @TODO special case for scenario 13
@@ -89,11 +83,6 @@ var simulate = function(scenarioId) {
 		}
 	}
 
-	// initialise albedo array @TODO figure out the value of 'years'
-	for (var i = 0; i < years.length; i++) {
-		alb[i] = alb0;
-	}
-
 	switch (scenarioId) {
 		// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'
 		case 1:
@@ -108,11 +97,15 @@ var simulate = function(scenarioId) {
 			break;
 		case 2:
 			scenario = 'RCP45';
-			// @TODO
+			emissions.CH4 = rcphi[51];
+			emissions.CO2 = rcphi[50];
+			emissions.SO2 = rcphi[61];
 			break;
 		case 3:
 			scenario = 'RCP3';
-			// @TODO
+			emissions.CH4 = rcphi[54];
+			emissions.CO2 = rcphi[53];
+			emissions.SO2 = rcphi[62];
 			break;
 		case 4:
 			scenario = 'RCP85';
@@ -121,14 +114,95 @@ var simulate = function(scenarioId) {
 			emissions.SO2 = rcphi[63];
 			break;
 		case 5:
+			// create synthetic time series
+			scenario = 'Synthetic Emissions';
+			// @TODO - needs central_diff
+			break;
 		case 6:
+			// create synthetic time series
+			scenario = 'Volcanic Eruption - Pinatubo';
+			// @TODO - needs central_diff
+			break;
 		case 7:
+			// create synthetic time series
+			scenario = 'CO2 Pulse';
+			F3 = 0; // SO2
+			F4 = 0; // volcanics
+			F5 = 0; // solar
+			F6 = 0; // internal variability
+
+			years = interpC(0, DT, 2000); // equivalent to Matlab syntax of years = 0:DT:2000
+
+			var numYears = years.length;
+			var ts = interpC(1, 1, numYears); // 1:length(years)
+			for (var i = 0; i < ts.length; i++) {
+				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
+			}
+
+			emissions.CH4 = ts; // @TODO check with alex about the *0 in these 4 lines from matlab code
+			emissions.CO2 = arrcpy(ts); // because this will be modified
+			emissions.SO2 = ts;
+			emissions.volc = ts;
+
+			// emissionCO2(1/DT*5:1/DT*15)=20;
+			// there will be an offset of 1 month here due to index start diff (js=0 and matlab=1) but shouldn't really matter
+			for (var i = (1 / DT * 5); i <= (1 / DT * 15); i++) {
+				emissions.CO2[i] = 20;
+			}
+
+			// solar irradiance
+			mTSI = 1365;
+			// TSIcycle=cos(years/11*2*pi)/4; TSI=mTSI+TSIcycle;
+			for (var i = 0; i < numYears; i++) {
+				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
+			}
+		    break;
+
 		case 8:
+			// create synthetic time series
+			scenario = 'CH4 Pulse';
+			F3 = 0; // SO2
+			F4 = 0; // volcanics
+			F5 = 0; // solar
+			F6 = 0; // internal variability
+
+			years = interpC(0, DT, 500); // equivalent to Matlab syntax of years = 0:DT:2000
+
+			var numYears = years.length;
+			var ts = interpC(1, 1, numYears); // 1:length(years)
+			for (var i = 0; i < ts.length; i++) {
+				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
+			}
+
+			emissions.CH4 = arrcpy(ts); // because this will be modified
+			emissions.CO2 = ts;
+			emissions.SO2 = ts;
+			emissions.volc = ts;
+
+			// emissionCH4(1/DT*5:1/DT*15)=1000;
+			for (var i = (1 / DT * 5); i <= (1 / DT * 15); i++) {
+				emissions.CH4[i] = 1000;
+			}
+			console.log('emissions.CO2[1/DT*5] = ' + emissions.CO2[1/DT*5]);
+
+			// solar irradiance
+			mTSI = 1365;
+			// TSIcycle=cos(years/11*2*pi)/4; TSI=mTSI+TSIcycle;
+			for (var i = 0; i < numYears; i++) {
+				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
+			}
+
 		case 9:
-			// @TODO special cases
+			// create synthetic time series
+			// @TODO albedo increase
 			break;
 		default:
 			// @TODO remainder of cases
+	}
+
+	// initialise albedo array - do after switch scenarios because some of them modify the years array greatly
+	for (var i = 0; i < years.length; i++) {
+		alb[i] = alb0;
 	}
 
 	// more variables, some are arrays, presumably for plotting
@@ -220,14 +294,16 @@ var simulate = function(scenarioId) {
 
 		// solar
 		R_sol[y] = ((TSI[y] - mTSI) / 4) * (1 - alb[y]) - TSI[y] / 4 * (alb[y] - alb0);
+		if (isNaN(R_sol[y])) throw new Error('y = ' + y + ', TSI[y] = ' + TSI[y] + ', alb[y] = ' + alb[y] + ', alb0 = ' + alb0);
 
 		// temperature model
 		var RF_GG = F1 * R_CO2[y - 1] + F2 * R_CH4[y - 1];
 		RF_[y] = RF_GG + F3 * R_SO2[y - 1] + F4 * R_volc[y - 1] + F5 * R_sol[y];
 		Ts[y] = Ts[y - 1] + DT * (RF_[y - 1] - L * Ts[y - 1] - g * (Ts[y - 1] - To[y - 1])) / Cs;
+		
 		To[y] = To[y - 1] + DT * (g * (Ts[y - 1] - To[y - 1])) / Co;
 		Tsurf[y] = Ts[y] + F6 * deltaT[y];
-
+		
 		// SL
 		SL[y] = SL[y - 1] + DT * (si_a * (Ts[y] - si_To) + si_b * (Ts[y] - Ts[y - 1]) / DT);
 
@@ -315,7 +391,7 @@ var simulate = function(scenarioId) {
 	// draw cco2
 	var chartEco2 = new Chartist.Line('#chart-emissions-co2', eco2, options);
 
-	// ----------------- CLEANUP -----------------------
+	// ----------------- CLEANUP -----------------------  \\
 
 	chartEco2.on('created', function(evt) {
 		modelStatusText.innerHTML = 'Done!';
