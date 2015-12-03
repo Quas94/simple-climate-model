@@ -261,35 +261,118 @@ var simulate = function(scenarioId) {
 			// scenario 11 continues on
 			scenario = 'RCP85 + Geoengineering (ii)';
 
-
 			break;
 
 		case 12:
 			scenario = 'Arctic Ice Loss';
 
+			emissions.CH4 = rcphi[57];
+			emissions.CO2 = rcphi[56];
+			emissions.SO2 = rcphi[63];
+
+			var areaIce = 7e6;
+			var areaEarth = 4 * Math.PI * square(6400);
+			var arcticAlbedoChange = (0.9 - 0.1) / 2; // factor of 2 because it only has effect in the summer
+			var planetAlbedoChange = arcticAlbedoChange * areaIce / (areaIce + areaEarth);
+
+			// set albedo
+			albSet = true;
+			for (var i = 0; i < years.length; i++) {
+				alb[i] = alb0;
+			}
+			var ind1 = arrfind(years, 1980);
+			var ind2 = arrfind(years, 2050);
+			for (var i = ind1; i < ind2; i++) {
+				alb[i] = alb0; // - ... @TODO fix this up, same issue as albedo increase and geoengineering
+			}
 			break;
+
 		case 13:
 			scenario = 'Forcing switched off at 2020';
+			emissions.CH4 = rcphi[57];
+			emissions.CO2 = rcphi[56];
+			emissions.SO2 = rcphi[63];
 
+			var ind = arrfind(years, 2020);
+			// all indices from 'ind' onwards, set to 0
+			for (var i = ind; i < years.length; i++) {
+				emissions.CH4[i] = 0;
+				emissions.CO2[i] = 0;
+				emissions.SO2[i] = 0;
+			}
 			break;
+
 		case 14:
 			scenario = 'High Aerosol Emissions from 2020';
+			emissions.CH4 = rcphi[57];
+			emissions.CO2 = rcphi[56];
+			emissions.SO2 = rcphi[63];
 
+			var ind = arrfind(years, 2020);
+			// for SO2, all indices from 'ind' onwards, set to 1000
+			for (var i = ind; i < years.length; i++) {
+				emissions.SO2[i] = 1000;
+			}
 			break;
+
 		case 15:
 			scenario = 'Albedo increased from 0.3 to 0.32 at 2020';
+			emissions.CH4 = rcphi[57];
+			emissions.CO2 = rcphi[56];
+			emissions.SO2 = rcphi[63];
 
+			var ind = arrfind(years, 2020);
+			// set albedo increase
+			albSet = true;
+			for (var i = 0; i < ind; i++) {
+				alb[i] = alb0;
+			}
+			for (var i = ind; i < years.length; i++) {
+				alb[i] = 0.32;
+			}
 			break;
+
 		case 16:
 			scenario = 'Changes in TSI';
-
+			emissions.CH4 = years;
+			emissions.CO2 = years;
+			emissions.SO2 = years;
+			emissions.volc = years;
+			mTSI = 1365;
+			for (var i = 0; i < TSI.length; i++) {
+				TSI[i] = mTSI;
+			}
+			var indStart = arrfind(years, 1900);
+			var indEnd = arrfind(years, 1910);
+			for (var i = indStart; i < indEnd; i++) {
+				TSI[i] = mTSI - 10;
+			}
+			indStart = arrfind(years, 2000);
+			indEnd = arrfind(years, 2010);
+			for (var i = indStart; i < indEnd; i++) {
+				TSI[i] = mTSI + 20;
+			}
 			break;
+
 		case 17:
 			scenario = 'Volcanic Eruption';
-
+			emissions.CH4 = years;
+			emissions.CO2 = years;
+			emissions.SO2 = years;
+			emissions.volc = years;
+			var indStart = arrfind(years, 2000);
+			var indEnd = arrfind(years, 2002);
+			for (var i = indStart; i < indEnd; i++) {
+				emissions.volc[i] = 0.5;
+			}
+			mTSI = 1365;
+			for (var i = 0; i < TSI.length; i++) {
+				TSI[i] = mTSI;
+			}
 			break;
+
 		default:
-			throw new Error('Unsupposed scenario ID: ' + scenarioId);
+			throw new Error('Unsupported scenario ID: ' + scenarioId);
 	}
 
 	// initialise albedo array - do after switch scenarios because some of them modify the years array greatly
