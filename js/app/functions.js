@@ -148,3 +148,13 @@ var arrcpy = function(original) {
     }
     return newArray;
 };
+
+// returns the first index of the given array which contains the given needle to search for
+var arrfind = function(haystack, needle) {
+    for (var i = 0; i < haystack.length; i++) {
+        if (haystack[i] == needle) {
+            return i;
+        }
+    }
+    throw new Error(needle + ' was not found in haystack, this should not happen');
+};

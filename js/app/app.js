@@ -83,6 +83,10 @@ var simulate = function(scenarioId) {
 		}
 	}
 
+	// flag for whether or not albedo has already been initialised in switch handler below
+	// (only scenario 9 will set this flag)
+	var albSet = false;
+
 	switch (scenarioId) {
 		// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'
 		case 1:
@@ -140,7 +144,7 @@ var simulate = function(scenarioId) {
 			}
 
 			emissions.CH4 = ts; // @TODO check with alex about the *0 in these 4 lines from matlab code
-			emissions.CO2 = arrcpy(ts); // because this will be modified
+			emissions.CO2 = arrcpy(ts); // call arrcpy for deep copy because this will be modified
 			emissions.SO2 = ts;
 			emissions.volc = ts;
 
@@ -174,7 +178,7 @@ var simulate = function(scenarioId) {
 				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
 			}
 
-			emissions.CH4 = arrcpy(ts); // because this will be modified
+			emissions.CH4 = arrcpy(ts); // call arrcpy for deep copy because this will be modified
 			emissions.CO2 = ts;
 			emissions.SO2 = ts;
 			emissions.volc = ts;
@@ -183,7 +187,6 @@ var simulate = function(scenarioId) {
 			for (var i = (1 / DT * 5); i <= (1 / DT * 15); i++) {
 				emissions.CH4[i] = 1000;
 			}
-			console.log('emissions.CO2[1/DT*5] = ' + emissions.CO2[1/DT*5]);
 
 			// solar irradiance
 			mTSI = 1365;
@@ -192,20 +195,110 @@ var simulate = function(scenarioId) {
 				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
 			}
 
+			break;
+
 		case 9:
 			// create synthetic time series
-			// @TODO albedo increase
+			scenario = 'Albedo Increase';
+			F1 = 0;
+			F2 = 0;
+			F3 = 0; // SO2
+			F4 = 0; // volcanics
+			F5 = 1; // solar
+			F6 = 0; // internal variability
+			years = interpC(0, DT, 2000);
+
+			// ts=(1:length(years))/length(years);
+			var numYears = years.length;
+			var ts = interpC(1, 1, numYears); // 1:length(years)
+			for (var i = 0; i < ts.length; i++) {
+				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
+			}
+
+			emissions.CH4 = ts;
+			emissions.CO2 = ts;
+			emissions.SO2 = ts;
+			emissions.volc = ts;
+
+			// solar irradiance
+			mTSI = 1365;
+			// TSIcycle=cos(years/11*2*pi)/4; TSI=mTSI+TSIcycle;
+			for (var i = 0; i < numYears; i++) {
+				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
+			}
+
+			// albedo - @TODO needs fixing, doesn't work quite right
+			albSet = true; // mark the albedo as already set so the default initialisation chunk below won't overwrite
+			for (var i = 1; i <= numYears; i++) alb[i - 1] = alb0 + 0.1; // alb(1:length(years))=alb0+0.1;
+			for (var i = 1; i <= (1 / DT); i++) alb[i - 1] = alb0 + i / (1 / DT) / 10; // alb(1:1/DT*1)=alb0+(1:1/DT*1)/(1/DT*1)/10;
+			// alb(1/DT*1000+1:1/DT*1001)=alb0+0.1-(1:1/DT*1)/(1/DT*1)/10;
+			var j = 1;
+			for (var i = 1 / DT * 1000 + 1; i <= 1 / DT * 1001; i++) {
+				alb[i - 1] = alb0 + 0.1 - j / (1 / DT) / 10;
+				j++;
+			}
+			// alb(1/DT*1001:end)=alb0;
+			for (var i = 1 / DT * 1001; i <= numYears.length; i++) alb[i - 1] = alb0;
+			break;
+
+		case 10:
+		case 11:
+			scenario = 'RCP85 + Geoengineering (i)';
+
+			emissions.CH4 = rcphi[57];
+			emissions.CO2 = rcphi[56];
+			emissions.SO2 = rcphi[63];
+			var ind = arrfind(years, 2015);
+			var Ni = years.length - ind + 1;
+			for (var i = ind; i < years.length; i++) {
+				emissions.SO2[i] = emissions.SO2[ind] + (ind - i + 1) / Ni * 1000;
+			}
+
+			if (scenarioId == 10) { // this is where scenario 10 finishes, scenario 11 goes on
+				break;
+			}
+
+			// scenario 11 continues on
+			scenario = 'RCP85 + Geoengineering (ii)';
+
+
+			break;
+
+		case 12:
+			scenario = 'Arctic Ice Loss';
+
+			break;
+		case 13:
+			scenario = 'Forcing switched off at 2020';
+
+			break;
+		case 14:
+			scenario = 'High Aerosol Emissions from 2020';
+
+			break;
+		case 15:
+			scenario = 'Albedo increased from 0.3 to 0.32 at 2020';
+
+			break;
+		case 16:
+			scenario = 'Changes in TSI';
+
+			break;
+		case 17:
+			scenario = 'Volcanic Eruption';
+
 			break;
 		default:
-			// @TODO remainder of cases
+			throw new Error('Unsupposed scenario ID: ' + scenarioId);
 	}
 
 	// initialise albedo array - do after switch scenarios because some of them modify the years array greatly
-	for (var i = 0; i < years.length; i++) {
-		alb[i] = alb0;
+	if (!albSet) { // scenario 9 will have set this flag to true
+		for (var i = 0; i < years.length; i++) {
+			alb[i] = alb0;
+		}
 	}
 
-	// more variables, some are arrays, presumably for plotting
 	// Ocean (Glotter)
 	var Cat = [ 596 ];
 	var Cup = [ 713 ];
@@ -303,7 +396,7 @@ var simulate = function(scenarioId) {
 		
 		To[y] = To[y - 1] + DT * (g * (Ts[y - 1] - To[y - 1])) / Co;
 		Tsurf[y] = Ts[y] + F6 * deltaT[y];
-		
+
 		// SL
 		SL[y] = SL[y - 1] + DT * (si_a * (Ts[y] - si_To) + si_b * (Ts[y] - Ts[y - 1]) / DT);
 
