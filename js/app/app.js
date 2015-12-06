@@ -229,8 +229,12 @@ var simulate = function(scenarioId) {
 
 			// albedo - @TODO needs fixing, doesn't work quite right
 			albSet = true; // mark the albedo as already set so the default initialisation chunk below won't overwrite
-			for (var i = 1; i <= numYears; i++) alb[i - 1] = alb0 + 0.1; // alb(1:length(years))=alb0+0.1;
-			for (var i = 1; i <= (1 / DT); i++) alb[i - 1] = alb0 + i / (1 / DT) / 10; // alb(1:1/DT*1)=alb0+(1:1/DT*1)/(1/DT*1)/10;
+			for (var i = 1; i <= numYears; i++) {
+				alb[i - 1] = alb0 + 0.1; // alb(1:length(years))=alb0+0.1;
+			}
+			for (var i = 1; i <= (1 / DT); i++) {
+				alb[i - 1] = alb0 + i / (1 / DT) / 10; // alb(1:1/DT*1)=alb0+(1:1/DT*1)/(1/DT*1)/10;
+			}
 			// alb(1/DT*1000+1:1/DT*1001)=alb0+0.1-(1:1/DT*1)/(1/DT*1)/10;
 			var j = 1;
 			for (var i = 1 / DT * 1000 + 1; i <= 1 / DT * 1001; i++) {
@@ -238,7 +242,9 @@ var simulate = function(scenarioId) {
 				j++;
 			}
 			// alb(1/DT*1001:end)=alb0;
-			for (var i = 1 / DT * 1001; i <= numYears.length; i++) alb[i - 1] = alb0;
+			for (var i = (1 / DT * 1001); i <= numYears; i++) {
+				alb[i - 1] = alb0;
+			}
 			break;
 
 		case 10:
@@ -247,11 +253,15 @@ var simulate = function(scenarioId) {
 
 			emissions.CH4 = rcphi[57];
 			emissions.CO2 = rcphi[56];
-			emissions.SO2 = rcphi[63];
+			emissions.SO2 = arrcpy(rcphi[63]); // modified below
+
+
+
 			var ind = arrfind(years, 2015);
-			var Ni = years.length - ind + 1;
-			for (var i = ind; i < years.length; i++) {
-				emissions.SO2[i] = emissions.SO2[ind] + (ind - i + 1) / Ni * 1000;
+			var Ni = years.length - ind;
+			var j = 1;
+			for (var i = ind; i < years.length; i++, j++) {
+				emissions.SO2[i] = emissions.SO2[ind] + j / Ni * 1000;
 			}
 
 			if (scenarioId == 10) { // this is where scenario 10 finishes, scenario 11 goes on
@@ -260,6 +270,11 @@ var simulate = function(scenarioId) {
 
 			// scenario 11 continues on
 			scenario = 'RCP85 + Geoengineering (ii)';
+
+			ind = arrfind(years, 2070);
+			for (var i = ind; i < years.length; i++) {
+				emissions.SO2[i] = 0;
+			}
 
 			break;
 
@@ -282,16 +297,20 @@ var simulate = function(scenarioId) {
 			}
 			var ind1 = arrfind(years, 1980);
 			var ind2 = arrfind(years, 2050);
-			for (var i = ind1; i < ind2; i++) {
-				alb[i] = alb0; // - ... @TODO fix this up, same issue as albedo increase and geoengineering
+			var j = 1;
+			for (var i = ind1; i < ind2; i++, j++) {
+				alb[i] = alb0 - j / (ind2 - ind1 + 1) * planetAlbedoChange;
+			}
+			for (var i = ind2; i < years.length; i++) {
+				alb[i] = alb[ind2 - 1];
 			}
 			break;
 
 		case 13:
 			scenario = 'Forcing switched off at 2020';
-			emissions.CH4 = rcphi[57];
-			emissions.CO2 = rcphi[56];
-			emissions.SO2 = rcphi[63];
+			emissions.CH4 = arrcpy(rcphi[57]); // modified below
+			emissions.CO2 = arrcpy(rcphi[56]); // modified below
+			emissions.SO2 = arrcpy(rcphi[63]); // modified below
 
 			var ind = arrfind(years, 2020);
 			// all indices from 'ind' onwards, set to 0
@@ -306,7 +325,7 @@ var simulate = function(scenarioId) {
 			scenario = 'High Aerosol Emissions from 2020';
 			emissions.CH4 = rcphi[57];
 			emissions.CO2 = rcphi[56];
-			emissions.SO2 = rcphi[63];
+			emissions.SO2 = arrcpy(rcphi[63]); // so2 will be modified below
 
 			var ind = arrfind(years, 2020);
 			// for SO2, all indices from 'ind' onwards, set to 1000
@@ -359,7 +378,7 @@ var simulate = function(scenarioId) {
 			emissions.CH4 = years;
 			emissions.CO2 = years;
 			emissions.SO2 = years;
-			emissions.volc = years;
+			emissions.volc = arrcpy(years); // since volc will be modified down below
 			var indStart = arrfind(years, 2000);
 			var indEnd = arrfind(years, 2002);
 			for (var i = indStart; i < indEnd; i++) {
