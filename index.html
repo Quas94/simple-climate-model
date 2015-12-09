@@ -1,4 +1,4 @@
-<html>
+<html ng-app="cmApp">
 <head>
 	<title>Simple Climate Model - UNSW CCRC</title>
 
@@ -8,7 +8,10 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
 	<!-- Angular.js minified js library -->
-	<script type="text/javascript" src="./js/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular-animate.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular-route.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular-sanitize.js"></script>
 	<!-- Bootstrap and Angular for Bootstrap -->
 	<script type="text/javascript" src="./js/ui-bootstrap-tpls-0.14.3.min.js"></script>
 
@@ -26,13 +29,18 @@
 	<script type="text/javascript" src="./js/app/functions.js"></script>
 	<!-- Constants file -->
 	<script type="text/javascript" src="./js/app/constants.js"></script>
+	<!-- Model simulation function -->
+	<script type="text/javascript" src="js/app/simulate.js"></script>
+
+	<!-- Angular app code -->
+	<script type="text/javascript" src="js/app/app.js"></script>
 </head>
-<body>
+<body ng-controller="mainCtrl">
 	<!-- Fixed navbar -->
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="#">Simple Climate Model</a>
+				<a class="navbar-brand" href="#"><span class="glyphicon glyphicon-cloud"></span> Simple Climate Model</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
@@ -48,61 +56,26 @@
 
 	<!-- Rest of the page -->
 	<div class="container-fluid">
-		<div class="row">
+		<div class="row main-row">
 			<!-- Sidebar -->
-			<div class="col-sm-1 col-md-1 sidebar">
+			<div class="col-md-2 col-lg-1 sidebar">
 				<ul class="nav nav-sidebar">
-					<li class="active sidebar-li"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-					<li><a class="sidebar-li" href="#">RCP6</a></li>
-					<li><a class="sidebar-li" href="#">RCP45</a></li>
-					<li><a class="sidebar-li" href="#">RCP3</a></li>
-					<li><a class="sidebar-li" href="#">RCP85</a></li>
-					<li><a class="sidebar-li" href="#">CO2 Pulse</a></li>
-					<li><a class="sidebar-li" href="#">CH4 Pulse</a></li>
-					<li><a class="sidebar-li" href="#">Albedo Increase</a></li>
-					<li><a class="sidebar-li" href="#">RCP85 + Geoeng. 1</a></li>
-					<li><a class="sidebar-li" href="#">RCP85 + Geoeng. 2</a></li>
-					<li><a class="sidebar-li" href="#">Arctic Ice Loss</a></li>
-					<li><a class="sidebar-li" href="#">Forcing switched off at 2020</a></li>
-					<li><a class="sidebar-li" href="#">High aerosol from 2020</a></li>
-					<li><a class="sidebar-li" href="#">Albedo increase from 2020</a></li>
-					<li><a class="sidebar-li" href="#">Changes in TSI</a></li>
-					<li><a class="sidebar-li" href="#">Volcanic Eruption</a></li>
+					<li ng-repeat="scenario in scenarios" ng-class="isActive(scenario.active)">
+						<a class="sidebar-li" href="#" ng-click="selectScenario(scenario.id)">{{ scenario.name }}</a>
+					</li>
 				</ul>
 			</div>
-			<div class="col-sm-11 col-sm-offset-1 col-md-11 col-md-offset-1">
-
 			<!-- Main section -->
-			<div class="main">
-				<div class="rcp-selection">
-					<button class="btn btn-default" onclick="simulate(1);">Run RCP6</button>
-					<button class="btn btn-default" onclick="simulate(2);">Run RCP45</button>
-					<button class="btn btn-default" onclick="simulate(3);">Run RCP3</button>
-					<button class="btn btn-default" onclick="simulate(4);">Run RCP85</button>
-					<button class="btn btn-default" onclick="simulate(7);">Run CO2 Pulse</button>
-					<button class="btn btn-default" onclick="simulate(8);">Run CH4 Pulse</button>
-					<button class="btn btn-default" onclick="simulate(9);">Run Albedo Increase</button>
-					<button class="btn btn-default" onclick="simulate(10);">Run RCP85 with Geoengineering (i)</button>
-					<button class="btn btn-default" onclick="simulate(11);">Run RCP85 with Geoengineering (ii)</button>
-					<button class="btn btn-default" onclick="simulate(12);">Run Arctic Ice Loss</button>
-					<button class="btn btn-default" onclick="simulate(13);">Run with forcing switched off at 2020</button>
-					<button class="btn btn-default" onclick="simulate(14);">Run high aerosol emissions from 2020</button>
-					<button class="btn btn-default" onclick="simulate(15);">Run albedo increase from 0.3 to 0.32 from 2020</button>
-					<button class="btn btn-default" onclick="simulate(16);">Changes in TSI</button>
-					<button class="btn btn-default" onclick="simulate(17);">Volcanic Eruption</button>
-					<span id="model-status-text"></span>
-				</div>
+			<div class="col-md-10 col-md-offset-2 col-lg-11 col-lg-offset-1">
+				<span id="model-status-text"></span>
+				<h2>Surface and Ocean temperature</h2>
+				<div class="ct-chart" id="chart-temperatures"></div>
+				<h2>CO2 Concentration (PPM)</h2>
+				<div class="ct-chart" id="chart-cco2"></div>
+				<h2>CO2 Emissions</h2>
+				<div class="ct-chart" id="chart-emissions-co2"></div>
 			</div>
-			<h2>Surface and Ocean temperature</h2>
-			<div class="ct-chart" id="chart-temperatures"></div>
-			<h2>CO2 Concentration (PPM)</h2>
-			<div class="ct-chart" id="chart-cco2"></div>
-			<h2>CO2 Emissions</h2>
-			<div class="ct-chart" id="chart-emissions-co2"></div>
 		</div>
 	</div>
-
-	<!-- App - executed at the end -->
-	<script type="text/javascript" src="js/app/app.js"></script>
 </body>
 </html>

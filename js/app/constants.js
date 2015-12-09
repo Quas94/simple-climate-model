@@ -1,7 +1,33 @@
 /**
  * Constants file
  *
- * Contains simulation constants.
+ * Contains default scenarios and simulation constants.
+ */
+
+/**
+ * Default scenarios
+ */
+
+var DEFAULT_SCENARIOS = [
+	{ id: 1, name: 'RCP6' },
+	{ id: 2, name: 'RCP45' },
+	{ id: 3, name: 'RCP3' },
+	{ id: 4, name: 'RCP85' },
+	{ id: 7, name: 'CO2 Pulse' },
+	{ id: 8, name: 'CH4 Pulse' },
+	{ id: 9, name: 'Albedo Increase' },
+	{ id: 10, name: 'RCP85 + Geoengineering 1' },
+	{ id: 11, name: 'RCP85 + Geoengineering 2' },
+	{ id: 12, name: 'Arctic ice loss' },
+	{ id: 13, name: 'Forcing switched off 2020' },
+	{ id: 14, name: 'High aerosol from 2020' },
+	{ id: 15, name: 'Albedo increase from 2020' },
+	{ id: 16, name: 'Changes in TSI' },
+	{ id: 17, name: 'Volcanic Eruption' },
+];
+
+/**
+ * Simulation constants
  */
 
 // time step (years)
