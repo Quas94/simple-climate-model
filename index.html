@@ -2,18 +2,24 @@
 <head>
 	<title>Simple Climate Model - UNSW CCRC</title>
 
+	<!-- Google font (Raleway) -->
+	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
+	<!-- Angular.js minified js library -->
+	<script type="text/javascript" src="./js/angular.min.js"></script>
+	<!-- Bootstrap and Angular for Bootstrap -->
+	<script type="text/javascript" src="./js/ui-bootstrap-tpls-0.14.3.min.js"></script>
+
 	<!-- Chartist.js minified CSS file -->
 	<link rel="stylesheet" type="text/css" href="./css/chartist.min.css">
-	<!-- Custom app CSS file -->
-	<link rel="stylesheet" type="text/css" href="./css/app.css">
-
 	<!-- Chartist.js minified js library -->
 	<script type="text/javascript" src="./js/chartist.min.js"></script>
 
-	<!-- Angular.js minified js library -->
-	<script type="text/javascript" src="./js/angular.min.js"></script>
-
 	<!-- Our sources -->
+	<!-- Our custom CSS file -->
+	<link rel="stylesheet" type="text/css" href="./css/app.css">
 	<!-- Input data (ported from XLS) -->
 	<script type="text/javascript" src="./js/app/data.js"></script>
 	<!-- Function imports and definitions -->
@@ -24,30 +30,30 @@
 <body>
 	<div class="main">
 		<div class="rcp-selection">
-			<button onclick="simulate(1);">Run RCP6</button>
-			<button onclick="simulate(3);">Run RCP3</button>
-			<button onclick="simulate(2);">Run RCP45</button>
-			<button onclick="simulate(4);">Run RCP85</button>
-			<button onclick="simulate(7);">Run CO2 Pulse</button>
-			<button onclick="simulate(8);">Run CH4 Pulse</button>
-			<button onclick="simulate(9);">Run Albedo Increase</button>
-			<button onclick="simulate(10);">Run RCP85 with Geoengineering (i)</button>
-			<button onclick="simulate(11);">Run RCP85 with Geoengineering (ii)</button>
-			<button onclick="simulate(12);">Run Arctic Ice Loss</button>
-			<button onclick="simulate(13);">Run with forcing switched off at 2020</button>
-			<button onclick="simulate(14);">Run high aerosol emissions from 2020</button>
-			<button onclick="simulate(15);">Run albedo increase from 0.3 to 0.32 from 2020</button>
-			<button onclick="simulate(16);">Changes in TSI</button>
-			<button onclick="simulate(17);">Volcanic Eruption</button>
+			<button class="btn btn-default" onclick="simulate(1);">Run RCP6</button>
+			<button class="btn btn-default" onclick="simulate(2);">Run RCP45</button>
+			<button class="btn btn-default" onclick="simulate(3);">Run RCP3</button>
+			<button class="btn btn-default" onclick="simulate(4);">Run RCP85</button>
+			<button class="btn btn-default" onclick="simulate(7);">Run CO2 Pulse</button>
+			<button class="btn btn-default" onclick="simulate(8);">Run CH4 Pulse</button>
+			<button class="btn btn-default" onclick="simulate(9);">Run Albedo Increase</button>
+			<button class="btn btn-default" onclick="simulate(10);">Run RCP85 with Geoengineering (i)</button>
+			<button class="btn btn-default" onclick="simulate(11);">Run RCP85 with Geoengineering (ii)</button>
+			<button class="btn btn-default" onclick="simulate(12);">Run Arctic Ice Loss</button>
+			<button class="btn btn-default" onclick="simulate(13);">Run with forcing switched off at 2020</button>
+			<button class="btn btn-default" onclick="simulate(14);">Run high aerosol emissions from 2020</button>
+			<button class="btn btn-default" onclick="simulate(15);">Run albedo increase from 0.3 to 0.32 from 2020</button>
+			<button class="btn btn-default" onclick="simulate(16);">Changes in TSI</button>
+			<button class="btn btn-default" onclick="simulate(17);">Volcanic Eruption</button>
 			<span id="model-status-text"></span>
 		</div>
-		<h2>Surface and Ocean temperature</h2>
-		<div class="ct-chart" id="chart-temperatures"></div>
-		<h2>CO2 Concentration (PPM)</h2>
-		<div class="ct-chart" id="chart-cco2"></div>
-		<h2>CO2 Emissions</h2>
-		<div class="ct-chart" id="chart-emissions-co2"></div>
 	</div>
+	<h2>Surface and Ocean temperature</h2>
+	<div class="ct-chart" id="chart-temperatures"></div>
+	<h2>CO2 Concentration (PPM)</h2>
+	<div class="ct-chart" id="chart-cco2"></div>
+	<h2>CO2 Emissions</h2>
+	<div class="ct-chart" id="chart-emissions-co2"></div>
 
 	<!-- App - executed at the end -->
 	<script type="text/javascript" src="js/app/app.js"></script>

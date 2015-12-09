@@ -5,4 +5,10 @@ Written in HTML5/JavaScript utilising the following dependencies:
 - Chartist.js (https://gionkunz.github.io/chartist-js/)
 
 Milestones:
-- (TBD)
+- Model Port [done]
+- App Skeleton
+- Polished Basic/Intermediate Functionality
+- Advanced Features
+
+Templates of interest:
+- http://themicon.co/theme/angle/v3.2/backend-angular/#
