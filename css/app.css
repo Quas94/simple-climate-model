@@ -10,6 +10,13 @@
     padding-top: 70px;
 }
 
+.main-row-inner {
+    padding-top: 10px;
+}
+
+/**
+ * Chartist graphs styles
+ */
 .ct-series-a .ct-line {
 	stroke: red;
 	stroke-width: 2px;

@@ -67,12 +67,26 @@
 			</div>
 			<!-- Main section -->
 			<div class="col-md-10 col-md-offset-2 col-lg-11 col-lg-offset-1">
-				<span id="model-status-text"></span>
-				<h2>Surface and Ocean temperature</h2>
-				<div class="ct-chart" id="chart-temperatures"></div>
-				<h2>CO2 Concentration (PPM)</h2>
-				<div class="ct-chart" id="chart-cco2"></div>
-				<h2>CO2 Emissions</h2>
+				<div class="row main-row-inner">
+					<div class="col-md-6">
+						<div class="panel panel-danger">
+							<div class="panel-heading">
+								Surface and Ocean Temperature <span class="pull-right" id="model-status-text"></span>
+							</div>
+							<div class="panel-body">
+								<div class="ct-chart" id="chart-temperatures"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="panel panel-info">
+							<div class="panel-heading">CO2 Concentration</div>
+							<div class="panel-body">
+								<div class="ct-chart" id="chart-cco2"></div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="ct-chart" id="chart-emissions-co2"></div>
 			</div>
 		</div>

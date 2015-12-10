@@ -523,8 +523,8 @@ var simulate = function(scenarioId) {
 
 	// chart dimensions and other options
 	var options = {
-		width: 960,
-		height: 540,
+		width: 720,
+		height: 480,
 		chartPadding: {
 			right: 30
 		},
