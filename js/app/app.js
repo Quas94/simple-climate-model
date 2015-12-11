@@ -37,14 +37,17 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 		// opens a popup and passes in the chart to the new window
 		// parameter main specifies whether to popup the main chart (true) or the secondary chart (false)
 		$scope.popupChart = function(main) {
-			var chartInfo;
-			var chart;
-			if (main) {
-				// main chart
-				chartInfo = $scope.mainChartActive;
-			} else {
-				// secondary chart
-				chartInfo = $scope.secondaryChartActive;
+			// chartInfo is main chart or secondary chart depending on main parameter
+			var chartInfo = main ? $scope.mainChartActive : $scope.secondaryChartActive;
+			// work out chart popup window title
+			var popupTitle = $scope.activeScenario.name + ': ' + chartInfo.name;
+
+			// check if any existing popups have this title: if so, change focus to them and return early
+			for (var i = 0; i < popupList.length; i++) {
+				if (popupList[i].document.title === popupTitle) {
+					popupList[i].focus().
+					return;
+				}
 			}
 
 			var plotInfo = document.getElementById(chartInfo.id).plotInfo;
@@ -54,7 +57,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 				info: chartInfo,
 				years: plotInfo.y,
 				data: plotInfo.data,
-				title: $scope.activeScenario.name + ': ' + chartInfo.name
+				title: popupTitle
 			};
 			// open the popup, which will access the values set above
 			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=1024,height=768');

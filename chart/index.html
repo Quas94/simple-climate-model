@@ -23,7 +23,7 @@
 </head>
 <body>
 	<div class="panel panel-default">
-		<div class="panel-heading">Panel Title</div>
+		<div class="panel-heading" id="panel-title">Chart</div>
 		<div class="panel-body">
 			<div class="ct-chart" id="popupChart"></div>
 		</div>
@@ -33,8 +33,9 @@
 		// grab the data from the opener window and plot it
 		var data = window.opener.document.popupData;
 
-		// set title
+		// set title and panel title
 		document.title = data.title;
+		document.getElementById('panel-title').innerHTML = data.title;
 
 		var id = 'popupChart';
 
