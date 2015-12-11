@@ -7,7 +7,6 @@
 /**
  * Default scenarios
  */
-
 var DEFAULT_SCENARIOS = [
 	{ id: 1, name: 'RCP6' },
 	{ id: 2, name: 'RCP45' },
@@ -25,6 +24,29 @@ var DEFAULT_SCENARIOS = [
 	{ id: 16, name: 'Changes in TSI' },
 	{ id: 17, name: 'Volcanic Eruption' },
 ];
+
+/**
+ * Chart div ids
+ */
+var MAIN_CHARTS = [
+	// ...
+
+	// Chartbase has to come last as it doesn't have absolute positioning
+	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures' }
+];
+var SECONDARY_CHARTS = [
+	{ id: 'chart-co2-emissions', name: 'CO2 Emissions' },
+	// ...
+
+	// Chartbase has to come last as it doesn't have absolute positioning
+	{ id: 'base-chart-co2-concentration', name: 'CO2 Concentration' }
+];
+
+/**
+ * CSS Style value constants
+ */
+var VISIBLE = 'visible';
+var HIDDEN = 'hidden';
 
 /**
  * Simulation constants

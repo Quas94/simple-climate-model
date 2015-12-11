@@ -6,13 +6,18 @@
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 
 	<!-- Bootstrap CSS -->
+	<!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
 	<!-- Angular.js minified js library -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular-animate.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular-route.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular-sanitize.js"></script>
-	<!-- Bootstrap and Angular for Bootstrap -->
+	<!-- jQuery -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<!-- Bootstrap's default js, otherwise dropdowns don't work -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<!-- Angular UI for Bootstrap -->
 	<script type="text/javascript" src="./js/ui-bootstrap-tpls-0.14.3.min.js"></script>
 
 	<!-- Chartist.js minified CSS file -->
@@ -60,7 +65,7 @@
 			<!-- Sidebar -->
 			<div class="col-md-2 col-lg-1 sidebar">
 				<ul class="nav nav-sidebar">
-					<li ng-repeat="scenario in scenarios" ng-class="isActive(scenario.active)">
+					<li ng-repeat="scenario in scenarios" ng-class="isSidebarActive(scenario.active)">
 						<a class="sidebar-li" href="#" ng-click="selectScenario(scenario.id)">{{ scenario.name }}</a>
 					</li>
 				</ul>
@@ -70,25 +75,33 @@
 				<div class="row main-row-inner">
 					<div class="col-md-6">
 						<div class="panel panel-danger">
-							<div class="panel-heading">
+							<div class="panel-heading" id="main-heading">
 								Surface and Ocean Temperature <span class="pull-right" id="model-status-text"></span>
 							</div>
-							<div class="panel-body">
-								<div class="ct-chart" id="chart-temperatures"></div>
+							<div class="panel-body" id="main-panel">
+								<div class="ct-chart" ng-repeat="chart in mainCharts" id="{{ chart.id }}"></div>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-6 no-left-padding">
 						<div class="panel panel-info">
-							<div class="panel-heading">CO2 Concentration</div>
-							<div class="panel-body">
-								<div class="ct-chart" id="chart-cco2"></div>
+							<div class="panel-heading">
+								<span class="dropdown">
+									<button class="btn btn-xs btn-info dropdown-toggle" type="button" data-toggle="dropdown">{{ secondaryChartActive.name }} <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+										<li ng-repeat="chart in secondaryCharts"><a href="#" ng-click="selectSecondaryChart(chart)">{{ chart.name }}</a></li>
+									</ul>
+								</span>
+							</div>
+							<div class="panel-body" id="secondary-panel">
+								<div class="ct-chart" ng-repeat="chart in secondaryCharts" id="{{ chart.id }}"></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="ct-chart" id="chart-emissions-co2"></div>
 			</div>
+
+			<!-- Area at bottom -->
 		</div>
 	</div>
 </body>

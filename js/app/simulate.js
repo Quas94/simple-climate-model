@@ -7,6 +7,8 @@
 
 /**
  * Takes in the scenario ID, runs the model simulation and draws the resulting graphs.
+ *
+ * Returns references to the created Chartist charts.
  */
 var simulate = function(scenarioId) {
 
@@ -517,6 +519,8 @@ var simulate = function(scenarioId) {
 	// -------------------------------------- END OF MODEL -------------------------------------- \\
 
 	// actual plotting
+	// charts array
+	var charts = [];
 
 	// bounds of x-axis plotting
 	var xl = [ years[0], years[years.length - 1] ];
@@ -549,7 +553,7 @@ var simulate = function(scenarioId) {
 		surfTempData.series[1][i] = To[i];
 	}
 	// draw temperatures
-	var chartTemps = new Chartist.Line('#chart-temperatures', surfTempData, options);
+	charts.push(new Chartist.Line('#base-chart-temperatures', surfTempData, options));
 
 	// plot C_CO2 levels
 	var cco2Data = {
@@ -567,7 +571,7 @@ var simulate = function(scenarioId) {
 		//cco2Data.series[0][i] = F1 * emissions.CO2[i];
 	}
 	// draw cco2
-	var chartCco2 = new Chartist.Line('#chart-cco2', cco2Data, options);
+	charts.push(new Chartist.Line('#base-chart-co2-concentration', cco2Data, options));
 
 	// plot emissions CO2 levels
 	var eco2 = {
@@ -584,12 +588,15 @@ var simulate = function(scenarioId) {
 		eco2.series[0][i] = F1 * emissions.CO2[i];
 	}
 	// draw cco2
-	var chartEco2 = new Chartist.Line('#chart-emissions-co2', eco2, options);
+	charts.push(Chartist.Line('#chart-co2-emissions', eco2, options));
 
 	// ----------------- CLEANUP -----------------------  \\
 
-	chartEco2.on('created', function(evt) {
+	charts[2].on('created', function(evt) {
+		// @TODO fix this
 		modelStatusText.innerHTML = 'Done!';
 		modelStatusText.style.color = 'green';
 	});
+
+	return charts;
 }

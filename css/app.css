@@ -7,11 +7,28 @@
 }
 
 .main-row {
-    padding-top: 70px;
+  padding-top: 70px;
 }
 
 .main-row-inner {
-    padding-top: 10px;
+  padding-top: 10px;
+}
+
+.no-left-padding {
+  padding-left: 0px;
+}
+
+/**
+ * Divs containing charts
+ */
+div[id*='chart-'] {
+  /** Chart positionings absolute except for base-chart */
+  position: absolute;
+  /** Make them invisible to start with */
+  visibility: hidden;
+}
+div[id*='base-chart-'] {
+  position: relative;
 }
 
 /**

@@ -15,10 +15,34 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope',
 	function($scope, $rootScope) {
 		// fetch the default scenarios to begin with
 		$scope.scenarios = DEFAULT_SCENARIOS;
+		// fetch other relevant constants
+		$scope.mainCharts = MAIN_CHARTS;
+		$scope.secondaryCharts = SECONDARY_CHARTS;
 
 		// make the first scenario active
 		$scope.activeScenario = $scope.scenarios[0];
 		$scope.activeScenario.active = true;
+
+		// initial active charts are the last ones (ie. the base ones with relative positioning instead of absolute)
+		$scope.mainChartActive = MAIN_CHARTS[MAIN_CHARTS.length - 1];
+		$scope.secondaryChartActive = SECONDARY_CHARTS[SECONDARY_CHARTS.length - 1];
+
+		// setup the heading/dropdowns
+		$scope.secondaryHeading = $scope.secondaryChartActive.name;
+
+		// sets the div corresponding to the given chart object to the visibility status which is also given
+		$scope.setChartVisible = function(chart, visibility) {
+			document.getElementById(chart.id).style.visibility = visibility ? VISIBLE : HIDDEN;
+		};
+
+		// changes currently active secondary chart to the given chart. updates visibility, etc
+		$scope.selectSecondaryChart = function(chart) {
+			// set old chart to be invisible
+			$scope.setChartVisible($scope.secondaryChartActive, false);
+			// set new chart to be active secondary chart, and make it visible
+			$scope.secondaryChartActive = chart;
+			$scope.setChartVisible(chart, true);
+		};
 
 		// select the given scenario
 		$scope.selectScenario = function(id) {
@@ -39,10 +63,13 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope',
 			foundScenario.active = true;
 			// @TODO update scenario data in main page
 			// instead of just running the scenario instantly (as follows):
-			simulate(id);
+			var charts = simulate(id);
+			// make the appropriate main and secondary chart divs visible
+			$scope.setChartVisible($scope.mainChartActive, true);
+			$scope.setChartVisible($scope.secondaryChartActive, true);
 		};
 
-		$scope.isActive = function(active) {
+		$scope.isSidebarActive = function(active) {
 			return active ? 'active' : '';
 		};
 	}]);
