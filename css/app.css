@@ -22,6 +22,11 @@
   margin-bottom: 0px;
 }
 
+.btn-wide {
+  width: 100%;
+  margin-bottom: 1px;
+}
+
 /**
  * Simulation progress bar
  */

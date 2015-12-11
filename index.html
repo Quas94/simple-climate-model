@@ -88,13 +88,34 @@
 					</div>
 				</div>
 				-->
+				<!-- Actions/info section -->
+				<div class="row">
+					<div class="col-md-3">
+						<div class="panel panel-success">
+							<div class="panel-heading">Actions</div>
+							<div class="panel-body">
+								<button class="btn btn-primary btn-sm btn-wide" ng-click="runScenario()"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
+								<button class="btn btn-default btn-sm btn-wide" ng-click="editGlobals()">Edit Global Variables</button>
+								<button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-9 no-left-padding">
+						<div class="panel panel-warning">
+							<div class="panel-heading">Other Info</div>
+							<div class="panel-body">
+								<p>Details on the scenario, etc</p>
+							</div>
+						</div>
+					</div>
+				</div>
 				<!-- Row for charts -->
 				<div class="row">
 					<div class="col-md-6">
 						<div class="panel panel-danger">
 							<div class="panel-heading" id="main-heading">
 								<button class="btn btn-xs btn-danger">Surface and Ocean Temperature</button>
-								<button class="btn btn-sm btn-danger pull-right" ng-click="popupChart(true)"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-danger pull-right" ng-disabled="!chartsActive" ng-click="popupChart(true)"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
 								<div class="ct-chart" ng-repeat="chart in mainCharts" id="{{ chart.id }}"></div>
@@ -110,21 +131,10 @@
 										<li ng-repeat="chart in secondaryCharts"><a href="#" ng-click="selectSecondaryChart(chart)">{{ chart.name }}</a></li>
 									</ul>
 								</span>
-								<button class="btn btn-sm btn-info pull-right" ng-click="popupChart(false)"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-info pull-right" ng-disabled="!chartsActive" ng-click="popupChart(false)"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="secondary-panel">
 								<div class="ct-chart" ng-repeat="chart in secondaryCharts" id="{{ chart.id }}"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- Bottom section -->
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-success">
-							<div class="panel-heading" id="main-heading">Extra Actions</div>
-							<div class="panel-body" id="main-panel">
-								<button class="btn btn-default btn-sm" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close All Chart Windows</button>
 							</div>
 						</div>
 					</div>

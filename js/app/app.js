@@ -26,6 +26,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 		// initial active charts are the last ones (ie. the base ones with relative positioning instead of absolute)
 		$scope.mainChartActive = MAIN_CHARTS[MAIN_CHARTS.length - 1];
 		$scope.secondaryChartActive = SECONDARY_CHARTS[SECONDARY_CHARTS.length - 1];
+		// variable which marks whether or not charts are currently being displayed
+		$scope.chartsActive = false;
 
 		// setup the heading/dropdowns
 		$scope.secondaryHeading = $scope.secondaryChartActive.name;
@@ -102,8 +104,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 			$scope.setChartVisible(chart, true);
 		};
 
-		// select the given scenario
+		// select the given scenario (but doesn't run it)
 		$scope.selectScenario = function(id) {
+			// set charts to active upon first call
+			$scope.chartsActive = true;
+
 			// get the scenario with the given id
 			foundScenario = null;
 			for (var i = 0; i < $scope.scenarios.length; i++) {
@@ -119,9 +124,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 			$scope.activeScenario.active = false; // old active scenario is no longer active
 			$scope.activeScenario = foundScenario;
 			foundScenario.active = true;
-			// @TODO update scenario data in main page
-			// instead of just running the scenario instantly (as follows):
-			var charts = simulate(id);
+		};
+
+		// runs the currently active scenario
+		$scope.runScenario = function() {
+			var charts = simulate($scope.activeScenario.id);
 			// make the appropriate main and secondary chart divs visible
 			$scope.setChartVisible($scope.mainChartActive, true);
 			$scope.setChartVisible($scope.secondaryChartActive, true);
