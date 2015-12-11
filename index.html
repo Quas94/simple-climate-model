@@ -72,11 +72,27 @@
 			</div>
 			<!-- Main section -->
 			<div class="col-md-10 col-md-offset-2 col-lg-11 col-lg-offset-1">
-				<div class="row main-row-inner">
+				<!-- Padding for navbar -->
+				<div class="main-top-padding"></div>
+				<!-- Row for progress bar at the very top -->
+				<!-- @TODO fix async handling of simulation so this actually works
+				<div class="row" id="simulation-progress">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="progress progress-striped active no-bottom-margin">
+									<div class="progress-bar-success"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				-->
+				<!-- Row for charts -->
+				<div class="row">
 					<div class="col-md-6">
 						<div class="panel panel-danger">
-							<div class="panel-heading" id="main-heading">
-								Surface and Ocean Temperature <span class="pull-right" id="model-status-text"></span>
+							<div class="panel-heading" id="main-heading"><button class="btn btn-sm btn-danger">Surface and Ocean Temperature</button>
 							</div>
 							<div class="panel-body" id="main-panel">
 								<div class="ct-chart" ng-repeat="chart in mainCharts" id="{{ chart.id }}"></div>
@@ -87,7 +103,7 @@
 						<div class="panel panel-info">
 							<div class="panel-heading">
 								<span class="dropdown">
-									<button class="btn btn-xs btn-info dropdown-toggle" type="button" data-toggle="dropdown">{{ secondaryChartActive.name }} <span class="caret"></span></button>
+									<button class="btn btn-sm btn-info dropdown-toggle" type="button" data-toggle="dropdown">{{ secondaryChartActive.name }} <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 										<li ng-repeat="chart in secondaryCharts"><a href="#" ng-click="selectSecondaryChart(chart)">{{ chart.name }}</a></li>
 									</ul>
@@ -95,6 +111,17 @@
 							</div>
 							<div class="panel-body" id="secondary-panel">
 								<div class="ct-chart" ng-repeat="chart in secondaryCharts" id="{{ chart.id }}"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Bottom section -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading" id="main-heading">Extra Info etc. TODO</div>
+							<div class="panel-body" id="main-panel">
+								<p>Extra info and whatever</p>
 							</div>
 						</div>
 					</div>

@@ -10,12 +10,23 @@
   padding-top: 70px;
 }
 
-.main-row-inner {
+.main-top-padding {
   padding-top: 10px;
 }
 
 .no-left-padding {
   padding-left: 0px;
+}
+
+.no-bottom-margin {
+  margin-bottom: 0px;
+}
+
+/**
+ * Simulation progress bar
+ */
+#simulation-progress {
+  display: none;
 }
 
 /**

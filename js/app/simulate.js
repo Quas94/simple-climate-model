@@ -12,9 +12,9 @@
  */
 var simulate = function(scenarioId) {
 
-	var modelStatusText = document.getElementById('model-status-text');
-	modelStatusText.innerHTML = 'Running simulation...';
-	modelStatusText.style.color = 'red';
+	// show progress row
+	// @TODO fix async so this works properly
+	// document.getElementById('simulation-progress').style.display = 'block';
 
 	// revert constants back to their default values
 	forcingDefaults();
@@ -592,11 +592,9 @@ var simulate = function(scenarioId) {
 
 	// ----------------- CLEANUP -----------------------  \\
 
-	charts[2].on('created', function(evt) {
-		// @TODO fix this
-		modelStatusText.innerHTML = 'Done!';
-		modelStatusText.style.color = 'green';
-	});
+	// hide progress row
+	// @TODO see top of this function
+	// document.getElementById('simulation-progress').style.display = 'none';
 
 	return charts;
 }
