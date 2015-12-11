@@ -11,8 +11,8 @@ var cmApp = angular.module('cmApp', [
 		'ui.bootstrap'
 	]);
 
-cmApp.controller('mainCtrl', ['$scope', '$rootScope',
-	function($scope, $rootScope) {
+cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
+	function($scope, $rootScope, $interval) {
 		// fetch the default scenarios to begin with
 		$scope.scenarios = DEFAULT_SCENARIOS;
 		// fetch other relevant constants
@@ -31,7 +31,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope',
 		$scope.secondaryHeading = $scope.secondaryChartActive.name;
 
 		// create list of popup chart windows that have been created
-		$scope.popupList = [];
+		popupList = [];
+		$scope.popupListLength = popupList.length;
 
 		// opens a popup and passes in the chart to the new window
 		// parameter main specifies whether to popup the main chart (true) or the secondary chart (false)
@@ -56,7 +57,30 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope',
 			};
 			// open the popup, which will access the values set above
 			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=1024,height=768');
-			$scope.popupList.push(popup);
+			popupList.push(popup);
+			$scope.popupListLength = popupList.length;
+			var checkClose = $interval(function() {
+				if (popup.closed) {
+					$interval.cancel(checkClose); // clear timer
+					var index = popupList.indexOf(popup);
+					if (index > -1) {
+						popupList.splice(index, 1); // remove from popup list
+						$scope.popupListLength = popupList.length;
+					}
+				}
+			}, 200);
+		};
+
+		// close all popups created by the popupChart() function
+		$scope.closeAllPopups = function() {
+			for (var i = 0; i < popupList.length; i++) {
+				if (!popupList[i].closed) {
+					popupList[i].close(); // close if not already closed
+				}
+			}
+			// clear list of popup windows
+			popupList = [];
+			$scope.popupListLength = 0;
 		};
 
 		// sets the div corresponding to the given chart object to the visibility status which is also given
