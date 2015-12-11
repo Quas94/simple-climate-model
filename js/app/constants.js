@@ -32,14 +32,14 @@ var MAIN_CHARTS = [
 	// ...
 
 	// Chartbase has to come last as it doesn't have absolute positioning
-	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures' }
+	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures', lines: 2 }
 ];
 var SECONDARY_CHARTS = [
-	{ id: 'chart-co2-emissions', name: 'CO2 Emissions' },
+	{ id: 'chart-co2-emissions', name: 'CO2 Emissions', lines: 1 },
 	// ...
 
 	// Chartbase has to come last as it doesn't have absolute positioning
-	{ id: 'base-chart-co2-concentration', name: 'CO2 Concentration' }
+	{ id: 'base-chart-co2-concentration', name: 'CO2 Concentration', lines: 1 }
 ];
 
 /**

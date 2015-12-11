@@ -30,6 +30,35 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope',
 		// setup the heading/dropdowns
 		$scope.secondaryHeading = $scope.secondaryChartActive.name;
 
+		// create list of popup chart windows that have been created
+		$scope.popupList = [];
+
+		// opens a popup and passes in the chart to the new window
+		// parameter main specifies whether to popup the main chart (true) or the secondary chart (false)
+		$scope.popupChart = function(main) {
+			var chartInfo;
+			var chart;
+			if (main) {
+				// main chart
+				chartInfo = $scope.mainChartActive;
+			} else {
+				// secondary chart
+				chartInfo = $scope.secondaryChartActive;
+			}
+
+			var plotInfo = document.getElementById(chartInfo.id).plotInfo;
+
+			// set variables in this opener window for the popup to grab
+			document.popupData = {
+				info: chartInfo,
+				years: plotInfo.y,
+				data: plotInfo.data
+			};
+			// open the popup, which will access the values set above
+			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=1024,height=768');
+			$scope.popupList.push(popup);
+		};
+
 		// sets the div corresponding to the given chart object to the visibility status which is also given
 		$scope.setChartVisible = function(chart, visibility) {
 			document.getElementById(chart.id).style.visibility = visibility ? VISIBLE : HIDDEN;

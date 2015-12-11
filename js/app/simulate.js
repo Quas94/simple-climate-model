@@ -5,6 +5,70 @@
  * - implement a better version of randn
  */
 
+// returns a set of options
+var getChartOptions = function() {
+	// chart dimensions and other options
+	var options = {
+		width: 720,
+		height: 480,
+		chartPadding: {
+			right: 30 // so the text at the right hand side doesn't get cut off
+		},
+	};
+	return options;
+};
+
+// @TODO make generic version of plotData function which takes in 'data' as an array of data arrays
+// plots the singular set of data given, onto the div with the given id
+var plotData = function(chartId, years, d) {
+	// get default options
+	var options = getChartOptions();
+
+	// plot single set of data
+	var data = {
+		labels: [],
+		series: [ [] ]
+	};
+	// fill labels and data
+	for (var i = 0; i < years.length; i++) {
+		data.labels[i] = '';
+		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
+			data.labels[i] = years[i];
+		}
+		data.series[0][i] = d[i];
+	}
+	// draw data
+	return new Chartist.Line('#' + chartId, data, options);
+};
+
+// plots the 2 sets of data that are given, onto the div with the given id
+// returns reference to the new Chartist chart object
+var plotData2 = function(chartId, years, data1, data2) {
+	// get default options
+	var options = getChartOptions();
+
+	// plot surface temperature
+	// create data object
+	var data = {
+		labels: [],
+		series: [ [], [] ] // internal arrays are surface-temp and ocean-temp
+	};
+
+	// fill labels and data
+	for (var i = 0; i < years.length; i++) {
+		data.labels[i] = '';
+		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
+			data.labels[i] = years[i];
+		}
+		// surface temperature
+		data.series[0][i] = data1[i];
+		// ocean temperature
+		data.series[1][i] = data2[i];
+	}
+	// draw temperatures
+	return new Chartist.Line('#' + chartId, data, options);
+}
+
 /**
  * Takes in the scenario ID, runs the model simulation and draws the resulting graphs.
  *
@@ -518,83 +582,31 @@ var simulate = function(scenarioId) {
 
 	// -------------------------------------- END OF MODEL -------------------------------------- \\
 
-	// actual plotting
-	// charts array
-	var charts = [];
+	// bounds of x-axis plotting - not needed?
+	// var xl = [ years[0], years[years.length - 1] ];
 
-	// bounds of x-axis plotting
-	var xl = [ years[0], years[years.length - 1] ];
+	// return array containing objects that have references to each of the charts that were drawn
+	var ret = [];
+	// main charts
+	// surface and ocean temperatures
+	ret.push(plotData2('base-chart-temperatures', years, Tsurf, To));
+	// link plot data to the element for use by popup window setup later
+	document.getElementById('base-chart-temperatures').plotInfo = { y: years, data: [ Tsurf, To ] };
 
-	// chart dimensions and other options
-	var options = {
-		width: 720,
-		height: 480,
-		chartPadding: {
-			right: 30
-		},
-
-	};
-
-	// plot surface temperature
-	// create data object
-	var surfTempData = {
-		labels: [],
-		series: [ [], [] ] // internal arrays are surface-temp and ocean-temp
-	};
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		surfTempData.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
-			surfTempData.labels[i] = years[i];
-		}
-		// surface temperature
-		surfTempData.series[0][i] = Tsurf[i];
-		// ocean temperature
-		surfTempData.series[1][i] = To[i];
+	// secondary charts
+	// CO2 emissions
+	// multiply by F1
+	var co2e = [];
+	for (var i = 0; i < emissions.CO2.length; i++) {
+		co2e[i] = emissions.CO2[i] * F1;
 	}
-	// draw temperatures
-	charts.push(new Chartist.Line('#base-chart-temperatures', surfTempData, options));
+	ret.push(plotData('chart-co2-emissions', years, co2e));
+	// link plot data to the element for use by popup window setup later
+	document.getElementById('chart-co2-emissions').plotInfo = { y: years, data: [ co2e ] };
+	// CO2 concentration
+	ret.push(plotData('base-chart-co2-concentration', years, C_CO2));
+	// link plot data to the element for use by popup window setup later
+	document.getElementById('base-chart-co2-concentration').plotInfo = { y: years, data: [ C_CO2 ] };
 
-	// plot C_CO2 levels
-	var cco2Data = {
-		labels: [],
-		series: [ [] ]
-	};
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		cco2Data.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
-			cco2Data.labels[i] = years[i];
-		}
-		// C_CO2
-		cco2Data.series[0][i] = C_CO2[i];
-		//cco2Data.series[0][i] = F1 * emissions.CO2[i];
-	}
-	// draw cco2
-	charts.push(new Chartist.Line('#base-chart-co2-concentration', cco2Data, options));
-
-	// plot emissions CO2 levels
-	var eco2 = {
-		labels: [],
-		series: [ [] ]
-	};
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		eco2.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
-			eco2.labels[i] = years[i];
-		}
-		// C_CO2
-		eco2.series[0][i] = F1 * emissions.CO2[i];
-	}
-	// draw cco2
-	charts.push(Chartist.Line('#chart-co2-emissions', eco2, options));
-
-	// ----------------- CLEANUP -----------------------  \\
-
-	// hide progress row
-	// @TODO see top of this function
-	// document.getElementById('simulation-progress').style.display = 'none';
-
-	return charts;
+	return ret;
 }
