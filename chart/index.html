@@ -1,7 +1,9 @@
 <!-- Popup for expanding charts -->
 <html>
 <head>
-	<title>Window Title</title>
+	<!-- Title omitted because it is set by opener's js script -->
+	<title>Chart</title>
+
 	<!-- Google font (Raleway) -->
 	<link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 	<!-- jQuery -->
@@ -30,6 +32,10 @@
 	<script type="text/javascript">
 		// grab the data from the opener window and plot it
 		var data = window.opener.document.popupData;
+
+		// set title
+		document.title = data.title;
+
 		var id = 'popupChart';
 
 		if (data.data.length == 1) {
