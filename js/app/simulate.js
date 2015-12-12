@@ -556,29 +556,6 @@ var simulate = function() {
 
 	// return and post message
 	postMessage(simulatedData);
-
-	/*
-
-	// return array containing objects that have references to each of the charts that were drawn
-	var ret = [];
-	// main charts
-	// surface and ocean temperatures
-	ret.push(plotData2('base-chart-temperatures', years, Tsurf, To));
-	// link plot data to the element for use by popup window setup later
-	document.getElementById('base-chart-temperatures').plotInfo = { y: years, data: [ Tsurf, To ] };
-
-	// secondary charts
-	// CO2 emissions
-	// multiply by F1
-	ret.push(plotData('chart-co2-emissions', years, co2e));
-	// link plot data to the element for use by popup window setup later
-	document.getElementById('chart-co2-emissions').plotInfo = { y: years, data: [ co2e ] };
-	// CO2 concentration
-	ret.push(plotData('base-chart-co2-concentration', years, C_CO2));
-	// link plot data to the element for use by popup window setup later
-	document.getElementById('base-chart-co2-concentration').plotInfo = { y: years, data: [ C_CO2 ] };
-
-	*/
 };
 
 onmessage = function(e) {

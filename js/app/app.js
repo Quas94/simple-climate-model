@@ -199,14 +199,17 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						for (var i = 0; i < retData.length; i++) {
 							// @TODO combined plotData and plotData2
 							var newChart;
-							if (retData[i].data.length == 2) {
+							var dataLen = retData[i].data.length;
+							if (dataLen == 2) {
 								newChart = plotData2(retData[i].id, retYears, retData[i].data[0], retData[i].data[1]);
-							} else {
+							} else if (dataLen == 1) {
 								newChart = plotData(retData[i].id, retYears, retData[i].data[0]);
+							} else {
+								throw new Error('dataLen = ' + dataLen);
 							}
 							$scope.charts.push(newChart);
 							// link plot data to the element for use by popup window setup later
-							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData };
+							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData[i].data };
 							// make the appropriate main and secondary chart divs visible
 							$scope.setChartVisible($scope.mainChartActive, true);
 							$scope.setChartVisible($scope.secondaryChartActive, true);
