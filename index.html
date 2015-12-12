@@ -82,7 +82,7 @@
 							<div class="panel-heading">Actions</div>
 							<div class="panel-body">
 								<button class="btn btn-primary btn-sm btn-wide" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
-								<button class="btn btn-default btn-sm btn-wide" ng-click="editGlobals()">Edit Global Variables</button>
+								<button class="btn btn-default btn-sm btn-wide" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
 								<button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button>
 								<button class="btn btn-default btn-sm btn-wide" ng-disabled="charts == null" ng-click="destroyCharts()">Clear This Page</button>
 							</div>
@@ -90,9 +90,11 @@
 					</div>
 					<div class="col-md-9 no-left-padding">
 						<div class="panel panel-warning">
-							<div class="panel-heading">Other Info</div>
+							<div class="panel-heading">Details</div>
 							<div class="panel-body">
-								<p>Details on the scenario, etc</p>
+								<p>Scenario Name: {{ activeScenario.name }}</p>
+								<p>Description: some description of the scenario</p>
+								<p>Other info and details, etc...</p>
 							</div>
 						</div>
 					</div>
@@ -103,7 +105,7 @@
 						<div class="panel panel-danger">
 							<div class="panel-heading" id="main-heading">
 								<button class="btn btn-xs btn-danger">Surface and Ocean Temperature</button>
-								<button class="btn btn-sm btn-danger pull-right" ng-disabled="!chartsActive" ng-click="popupChart(true)"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-danger pull-right" ng-disabled="!chartsActive" ng-click="popupChart(true)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
 								<div class="ct-chart" ng-repeat="chart in mainCharts" id="{{ chart.id }}"></div>
@@ -119,7 +121,7 @@
 										<li ng-repeat="chart in secondaryCharts"><a href="#" ng-click="selectSecondaryChart(chart)">{{ chart.name }}</a></li>
 									</ul>
 								</span>
-								<button class="btn btn-sm btn-info pull-right" ng-disabled="!chartsActive" ng-click="popupChart(false)"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-info pull-right" ng-disabled="!chartsActive" ng-click="popupChart(false)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="secondary-panel">
 								<div class="ct-chart" ng-repeat="chart in secondaryCharts" id="{{ chart.id }}"></div>
@@ -134,28 +136,49 @@
 	<!-- Progress bar modal -->
 	<div id="progress-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
 		<div class="modal-dialog">
-
-			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
-        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-					<h4 class="modal-title">Running Simulation</h4>
+					<h4 class="modal-title">Running simulation...</h4>
 				</div>
 				<div class="modal-body">
-					<div class="progress progress-striped active">
+					<div class="progress progress-striped">
 						<div class="progress-bar progress-bar-info" id="simulation-progress-bar"></div>
 					</div>
 				</div>
 			</div>
+		</div>
+	</div>
 
+	<!-- Update global variables modal -->
+	<div class="modal fade" role="dialog" id="edit-globals-modal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog edit-globals-modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Edit Global Variables</h4>
+				</div>
+				<div class="modal-body">
+					<div class="col-md-2" ng-repeat="col in globalVarCols">
+						<form class="form-horizontal">
+							<div ng-repeat="key in col">
+								<label class="control-label">{{ key }}</label>
+								<input type="text" class="form-control input-sm" value="{{ globalVariables[key] }}" ng-attr-id="{{ 'global-var-input-' + key }}" onkeypress="enableDefaultAndSaveButtons()">
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="clearfix"></div> <!-- Prevents the footer from being all mangled and squished in the corner -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-warning pull-left" id="edit-globals-restore-defaults" ng-click="restoreDefaultGlobals()" ng-disabled="true">Restore Defaults</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeGlobals(true)" id="edit-globals-save" ng-disabled="true">Save</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="closeGlobals(false)">Cancel</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<!-- Warning for browsers that don't support required functionality: Worker -->
 	<div id="warning-modal" class="modal fade" role="dialog">
 		<div class="modal-dialog">
-
-			<!-- Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
         			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
@@ -168,7 +191,6 @@
 					<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </body>

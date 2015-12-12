@@ -16,3 +16,5 @@ Templates of interest:
 Important TODO list:
 - reduce chart plotting delay by using Worker thread to interpolate number of points
 - revisit popup windows name detection once modifying scenarios is working
+- ability to save/load global variables set, and make it clearer that global variables are global across scenarios? maybe rename them to 'Simulation variables' and allow them to be attached to scenarios (and thus vary between)
+- revisit method of etching default scenarios when custom scenarios are possible: make sure defaults aren't modified

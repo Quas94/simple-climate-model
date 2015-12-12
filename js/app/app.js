@@ -23,7 +23,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// create web worker
 		var worker = new Worker('./js/app/simulate.js');
 
+		// create a copy of the default simulation constants to use as our 'global variables'
+		$scope.globalVariables = objcpy(DEFAULT_SIM_CONSTS);
 		// fetch the default scenarios to begin with
+		// @TODO make copy of default scenarios when creating custom scenarios is added
 		$scope.scenarios = DEFAULT_SCENARIOS;
 		// fetch other relevant constants
 		$scope.mainCharts = MAIN_CHARTS;
@@ -47,6 +50,61 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// create list of popup chart windows that have been created
 		popupList = [];
 		$scope.popupListLength = popupList.length;
+
+		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
+		// element holds the corresponding key of globalVariables in the position
+		$scope.globalVarCols = [ [], [], [], [], [], [] ]; // 6 columns
+		var globalKeys = Object.keys($scope.globalVariables);
+		for (var i = 0; i < globalKeys.length; i++) {
+			var col = i % 6; // 0 = col 1, 1 = col 2, 2 = col 3, 3 = col 4
+			$scope.globalVarCols[col].push(globalKeys[i]); // push the key into the correct column
+		}
+
+		// opens the edit globals modal. right now, only task is to set 'save' button to disabled
+		$scope.openEditGlobals = function() {
+			document.getElementById('edit-globals-save').disabled = true;
+		};
+
+		// fetches the values from $scope.globalVariables and pops them into the input fields
+		$scope.updateGlobalsView = function() {
+			// manually copy every element over
+			var keys = Object.keys($scope.globalVariables);
+			for (var i = 0; i < keys.length; i++) {
+				document.getElementById('global-var-input-' + keys[i]).value = $scope.globalVariables[keys[i]];
+			}
+		};
+
+		// sets all the input fields to the default values (but doesn't save, need user to click on save button)
+		$scope.restoreDefaultGlobals = function() {
+			// manually copy every element over
+			var keys = Object.keys(DEFAULT_SIM_CONSTS);
+			for (var i = 0; i < keys.length; i++) {
+				document.getElementById('global-var-input-' + keys[i]).value = DEFAULT_SIM_CONSTS[keys[i]];
+			}
+			// set the 'save' button to enabled
+			document.getElementById('edit-globals-save').disabled = false;
+			// set restore defaults button to disabled
+			document.getElementById('edit-globals-restore-defaults').disabled = true;
+		};
+
+		// if the save parameter is true, this function saves the values from the text input fields to the $scope.globalVariables object
+		// otherwise, resets all the input fields to defaults
+		$scope.closeGlobals = function(save) {
+			// save if flag is set
+			if (save) {
+				// fetch values from inputs
+				var keys = Object.keys($scope.globalVariables);
+				for (var i = 0; i < keys.length; i++) {
+					var value = document.getElementById('global-var-input-' + keys[i]).value;
+					// @TODO: VALIDATION OF GLOBAL VAR INPUTS!!!
+					$scope.globalVariables[keys[i]] = value;
+					// no need to call updateGlobalsView since we saved
+				}
+			} else {
+				// restore all the values
+				$scope.updateGlobalsView();
+			}
+		};
 
 		// opens a popup and passes in the chart to the new window
 		// parameter main specifies whether to popup the main chart (true) or the secondary chart (false)
@@ -173,7 +231,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// activate the worker thread
 			worker.postMessage({
 				id: $scope.activeScenario.id,
-				consts: SIM_CONSTS, 
+				consts: $scope.globalVariables, 
 				rcph: XLS_RCPH,
 				rcphr: XLS_RCPH_ROWS,
 				rcphc: XLS_RCPH_COLS,
@@ -231,3 +289,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 angular.element(document).ready(function () {
 	console.log('page has been fully loaded!');
 });
+
+// on change of input fields in edit globals modal, enable save and restore buttons
+var enableDefaultAndSaveButtons = function() {
+	document.getElementById('edit-globals-save').disabled = false;
+	document.getElementById('edit-globals-restore-defaults').disabled = false;
+};

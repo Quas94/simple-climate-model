@@ -28,11 +28,17 @@
 }
 
 /**
- * Progress bar modal stuff
+ * Modal stuff: progress modal, edit globals modal, etc
  */
 #progress-modal {
   top: 35%;
   text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+    .edit-globals-modal-dialog {
+        width: 75%; /* either % (e.g. 60%) or px (400px) */
+    }
 }
 
 /**

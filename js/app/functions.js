@@ -158,3 +158,8 @@ var arrfind = function(haystack, needle) {
     }
     throw new Error(needle + ' was not found in haystack, this should not happen');
 };
+
+// returns a deep copy of the given object via JSON functions
+var objcpy = function(original) {
+    return JSON.parse(JSON.stringify(original));
+};

@@ -49,9 +49,9 @@ var VISIBLE = 'visible';
 var HIDDEN = 'hidden';
 
 /**
- * Simulation constants
+ * Default simulation constants
  */
-var SIM_CONSTS = {
+var DEFAULT_SIM_CONSTS = {
 	// time step (years)
 	DT: 1 / 12, // needs to be small otherwise ocean chanistry calculations become unstable
 
@@ -123,6 +123,8 @@ var SIM_CONSTS = {
 	nobulbs: 1, // 100*50/60, // no of bulbs/(W/m2)
 };
 
-// self-referencing
-SIM_CONSTS.iv_alpha = pow(SIM_CONSTS.iv_autocorr, 12 * SIM_CONSTS.DT); //  autoregressive model parameter (autocorrelation for one model timestep)
-SIM_CONSTS.iv_beta = sqrt(SIM_CONSTS.iv_var) * sqrt(1 - square(SIM_CONSTS.iv_alpha)); //  autoregressive model parameter
+// self-referencing assignments can't be done inside the curly braces above
+// autoregressive model parameter (autocorrelation for one model timestep)
+DEFAULT_SIM_CONSTS.iv_alpha = pow(DEFAULT_SIM_CONSTS.iv_autocorr, 12 * DEFAULT_SIM_CONSTS.DT);
+// autoregressive model parameter
+DEFAULT_SIM_CONSTS.iv_beta = sqrt(DEFAULT_SIM_CONSTS.iv_var) * sqrt(1 - square(DEFAULT_SIM_CONSTS.iv_alpha));
