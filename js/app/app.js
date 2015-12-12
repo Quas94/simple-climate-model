@@ -187,10 +187,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					var percent = e.data.percent;
 					document.getElementById('simulation-progress-bar').style.width = percent + '%';
 				} else if (e.data.type == 'finish') {
-					// close modal progress bar
-					$('#progress-modal').modal('hide');
-
 					$timeout(function() {
+						// close modal progress bar
+						$('#progress-modal').modal('hide');
 						// fetch chart data and plot
 						var retYears = e.data.y;
 						var retData = e.data.charts;
@@ -214,7 +213,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							$scope.setChartVisible($scope.mainChartActive, true);
 							$scope.setChartVisible($scope.secondaryChartActive, true);
 						}
-					}, 0);
+						// reset progress bar for next use
+						document.getElementById('simulation-progress-bar').style.width = '0%';
+					}, 400);
 				} else {
 					throw new Error('Invalid message type received from worker: ' + e.data.type);
 				}

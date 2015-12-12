@@ -9,14 +9,18 @@
  * Variables in this scope which are set by onmessage() - see below near the bottom.
  */
 var scenarioId;
+var progressPercentage;
 
 /**
- * Sends an update function containing the progress percentage to update to
+ * Sends a message to update the progress bar by 10% at a time.
  */
-var updateProgress = function(p) {
+var updateProgress = function() {
+	// increment percentage by 10
+	progressPercentage += 10;
+	// post the message to the ui thread
 	postMessage({
 		type: 'update',
-		percent: p
+		percent: progressPercentage
 	});
 };
 
@@ -452,8 +456,18 @@ var simulate = function() {
 	var bulbs_in_sw = [ 0 ];
 	var bulbs_out_sw = [ 0 ];
 
+	// finished selecting and setting up the given scenario and additional variables
+	updateProgress();
+	// calculate years per 10% of progress
+	var updateEvery = Math.round(years.length / 10); // because 90% remaining
+
 	// step through model simulation
 	for (var y = 1; y < years.length; y++) {
+		// update progress if applicable
+		if (y % updateEvery == 0) {
+			updateProgress();
+		}
+
 		// carbon cycle
 		// ocean from glotter
 		var a = Cup[y - 1] / Alk;
@@ -574,13 +588,11 @@ onmessage = function(e) {
 	this.XLS_RCPH_COLS = data.rcphc;
 	this.TAU_LINE = data.tline;
 	this.XLS_TSI = data.tsi;
-
-	updateProgress(10);
+	// set progress percentage to zero
+	progressPercentage = 0;
 
 	// import functions.js
 	importScripts('functions.js');
-	
-	updateProgress(20);
 
 	// wait half a second before running
 	setTimeout(function() {
