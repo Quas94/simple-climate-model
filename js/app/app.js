@@ -28,6 +28,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 		$scope.secondaryChartActive = SECONDARY_CHARTS[SECONDARY_CHARTS.length - 1];
 		// variable which marks whether or not charts are currently being displayed
 		$scope.chartsActive = false;
+		// the references to the currently displayed Chartist chart objects
+		var charts = null;
 
 		// setup the heading/dropdowns
 		$scope.secondaryHeading = $scope.secondaryChartActive.name;
@@ -104,6 +106,25 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 			$scope.setChartVisible(chart, true);
 		};
 
+		// destroys all previous charts
+		$scope.destroyCharts = function() {
+			// detach all charts
+			if (charts != null) {
+				for (var i = 0; i < charts.length; i++) {
+					charts[i].detach();
+				}
+			}
+			// empty the chart div elements and set all to invisible
+			for (var i = 0; i < $scope.mainCharts.length; i++) {
+				$scope.setChartVisible($scope.mainCharts[i], false);
+				document.getElementById($scope.mainCharts[i].id).innerHTML = '';
+			}
+			for (var i = 0; i < $scope.secondaryCharts.length; i++) {
+				$scope.setChartVisible($scope.secondaryCharts[i], false);
+				document.getElementById($scope.secondaryCharts[i].id).innerHTML = '';
+			}
+		};
+
 		// select the given scenario (but doesn't run it)
 		$scope.selectScenario = function(id) {
 			// set charts to active upon first call
@@ -120,6 +141,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 			if (foundScenario == null || id == $scope.activeScenario.id) {
 				return;
 			}
+			// destroy the current presentation of data
+			$scope.destroyCharts();
 			// change the active scenario
 			$scope.activeScenario.active = false; // old active scenario is no longer active
 			$scope.activeScenario = foundScenario;
@@ -128,8 +151,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 
 		// runs the currently active scenario
 		$scope.runScenario = function() {
-			var charts = simulate($scope.activeScenario.id);
+			charts = simulate($scope.activeScenario.id);
 			// make the appropriate main and secondary chart divs visible
+			// @TODO make callbacks before showing visible
 			$scope.setChartVisible($scope.mainChartActive, true);
 			$scope.setChartVisible($scope.secondaryChartActive, true);
 		};
