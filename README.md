@@ -6,9 +6,13 @@ Written in HTML5/JavaScript utilising the following dependencies:
 
 Milestones:
 - Model Port [done]
-- App Skeleton
+- App Skeleton [done]
 - Polished Basic/Intermediate Functionality
 - Advanced Features
 
 Templates of interest:
 - http://themicon.co/theme/angle/v3.2/backend-angular/#
+
+Important TODO list:
+- reduce chart plotting delay by using Worker thread to interpolate number of points
+- revisit popup windows name detection once modifying scenarios is working

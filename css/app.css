@@ -28,10 +28,18 @@
 }
 
 /**
- * Simulation progress bar
+ * Progress bar modal stuff
  */
-#simulation-progress {
-  display: none;
+#progress-modal {
+  top: 35%;
+  text-align: center;
+}
+
+/**
+ * Simulation progress
+ */
+#simulation-progress-bar {
+  width: 0%;
 }
 
 /**

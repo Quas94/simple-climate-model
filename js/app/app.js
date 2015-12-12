@@ -3,7 +3,6 @@
  *
  * Contains all relevant Angular factories and services.
  */
-
 var cmApp = angular.module('cmApp', [
 		'ngRoute',
 		'ngAnimate',
@@ -11,8 +10,19 @@ var cmApp = angular.module('cmApp', [
 		'ui.bootstrap'
 	]);
 
-cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
-	function($scope, $rootScope, $interval) {
+cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
+	function($scope, $rootScope, $timeout, $interval) {
+		// check for the following and show warning message if any are not supported:
+		// - web worker support
+		// - object.keys
+		if (typeof(Worker) === 'undefined' ||
+			new Object().hasOwnProperty('keys')) { // @TODO check if this is a valid method for checking for support
+
+			$('#warning-modal').modal('show');
+		}
+		// create web worker
+		var worker = new Worker('./js/app/simulate.js');
+
 		// fetch the default scenarios to begin with
 		$scope.scenarios = DEFAULT_SCENARIOS;
 		// fetch other relevant constants
@@ -29,7 +39,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 		// variable which marks whether or not charts are currently being displayed
 		$scope.chartsActive = false;
 		// the references to the currently displayed Chartist chart objects
-		var charts = null;
+		$scope.charts = null;
 
 		// setup the heading/dropdowns
 		$scope.secondaryHeading = $scope.secondaryChartActive.name;
@@ -49,7 +59,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 			// check if any existing popups have this title: if so, change focus to them and return early
 			for (var i = 0; i < popupList.length; i++) {
 				if (popupList[i].document.title === popupTitle) {
-					popupList[i].focus().
+					popupList[i].focus();
 					return;
 				}
 			}
@@ -108,11 +118,17 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 
 		// destroys all previous charts
 		$scope.destroyCharts = function() {
+			// set charts to inactive
+			$scope.chartsActive = false;
+
 			// detach all charts
-			if (charts != null) {
-				for (var i = 0; i < charts.length; i++) {
-					charts[i].detach();
+			if ($scope.charts != null) {
+				for (var i = 0; i < $scope.charts.length; i++) {
+					if ($scope.charts[i] !== '') { // placeholder added at the end to update binding
+						$scope.charts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
+					}
 				}
+				$scope.charts = null;
 			}
 			// empty the chart div elements and set all to invisible
 			for (var i = 0; i < $scope.mainCharts.length; i++) {
@@ -151,11 +167,55 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$interval',
 
 		// runs the currently active scenario
 		$scope.runScenario = function() {
-			charts = simulate($scope.activeScenario.id);
-			// make the appropriate main and secondary chart divs visible
-			// @TODO make callbacks before showing visible
-			$scope.setChartVisible($scope.mainChartActive, true);
-			$scope.setChartVisible($scope.secondaryChartActive, true);
+			// if it's the default scenario that is being run
+			$scope.chartsActive = true;
+
+			// activate the worker thread
+			worker.postMessage({
+				id: $scope.activeScenario.id,
+				consts: SIM_CONSTS, 
+				rcph: XLS_RCPH,
+				rcphr: XLS_RCPH_ROWS,
+				rcphc: XLS_RCPH_COLS,
+				tline: TAU_LINE,
+				tsi: XLS_TSI
+			});
+			// set to update page on recept of message from worker
+			worker.onmessage = function(e) {
+				if (e.data.type === 'update') {
+					// update message - update progress bar
+					var percent = e.data.percent;
+					document.getElementById('simulation-progress-bar').style.width = percent + '%';
+				} else if (e.data.type == 'finish') {
+					// close modal progress bar
+					$('#progress-modal').modal('hide');
+
+					$timeout(function() {
+						// fetch chart data and plot
+						var retYears = e.data.y;
+						var retData = e.data.charts;
+						// set charts to new array
+						$scope.charts = [];
+						for (var i = 0; i < retData.length; i++) {
+							// @TODO combined plotData and plotData2
+							var newChart;
+							if (retData[i].data.length == 2) {
+								newChart = plotData2(retData[i].id, retYears, retData[i].data[0], retData[i].data[1]);
+							} else {
+								newChart = plotData(retData[i].id, retYears, retData[i].data[0]);
+							}
+							$scope.charts.push(newChart);
+							// link plot data to the element for use by popup window setup later
+							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData };
+							// make the appropriate main and secondary chart divs visible
+							$scope.setChartVisible($scope.mainChartActive, true);
+							$scope.setChartVisible($scope.secondaryChartActive, true);
+						}
+					}, 0);
+				} else {
+					throw new Error('Invalid message type received from worker: ' + e.data.type);
+				}
+			};
 		};
 
 		$scope.isSidebarActive = function(active) {

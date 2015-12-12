@@ -1,87 +1,31 @@
 /**
- * Source that contains the main simulation function.
+ * Source that contains the main simulation function, to be used with a web worker.
  *
  * - investigate: aragonite_saturation not used in the plotting?
  * - implement a better version of randn
  */
 
-// returns a set of options
-var getChartOptions = function() {
-	// chart dimensions and other options
-	var options = {
-		width: 720,
-		height: 480,
-		chartPadding: {
-			right: 30 // so the text at the right hand side doesn't get cut off
-		},
-	};
-	return options;
+/**
+ * Variables in this scope which are set by onmessage() - see below near the bottom.
+ */
+var scenarioId;
+
+/**
+ * Sends an update function containing the progress percentage to update to
+ */
+var updateProgress = function(p) {
+	postMessage({
+		type: 'update',
+		percent: p
+	});
 };
-
-// @TODO make generic version of plotData function which takes in 'data' as an array of data arrays
-// plots the singular set of data given, onto the div with the given id
-var plotData = function(chartId, years, d) {
-	// get default options
-	var options = getChartOptions();
-
-	// plot single set of data
-	var data = {
-		labels: [],
-		series: [ [] ]
-	};
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		data.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
-			data.labels[i] = years[i];
-		}
-		data.series[0][i] = d[i];
-	}
-	// draw data
-	return new Chartist.Line('#' + chartId, data, options);
-};
-
-// plots the 2 sets of data that are given, onto the div with the given id
-// returns reference to the new Chartist chart object
-var plotData2 = function(chartId, years, data1, data2) {
-	// get default options
-	var options = getChartOptions();
-
-	// plot surface temperature
-	// create data object
-	var data = {
-		labels: [],
-		series: [ [], [] ] // internal arrays are surface-temp and ocean-temp
-	};
-
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		data.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
-			data.labels[i] = years[i];
-		}
-		// surface temperature
-		data.series[0][i] = data1[i];
-		// ocean temperature
-		data.series[1][i] = data2[i];
-	}
-	// draw temperatures
-	return new Chartist.Line('#' + chartId, data, options);
-}
 
 /**
  * Takes in the scenario ID, runs the model simulation and draws the resulting graphs.
  *
  * Returns references to the created Chartist charts.
  */
-var simulate = function(scenarioId) {
-
-	// show progress row
-	// @TODO fix async so this works properly
-	// document.getElementById('simulation-progress').style.display = 'block';
-
-	// revert constants back to their default values
-	forcingDefaults();
+var simulate = function() {
 
 	// ------------------------------------ BEGINNING OF MODEL ------------------------------------ \\
 
@@ -582,8 +526,38 @@ var simulate = function(scenarioId) {
 
 	// -------------------------------------- END OF MODEL -------------------------------------- \\
 
-	// bounds of x-axis plotting - not needed?
-	// var xl = [ years[0], years[years.length - 1] ];
+	// last bit of manipulation on co2 emissions
+	var co2e = [];
+	for (var i = 0; i < emissions.CO2.length; i++) {
+		co2e[i] = emissions.CO2[i] * F1;
+	}
+
+	// model simulation complete, post message back to draw the charts
+	var simulatedData = {
+		type: 'finish',
+		y: years,
+		charts: [
+			{
+				id: 'base-chart-temperatures',
+				data: [ Tsurf, To ]
+			},
+			{
+				id: 'chart-co2-emissions',
+				data: [ co2e ]
+			},
+			{
+				id: 'base-chart-co2-concentration',
+				data: [ C_CO2 ]
+			},
+		]
+	};
+
+	// @TODO: reduce number of data points in return data set to reduce plotting time
+
+	// return and post message
+	postMessage(simulatedData);
+
+	/*
 
 	// return array containing objects that have references to each of the charts that were drawn
 	var ret = [];
@@ -596,10 +570,6 @@ var simulate = function(scenarioId) {
 	// secondary charts
 	// CO2 emissions
 	// multiply by F1
-	var co2e = [];
-	for (var i = 0; i < emissions.CO2.length; i++) {
-		co2e[i] = emissions.CO2[i] * F1;
-	}
 	ret.push(plotData('chart-co2-emissions', years, co2e));
 	// link plot data to the element for use by popup window setup later
 	document.getElementById('chart-co2-emissions').plotInfo = { y: years, data: [ co2e ] };
@@ -608,5 +578,35 @@ var simulate = function(scenarioId) {
 	// link plot data to the element for use by popup window setup later
 	document.getElementById('base-chart-co2-concentration').plotInfo = { y: years, data: [ C_CO2 ] };
 
-	return ret;
-}
+	*/
+};
+
+onmessage = function(e) {
+	// activate upon message which contains simulation consts and scenario id
+	var data = e.data;
+	// set scenarioId
+	scenarioId = data.id;
+	// for all elements inside sc, set it to this.element
+	var keys = Object.keys(data.consts);
+	for (var i = 0; i < keys.length; i++) {
+		this[keys[i]] = data.consts[keys[i]];
+	}
+	// set data values
+	this.XLS_RCPH = data.rcph;
+	this.XLS_RCPH_ROWS = data.rcphr;
+	this.XLS_RCPH_COLS = data.rcphc;
+	this.TAU_LINE = data.tline;
+	this.XLS_TSI = data.tsi;
+
+	updateProgress(10);
+
+	// import functions.js
+	importScripts('functions.js');
+	
+	updateProgress(20);
+
+	// wait half a second before running
+	setTimeout(function() {
+		simulate();
+	}, 500);
+};
