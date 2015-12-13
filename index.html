@@ -201,6 +201,25 @@
 		</div>
 	</div>
 
+	<!-- Create scenario modal -->
+	<div id="create-scenario-modal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title" id="confirmation-title">Create Custom Scenario</h4>
+				</div>
+				<div class="modal-body">
+					<p id="confirmation-paragraph">Are you sure you wish to delete this custom scenario? All your work will be lost.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteScenario()">Delete Scenario</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Warning for browsers that don't support required functionality: Worker -->
 	<div id="warning-modal" class="modal fade" role="dialog">
 		<div class="modal-dialog">

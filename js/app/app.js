@@ -216,15 +216,28 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.standardActive = 'active';
 				$scope.advancedActive = '';
 				$scope.scenarios = DEFAULT_SCENARIOS;
+				// tentatively set scenario to the first one, but override this with the scenario that has the 'active' flag
+				// set to true, if any
 				$scope.activeScenario = $scope.scenarios[0];
+				for (var i = 0; i < $scope.scenarios.length; i++) {
+					if ($scope.scenarios[i].active) {
+						$scope.activeScenario = $scope.scenarios[i];
+					}
+				}
 			} else if (changeTo == 'advanced') {
 				$scope.standardActive = '';
 				$scope.advancedActive = 'active';
 				$scope.scenarios = customScenarios;
-				if ($scope.customScenarios != null && $scope.customScenarios.length > 0) {
-					$scope.activeScenario = $scope.customScenarios[0]; // set to first one
-				} else {
+				if ($scope.scenarios == null || $scope.scenarios.length == 0) {
 					$scope.activeScenario = null; // set to null
+				} else {
+					// tentatively set to first one, but override if any scenarios have 'active' flag set to true
+					$scope.activeScenario = $scope.scenarios[0];
+					for (var i = 0; i < $scope.scenarios.length; i++) {
+						if ($scope.scenarios[i].active) {
+							$scope.activeScenario = $scope.scenarios[i];
+						}
+					}
 				}
 			} else {
 				throw new Error('Invalid parameter changeTo in $scope.changeMode: ' + changeTo);
@@ -252,6 +265,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// change the active scenario (which could be null if app is in advanced mode)
 			if ($scope.activeScenario != null) {
 				$scope.activeScenario.active = false;
+				console.log('de-activated old activeScenario');
 			}
 			$scope.activeScenario = foundScenario;
 			$scope.activeScenario.active = true;
