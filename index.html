@@ -50,8 +50,8 @@
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Standard</a></li>
-					<li><a href="#">Advanced</a></li>
+					<li class="{{ standardActive }}" id="li-standard-mode"><a href="#" ng-click="changeMode('standard')">Standard</a></li>
+					<li class="{{ advancedActive }}"><a href="#" ng-click="changeMode('advanced')">Advanced</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="#">Report a bug</a></li>
@@ -66,7 +66,9 @@
 			<!-- Sidebar -->
 			<div class="col-md-2 col-lg-1 sidebar">
 				<ul class="nav nav-sidebar">
-					<li ng-repeat="scenario in scenarios" ng-class="isSidebarActive(scenario.active)">
+					<!-- Show 'create scenario' button only if mode is advanced -->
+					<li ng-if="advancedActive == 'active'"><a class="sidebar-li" href="#" ng-click="createScenario()"><span class="glyphicon glyphicon-plus"></span> Create Scenario</a></li>
+					<li ng-repeat="scenario in scenarios" ng-class="scenario.active ? 'active' : ''">
 						<a class="sidebar-li" href="#" ng-click="selectScenario(scenario.id)">{{ scenario.name }}</a>
 					</li>
 				</ul>
@@ -81,10 +83,11 @@
 						<div class="panel panel-success">
 							<div class="panel-heading">Actions</div>
 							<div class="panel-body">
-								<button class="btn btn-primary btn-sm btn-wide" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
+								<button class="btn btn-primary btn-sm btn-wide" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
 								<button class="btn btn-default btn-sm btn-wide" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
 								<button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button>
 								<button class="btn btn-default btn-sm btn-wide" ng-disabled="charts == null" ng-click="destroyCharts()">Clear This Page</button>
+								<button class="btn btn-danger btn-sm btn-wide" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
 							</div>
 						</div>
 					</div>
@@ -157,6 +160,9 @@
 					<h4 class="modal-title">Edit Global Variables</h4>
 				</div>
 				<div class="modal-body">
+					<div class="alert alert-warning">
+						Modification of global variables are <strong>not</strong> yet validated. If invalid values are saved, the simulation will crash. (Validation coming soon)
+					</div>
 					<div class="col-md-2" ng-repeat="col in globalVarCols">
 						<form class="form-horizontal">
 							<div ng-repeat="key in col">
@@ -171,6 +177,25 @@
 					<button type="button" class="btn btn-warning pull-left" id="edit-globals-restore-defaults" ng-click="restoreDefaultGlobals()" ng-disabled="true">Restore Defaults</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeGlobals(true)" id="edit-globals-save" ng-disabled="true">Save</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="closeGlobals(false)">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Confirmation modal -->
+	<div id="confirmation-modal" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title" id="confirmation-title">Delete Scenario: {{ activeScenario.name }}</h4>
+				</div>
+				<div class="modal-body">
+					<p id="confirmation-paragraph">Are you sure you wish to delete this custom scenario? All your work will be lost.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteScenario()">Delete Scenario</button>
 				</div>
 			</div>
 		</div>

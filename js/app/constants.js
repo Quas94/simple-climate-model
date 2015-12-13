@@ -6,23 +6,25 @@
 
 /**
  * Default scenarios
+ *
+ * Attribute 'isdefault' defines this scenario as a default scenario, that can't be deleted as opposed to user-created custom scenarios.
  */
 var DEFAULT_SCENARIOS = [
-	{ id: 1, name: 'RCP6' },
-	{ id: 2, name: 'RCP45' },
-	{ id: 3, name: 'RCP3' },
-	{ id: 4, name: 'RCP85' },
-	{ id: 7, name: 'CO2 Pulse' },
-	{ id: 8, name: 'CH4 Pulse' },
-	{ id: 9, name: 'Albedo Increase' },
-	{ id: 10, name: 'RCP85 + Geoengineering 1' },
-	{ id: 11, name: 'RCP85 + Geoengineering 2' },
-	{ id: 12, name: 'Arctic ice loss' },
-	{ id: 13, name: 'Forcing switched off 2020' },
-	{ id: 14, name: 'High aerosol from 2020' },
-	{ id: 15, name: 'Albedo increase from 2020' },
-	{ id: 16, name: 'Changes in TSI' },
-	{ id: 17, name: 'Volcanic Eruption' },
+	{ id: 1, name: 'RCP6', isdefault: true },
+	{ id: 2, name: 'RCP45', isdefault: true },
+	{ id: 3, name: 'RCP3', isdefault: true },
+	{ id: 4, name: 'RCP85', isdefault: true },
+	{ id: 7, name: 'CO2 Pulse', isdefault: true },
+	{ id: 8, name: 'CH4 Pulse', isdefault: true },
+	{ id: 9, name: 'Albedo Increase', isdefault: true },
+	{ id: 10, name: 'RCP85 + Geoengineering 1', isdefault: true },
+	{ id: 11, name: 'RCP85 + Geoengineering 2', isdefault: true },
+	{ id: 12, name: 'Arctic ice loss', isdefault: true },
+	{ id: 13, name: 'Forcing switched off 2020', isdefault: true },
+	{ id: 14, name: 'High aerosol from 2020', isdefault: true },
+	{ id: 15, name: 'Albedo increase from 2020', isdefault: true },
+	{ id: 16, name: 'Changes in TSI', isdefault: true },
+	{ id: 17, name: 'Volcanic Eruption', isdefault: true },
 ];
 
 /**

@@ -26,8 +26,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// create a copy of the default simulation constants to use as our 'global variables'
 		$scope.globalVariables = objcpy(DEFAULT_SIM_CONSTS);
 		// fetch the default scenarios to begin with
-		// @TODO make copy of default scenarios when creating custom scenarios is added
-		$scope.scenarios = DEFAULT_SCENARIOS;
+		$scope.standardActive = 'active'; // start with standard mode
+		$scope.advancedActive = '';
+		$scope.scenarios = DEFAULT_SCENARIOS; // the current scenarios list. is either DEFAULT_SCENARIOS (can't be changed) or customScenarios
+		var customScenarios = []; // list of custom scenarios
+		var nextCustomScenarioId = 100; // start custom scenario ids from 100 onwards
 		// fetch other relevant constants
 		$scope.mainCharts = MAIN_CHARTS;
 		$scope.secondaryCharts = SECONDARY_CHARTS;
@@ -199,6 +202,35 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 		};
 
+		// allows for switching between standard and advanced modes (advanced mode allows creation of custom scenarios)
+		$scope.changeMode = function(changeTo) {
+			if ($scope.standardActive == 'active' && changeTo == 'standard' ||
+				$scope.advancedActive == 'active' && changeTo == 'advanced') {
+				return; // trying to change to the same mode, don't do anything
+			}
+			// destroy charts before switching
+			$scope.destroyCharts();
+
+			// update the 'active' class in menu at top, and scenarios
+			if (changeTo == 'standard') {
+				$scope.standardActive = 'active';
+				$scope.advancedActive = '';
+				$scope.scenarios = DEFAULT_SCENARIOS;
+				$scope.activeScenario = $scope.scenarios[0];
+			} else if (changeTo == 'advanced') {
+				$scope.standardActive = '';
+				$scope.advancedActive = 'active';
+				$scope.scenarios = customScenarios;
+				if ($scope.customScenarios != null && $scope.customScenarios.length > 0) {
+					$scope.activeScenario = $scope.customScenarios[0]; // set to first one
+				} else {
+					$scope.activeScenario = null; // set to null
+				}
+			} else {
+				throw new Error('Invalid parameter changeTo in $scope.changeMode: ' + changeTo);
+			}
+		};
+
 		// select the given scenario (but doesn't run it)
 		$scope.selectScenario = function(id) {
 			// set charts to active upon first call
@@ -212,15 +244,17 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				}
 			}
 			// if scenario id was invalid, or same as the current active one, don't do anything and return early
-			if (foundScenario == null || id == $scope.activeScenario.id) {
+			if (foundScenario == null || ($scope.activeScenario != null && id == $scope.activeScenario.id)) {
 				return;
 			}
 			// destroy the current presentation of data
 			$scope.destroyCharts();
-			// change the active scenario
-			$scope.activeScenario.active = false; // old active scenario is no longer active
+			// change the active scenario (which could be null if app is in advanced mode)
+			if ($scope.activeScenario != null) {
+				$scope.activeScenario.active = false;
+			}
 			$scope.activeScenario = foundScenario;
-			foundScenario.active = true;
+			$scope.activeScenario.active = true;
 		};
 
 		// runs the currently active scenario
@@ -278,6 +312,42 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					throw new Error('Invalid message type received from worker: ' + e.data.type);
 				}
 			};
+		};
+
+		// creates a new scenario
+		$scope.createScenario = function() {
+			// temporary: just add a dummy scenario to the list
+			if ($scope.scenarios === customScenarios) { // check that we do have the custom scenarios active right now
+				$scope.scenarios.push({
+					id: nextCustomScenarioId,
+					name: 'Custom scenario #' + nextCustomScenarioId,
+					isdefault: false,
+				});
+				nextCustomScenarioId++;
+			}
+		};
+
+		// try to delete the current scenario
+		$scope.deleteScenario = function() {
+			if ($scope.activeScenario.id < 100) {
+				throw new Error('Trying to delete a scenario that is not custom, id = ' + $scope.activeScenario.id);
+			}
+			// delete scenario
+			var index = $scope.scenarios.indexOf($scope.activeScenario);
+			if (index < 0) {
+				throw new Error('Currently active custom scenario (id = ' + $scope.activeScenario.id + ') is not in $scope.scenarios?');
+			}
+			$scope.scenarios.splice(index, 1);
+			// pass active status to another custom scenario (if there are any left), and update $scope.activeScenario
+			if ($scope.scenarios.length > 0) { // if there are still scenarios remaining
+				if (index == $scope.scenarios.length) { // if it was the last item, we move index up by one. otherwise remains the same
+					index--;
+				}
+				$scope.activeScenario = $scope.scenarios[index];
+				$scope.activeScenario.active = true;
+			} else {
+				$scope.activeScenario = null; // set active scenario to null
+			}
 		};
 
 		$scope.isSidebarActive = function(active) {
