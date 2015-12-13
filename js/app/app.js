@@ -54,6 +54,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		popupList = [];
 		$scope.popupListLength = popupList.length;
 
+		// model linked to input for new scenario name
+		$scope.createScenarioName = '';
+
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
 		$scope.globalVarCols = [ [], [], [], [], [], [] ]; // 6 columns
@@ -222,6 +225,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				for (var i = 0; i < $scope.scenarios.length; i++) {
 					if ($scope.scenarios[i].active) {
 						$scope.activeScenario = $scope.scenarios[i];
+						break;
 					}
 				}
 			} else if (changeTo == 'advanced') {
@@ -236,6 +240,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					for (var i = 0; i < $scope.scenarios.length; i++) {
 						if ($scope.scenarios[i].active) {
 							$scope.activeScenario = $scope.scenarios[i];
+							break;
 						}
 					}
 				}
@@ -265,7 +270,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// change the active scenario (which could be null if app is in advanced mode)
 			if ($scope.activeScenario != null) {
 				$scope.activeScenario.active = false;
-				console.log('de-activated old activeScenario');
 			}
 			$scope.activeScenario = foundScenario;
 			$scope.activeScenario.active = true;
@@ -334,9 +338,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			if ($scope.scenarios === customScenarios) { // check that we do have the custom scenarios active right now
 				$scope.scenarios.push({
 					id: nextCustomScenarioId,
-					name: 'Custom scenario #' + nextCustomScenarioId,
+					name: $scope.createScenarioName,
 					isdefault: false,
 				});
+				// change to the newly created scenario
+				$scope.selectScenario(nextCustomScenarioId);
+				// increment next custom scenario id counter
 				nextCustomScenarioId++;
 			}
 		};
@@ -367,6 +374,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.isSidebarActive = function(active) {
 			return active ? 'active' : '';
 		};
+
+		$scope.clearScenarioName = function() {
+			$scope.createScenarioName = '';
+		}
 	}]);
 
 // page has fully loaded
