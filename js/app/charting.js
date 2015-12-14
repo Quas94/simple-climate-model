@@ -16,6 +16,7 @@ var getChartOptions = function() {
 };
 
 // @TODO make generic version of plotData function which takes in 'data' as an array of data arrays
+// @TODO make x-axis labels land on rounder, nicer numbers
 // plots the singular set of data given, onto the div with the given id
 var plotData = function(chartId, years, d) {
 	// get default options
@@ -29,7 +30,7 @@ var plotData = function(chartId, years, d) {
 	// fill labels and data
 	for (var i = 0; i < years.length; i++) {
 		data.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
+		if (i % 80 == 0) { // 10 labels on the y-axis, since simulate.reduce() functions reduce datasets to 800 elements
 			data.labels[i] = years[i];
 		}
 		data.series[0][i] = d[i];
@@ -54,7 +55,7 @@ var plotData2 = function(chartId, years, data1, data2) {
 	// fill labels and data
 	for (var i = 0; i < years.length; i++) {
 		data.labels[i] = '';
-		if (i % (12 * 50) == 0) { // only show year label every 10 years, otherwise horrible clutter
+		if (i % 80 == 0) { // only show year label every 10 years
 			data.labels[i] = years[i];
 		}
 		// surface temperature

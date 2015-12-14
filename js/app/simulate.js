@@ -25,6 +25,51 @@ var updateProgress = function() {
 };
 
 /**
+ * Reduces the number of points in a dataset by averaging. This greatly increases the responsiveness of the viewport thread (plotting over
+ * 5,000 points on a Chartist chart lags the framerate).
+*/
+var reducePoints = function(original) {
+	var goal = 800; // number of points in the result
+	var result = []; // the array that will be returned
+	var iterations = original.length / goal;
+	if (iterations < 2) throw new Error('iterations < 2 in simulate.reducePoints: ' + iterations);
+	var i = 0; // index in original dataset
+	var breakOuter = false;
+	while (i < original.length && !breakOuter) {
+		var total = 0;
+		var roundedI = Math.round(i);
+		var j;
+		for (j = 0; j < iterations; j++) { // average and merge the next 'iteration' number of points
+			if (roundedI + j >= original.length) {
+				breakOuter = true;
+				break;
+			}
+			total += original[roundedI + j];
+			// console.log('original[' + roundedI + ' + ' + j + '] = ' + original[roundedI + j] + ', total = ' + total);
+		}
+		// increment i by iterations to keep up
+		i += iterations;
+		// calculate average and plug into result
+		var average = total / j;
+		// console.log('average = ' + average);
+		result.push(average);
+	}
+	return result;
+};
+
+/**
+ * Special case for reducing years: needs rounding
+ */
+var reduceYearsPoints = function(years) {
+	var reduced = reducePoints(years);
+	var rounded = [];
+	for (var i = 0; i < reduced.length; i++) {
+		rounded[i] = Math.round(reduced[i]);
+	}
+	return rounded;
+};
+
+/**
  * Takes in the scenario ID, runs the model simulation and draws the resulting graphs.
  *
  * Returns references to the created Chartist charts.
@@ -546,6 +591,12 @@ var simulate = function() {
 		co2e[i] = emissions.CO2[i] * F1;
 	}
 
+	years = reduceYearsPoints(years);
+	Tsurf = reducePoints(Tsurf);
+	To = reducePoints(To);
+	co2e = reducePoints(co2e);
+	C_CO2 = reducePoints(C_CO2);
+
 	// model simulation complete, post message back to draw the charts
 	var simulatedData = {
 		type: 'finish',
@@ -565,8 +616,6 @@ var simulate = function() {
 			},
 		]
 	};
-
-	// @TODO: reduce number of data points in return data set to reduce plotting time
 
 	// return and post message
 	postMessage(simulatedData);
