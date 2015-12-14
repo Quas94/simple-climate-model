@@ -3,3 +3,7 @@ test.html
 
 # test folders
 test/
+
+# don't bother committing node static server stuff
+node_modules/
+server.js

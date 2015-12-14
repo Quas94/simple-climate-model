@@ -27,6 +27,10 @@
   margin-bottom: 1px;
 }
 
+.padding-20px {
+  padding-bottom: 20px;
+}
+
 /**
  * Modal stuff: progress modal, edit globals modal, etc
  */

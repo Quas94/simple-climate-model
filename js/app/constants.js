@@ -10,6 +10,7 @@
  * Attribute 'isdefault' defines this scenario as a default scenario, that can't be deleted as opposed to user-created custom scenarios.
  */
 var DEFAULT_SCENARIOS = [
+	// id = 0 signifies no scenario
 	{ id: 1, name: 'RCP6', isdefault: true },
 	{ id: 2, name: 'RCP45', isdefault: true },
 	{ id: 3, name: 'RCP3', isdefault: true },

@@ -28,6 +28,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// fetch the default scenarios to begin with
 		$scope.standardActive = 'active'; // start with standard mode
 		$scope.advancedActive = '';
+		// make sure select input for create scenario modal always has access to default scenario list, to base new scenarios off of
+		$scope.defaultScenarios = DEFAULT_SCENARIOS;
 		$scope.scenarios = DEFAULT_SCENARIOS; // the current scenarios list. is either DEFAULT_SCENARIOS (can't be changed) or customScenarios
 		var customScenarios = []; // list of custom scenarios
 		var nextCustomScenarioId = 100; // start custom scenario ids from 100 onwards
@@ -54,8 +56,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		popupList = [];
 		$scope.popupListLength = popupList.length;
 
-		// model linked to input for new scenario name
+		// model linked to input for new scenario name, and new scenario base
 		$scope.createScenarioName = '';
+		$scope.createScenarioBase = '0';
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -336,11 +339,14 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.createScenario = function() {
 			// temporary: just add a dummy scenario to the list
 			if ($scope.scenarios === customScenarios) { // check that we do have the custom scenarios active right now
+				// add to list of scenarios
 				$scope.scenarios.push({
 					id: nextCustomScenarioId,
 					name: $scope.createScenarioName,
 					isdefault: false,
 				});
+				// @TODO handle copying of base scenario
+				console.log('base scenario is ' + $scope.createScenarioBase);
 				// change to the newly created scenario
 				$scope.selectScenario(nextCustomScenarioId);
 				// increment next custom scenario id counter
@@ -375,8 +381,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			return active ? 'active' : '';
 		};
 
-		$scope.clearScenarioName = function() {
+		$scope.clearNewScenario = function() {
 			$scope.createScenarioName = '';
+			$scope.createScenarioBase = '0'; // default option
 		}
 	}]);
 
