@@ -55,6 +55,28 @@ var VISIBLE = 'visible';
 var HIDDEN = 'hidden';
 
 /**
+ * Default forcings settings
+ */
+var DEFAULT_FORCINGS = {
+	F1: 1, // CO2
+	F2: 1, // CH4
+	F3: 1, // SO2
+	F4: 1, // Volcanics
+	F5: 1, // Solar
+	F6: 0, // Internal variability
+};
+// strings to describe each forcing variable
+var FORCINGS_NAMES = [
+	'error: this should not be shown', // index 0
+	'CO2',
+	'CH4',
+	'SO2',
+	'Volcanics',
+	'Solar',
+	'Internal variability'
+];
+
+/**
  * Default simulation constants
  */
 var DEFAULT_SIM_CONSTS = {
@@ -62,12 +84,7 @@ var DEFAULT_SIM_CONSTS = {
 	DT: 1 / 12, // needs to be small otherwise ocean chanistry calculations become unstable
 
 	m: 8.7e-2,   // /yr  1/residence time of carbon in v	// switches for forcing
-	F1: 1, //CO2
-	F2: 1, //CH4
-	F3: 1, //SO2
-	F4: 1, //Volcanics
-	F5: 1, //Solar
-	F6: 0, //Internal variability
+	// forcing (F1 - F6) used to be here, now moved to reside in app.js's scope
 
 	//// Model ////////////////////////////////////////////////////////////////////////////////////////
 	// Temperature model from GEOFFROY et al.(2013), parameter values based on CMIP5 multi-model mean

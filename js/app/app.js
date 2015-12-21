@@ -69,6 +69,21 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.globalVarCols[col].push(globalKeys[i]); // push the key into the correct column
 		}
 
+		// forcing variables. separated from global variables
+		$scope.forcings = objcpy(DEFAULT_FORCINGS);
+		// forcing name descriptions
+		$scope.forcingsNames = FORCINGS_NAMES;
+
+		// gets forcing variable name (just appends 'F' to beginning)
+		$scope.getForcingVar = function(n) {
+			return 'F' + n;
+		};
+
+		// sets forcings to defaults
+		$scope.setForcingDefaults = function() {
+			$scope.forcings = objcpy(DEFAULT_FORCINGS);
+		};
+
 		// opens the edit globals modal. right now, only task is to set 'save' button to disabled
 		$scope.openEditGlobals = function() {
 			document.getElementById('edit-globals-save').disabled = true;
@@ -286,7 +301,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// activate the worker thread
 			worker.postMessage({
 				id: $scope.activeScenario.id,
-				consts: $scope.globalVariables, 
+				consts: $scope.globalVariables,
+				forcings: $scope.forcings,
 				rcph: XLS_RCPH,
 				rcphr: XLS_RCPH_ROWS,
 				rcphc: XLS_RCPH_COLS,
@@ -389,7 +405,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 // page has fully loaded
 angular.element(document).ready(function () {
-	console.log('page has been fully loaded!');
 });
 
 // on change of input fields in edit globals modal, enable save and restore buttons

@@ -91,13 +91,26 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-9 no-left-padding">
+					<div class="col-md-3 no-left-padding">
 						<div class="panel panel-warning">
+							<div class="panel-heading">Forcings
+								<span class="pull-right"><button class="btn btn-warning btn-xs btn-in-heading" ng-click="setForcingDefaults()">Set Defaults</button></span>
+							</div>
+							<div class="panel-body">
+								<div class="checkbox" ng-repeat="n in [ 1, 2, 3, 4, 5, 6 ]">
+									<label>
+										<input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="forcings[getForcingVar(n)]"> {{ forcingsNames[n] }}
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 no-left-padding">
+						<div class="panel panel-default">
 							<div class="panel-heading">Details</div>
 							<div class="panel-body">
 								<p>Scenario Name: {{ activeScenario.name }}</p>
-								<p>Description: some description of the scenario</p>
-								<p>Other info and details, etc...</p>
+								<p>Description: some description of the scenario...</p>
 							</div>
 						</div>
 					</div>
@@ -108,7 +121,7 @@
 						<div class="panel panel-danger">
 							<div class="panel-heading" id="main-heading">
 								<button class="btn btn-xs btn-danger">{{ mainChartActive.name }}</button>
-								<button class="btn btn-sm btn-danger pull-right" ng-disabled="!chartsActive" ng-click="popupChart(true)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="!chartsActive" ng-click="popupChart(true)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
 								<div class="ct-chart" ng-repeat="chart in mainCharts" id="{{ chart.id }}"></div>
@@ -124,7 +137,7 @@
 										<li ng-repeat="chart in secondaryCharts"><a href="#" ng-click="selectSecondaryChart(chart)">{{ chart.name }}</a></li>
 									</ul>
 								</span>
-								<button class="btn btn-sm btn-info pull-right" ng-disabled="!chartsActive" ng-click="popupChart(false)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-info btn-in-heading pull-right" ng-disabled="!chartsActive" ng-click="popupChart(false)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="secondary-panel">
 								<div class="ct-chart" ng-repeat="chart in secondaryCharts" id="{{ chart.id }}"></div>

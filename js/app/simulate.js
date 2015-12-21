@@ -629,6 +629,11 @@ onmessage = function(e) {
 	for (var i = 0; i < keys.length; i++) {
 		this[keys[i]] = data.consts[keys[i]];
 	}
+	// do the same as above for forcings
+	var keys = Object.keys(data.forcings);
+	for (var i = 0; i < keys.length; i++) {
+		this[keys[i]] = data.forcings[keys[i]];
+	}
 	// set data values
 	this.XLS_RCPH = data.rcph;
 	this.XLS_RCPH_ROWS = data.rcphr;

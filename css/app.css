@@ -31,6 +31,10 @@
   padding-bottom: 20px;
 }
 
+.btn-in-heading {
+  margin-top: -1px;
+}
+
 /**
  * Modal stuff: progress modal, edit globals modal, etc
  */
