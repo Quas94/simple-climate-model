@@ -30,19 +30,22 @@ var DEFAULT_SCENARIOS = [
 
 /**
  * Chart div ids
+ *
+ * Changing these also requires changing ids in simulate.js around line ~600 (variable 'simulatedData')
  */
+// main charts are input charts
 var MAIN_CHARTS = [
 	// ...
 
-	// Chartbase has to come last as it doesn't have absolute positioning
-	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures', lines: 2 }
+	{ id: 'base-chart-co2-emissions', name: 'CO2 Emissions', lines: 1 }
 ];
+// secondary charts are output charts
 var SECONDARY_CHARTS = [
-	{ id: 'chart-co2-emissions', name: 'CO2 Emissions', lines: 1 },
 	// ...
 
+	{ id: 'chart-co2-concentration', name: 'CO2 Concentration', lines: 1 },
 	// Chartbase has to come last as it doesn't have absolute positioning
-	{ id: 'base-chart-co2-concentration', name: 'CO2 Concentration', lines: 1 }
+	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures', lines: 2 }
 ];
 
 /**

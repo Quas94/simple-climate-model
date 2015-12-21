@@ -142,8 +142,8 @@ var simulate = function() {
 		}
 	}
 
-	// flag for whether or not albedo has already been initialised in switch handler below
-	// (only scenario 9 will set this flag)
+	// flag for whether or not albedo has already been initialised in switch handler
+	// if this flag is set, the default albedo setter at the bottom (just below the switch statement) won't be executed
 	var albSet = false;
 
 	switch (scenarioId) {
@@ -313,8 +313,6 @@ var simulate = function() {
 			emissions.CH4 = rcphi[57];
 			emissions.CO2 = rcphi[56];
 			emissions.SO2 = arrcpy(rcphi[63]); // modified below
-
-
 
 			var ind = arrfind(years, 2015);
 			var Ni = years.length - ind;
@@ -607,11 +605,11 @@ var simulate = function() {
 				data: [ Tsurf, To ]
 			},
 			{
-				id: 'chart-co2-emissions',
+				id: 'base-chart-co2-emissions',
 				data: [ co2e ]
 			},
 			{
-				id: 'base-chart-co2-concentration',
+				id: 'chart-co2-concentration',
 				data: [ C_CO2 ]
 			},
 		]
