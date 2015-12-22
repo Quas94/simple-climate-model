@@ -47,13 +47,14 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// variable which marks whether or not charts are currently being displayed
 		$scope.chartsActive = false;
 		// the references to the currently displayed Chartist chart objects
-		$scope.charts = null;
+		$scope.inputCharts = [];
+		$scope.outputCharts = [];
 
 		// setup the heading/dropdowns
 		$scope.outputHeading = $scope.outputChartActive.name;
 
 		// create list of popup chart windows that have been created
-		popupList = [];
+		var popupList = [];
 		$scope.popupListLength = popupList.length;
 
 		// model linked to input for new scenario name, and new scenario base
@@ -204,13 +205,21 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.chartsActive = false;
 
 			// detach all charts
-			if ($scope.charts != null) {
-				for (var i = 0; i < $scope.charts.length; i++) {
-					if ($scope.charts[i] !== '') { // placeholder added at the end to update binding
-						$scope.charts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
+			if ($scope.inputCharts != null) {
+				for (var i = 0; i < $scope.inputCharts.length; i++) {
+					if ($scope.inputCharts[i] !== '') { // placeholder added at the end to update binding
+						$scope.inputCharts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
 					}
 				}
-				$scope.charts = null;
+				$scope.inputCharts = [];
+			}
+			if ($scope.outputCharts != null) {
+				for (var i = 0; i < $scope.outputCharts.length; i++) {
+					if ($scope.outputCharts[i] !== '') { // placeholder added at the end to update binding
+						$scope.outputCharts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
+					}
+				}
+				$scope.outputCharts = [];
 			}
 			// empty the chart div elements and set all to invisible
 			for (var i = 0; i < $scope.inputChartInfos.length; i++) {
@@ -225,8 +234,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// allows for switching between standard and advanced modes (advanced mode allows creation of custom scenarios)
 		$scope.changeMode = function(changeTo) {
-			if ($scope.standardActive == 'active' && changeTo == 'standard' ||
-				$scope.advancedActive == 'active' && changeTo == 'advanced') {
+			if (($scope.standardActive == 'active' && changeTo == 'standard') ||
+				($scope.advancedActive == 'active' && changeTo == 'advanced')) {
 				return; // trying to change to the same mode, don't do anything
 			}
 			// destroy charts before switching
@@ -269,14 +278,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// select the given scenario (but doesn't run it)
 		$scope.selectScenario = function(id) {
-			// set charts to active upon first call
-			$scope.chartsActive = true;
-
 			// get the scenario with the given id
-			foundScenario = null;
+			var foundScenario = null;
 			for (var i = 0; i < $scope.scenarios.length; i++) {
 				if ($scope.scenarios[i].id == id) {
 					foundScenario = $scope.scenarios[i];
+					break;
 				}
 			}
 			// if scenario id was invalid, or same as the current active one, don't do anything and return early
@@ -285,13 +292,32 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 			// destroy the current presentation of data
 			$scope.destroyCharts();
-			// change the active scenario (which could be null if app is in advanced mode)
+			// change the active scenario (originally active one could be null, if app is in advanced mode)
 			if ($scope.activeScenario != null) {
 				$scope.activeScenario.active = false;
 			}
 			$scope.activeScenario = foundScenario;
 			$scope.activeScenario.active = true;
+
+			// draw the input charts immediately
+			var setup = simulationSetup($scope.activeScenario.id);
+			// @TODO: take forcing into account when drawing input charts
+			// draw input charts
+			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);
+			$scope.inputCharts.push(co2Chart);
+			// set input chart visible
+			$scope.setChartVisible($scope.inputChartActive, true);
 		};
+
+		// draws the input chart of the initial activeScenario upon page load (same code as lines above)
+		// needs to be in timeout to let the page load first
+		$timeout(function() {
+			var setup = simulationSetup($scope.activeScenario.id);
+			// @TODO: take forcing into account when drawing input charts
+			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);
+			$scope.inputCharts.push(co2Chart);
+			$scope.setChartVisible($scope.inputChartActive, true);
+		}, 0);
 
 		// runs the currently active scenario
 		$scope.runScenario = function() {
@@ -319,11 +345,13 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					$timeout(function() {
 						// close modal progress bar
 						$('#progress-modal').modal('hide');
+						// reset progress bar for next use
+						document.getElementById('simulation-progress-bar').style.width = '0%';
 						// fetch chart data and plot
 						var retYears = e.data.y;
 						var retData = e.data.charts;
-						// set charts to new array
-						$scope.charts = [];
+						// set output charts to new array
+						$scope.outputCharts = [];
 						for (var i = 0; i < retData.length; i++) {
 							// @TODO combined plotData and plotData2
 							var newChart;
@@ -335,15 +363,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							} else {
 								throw new Error('dataLen = ' + dataLen);
 							}
-							$scope.charts.push(newChart);
+							$scope.outputCharts.push(newChart);
 							// link plot data to the element for use by popup window setup later
 							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData[i].data };
-							// make the appropriate input and output chart divs visible
-							$scope.setChartVisible($scope.inputChartActive, true);
+							// make the output chart div visible
 							$scope.setChartVisible($scope.outputChartActive, true);
 						}
-						// reset progress bar for next use
-						document.getElementById('simulation-progress-bar').style.width = '0%';
 					}, 400);
 				} else {
 					throw new Error('Invalid message type received from worker: ' + e.data.type);

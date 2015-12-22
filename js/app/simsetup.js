@@ -13,6 +13,10 @@ var simulationSetup = function(scenarioId) {
 	// name of the scenario
 	var scenario;
 
+	// TEMPORARY
+	var DT = 1 / 12;
+	var alb0 = 0.31;
+
 	// emission values
 	var emissions = {
 		CH4: null,

@@ -205,6 +205,7 @@ var simulate = function() {
 	// -------------------------------------- END OF MODEL -------------------------------------- \\
 
 	// last bit of manipulation on co2 emissions
+	// @TODO update this bit when dynamic chart update on forcing checkbox input change is being done
 	var co2e = [];
 	for (var i = 0; i < emissions.CO2.length; i++) {
 		co2e[i] = emissions.CO2[i] * F1;
@@ -219,7 +220,7 @@ var simulate = function() {
 	C_CO2 = reducePoints(C_CO2);
 	*/
 
-	// model simulation complete, post message back to draw the charts
+	// model simulation complete, post message back to draw the output charts
 	var simulatedData = {
 		type: 'finish',
 		y: years,
@@ -227,10 +228,6 @@ var simulate = function() {
 			{
 				id: 'base-chart-temperatures',
 				data: [ Tsurf, To ]
-			},
-			{
-				id: 'base-chart-co2-emissions',
-				data: [ co2e ]
 			},
 			{
 				id: 'chart-co2-concentration',

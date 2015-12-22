@@ -78,7 +78,6 @@ var FORCINGS_NAMES = [
  * Default simulation constants
  */
 var DEFAULT_SIM_CONSTS = {
-	// time step (years)
 	DT: 1 / 12, // needs to be small otherwise ocean chanistry calculations become unstable
 
 	m: 8.7e-2,   // /yr  1/residence time of carbon in v	// switches for forcing
