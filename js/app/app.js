@@ -34,23 +34,23 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		var customScenarios = []; // list of custom scenarios
 		var nextCustomScenarioId = 100; // start custom scenario ids from 100 onwards
 		// fetch other relevant constants
-		$scope.mainCharts = MAIN_CHARTS;
-		$scope.secondaryCharts = SECONDARY_CHARTS;
+		$scope.inputChartInfos = INPUT_CHART_INFOS;
+		$scope.outputChartInfos = OUTPUT_CHART_INFOS;
 
 		// make the first scenario active
 		$scope.activeScenario = $scope.scenarios[0];
 		$scope.activeScenario.active = true;
 
 		// initial active charts are the last ones (ie. the base ones with relative positioning instead of absolute)
-		$scope.mainChartActive = MAIN_CHARTS[MAIN_CHARTS.length - 1];
-		$scope.secondaryChartActive = SECONDARY_CHARTS[SECONDARY_CHARTS.length - 1];
+		$scope.inputChartActive = INPUT_CHART_INFOS[INPUT_CHART_INFOS.length - 1];
+		$scope.outputChartActive = OUTPUT_CHART_INFOS[OUTPUT_CHART_INFOS.length - 1];
 		// variable which marks whether or not charts are currently being displayed
 		$scope.chartsActive = false;
 		// the references to the currently displayed Chartist chart objects
 		$scope.charts = null;
 
 		// setup the heading/dropdowns
-		$scope.secondaryHeading = $scope.secondaryChartActive.name;
+		$scope.outputHeading = $scope.outputChartActive.name;
 
 		// create list of popup chart windows that have been created
 		popupList = [];
@@ -131,10 +131,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		};
 
 		// opens a popup and passes in the chart to the new window
-		// parameter main specifies whether to popup the main chart (true) or the secondary chart (false)
-		$scope.popupChart = function(main) {
-			// chartInfo is main chart or secondary chart depending on main parameter
-			var chartInfo = main ? $scope.mainChartActive : $scope.secondaryChartActive;
+		// parameter 'input' specifies whether to popup the input chart (true) or the output chart (false)
+		$scope.popupChart = function(input) {
+			// chartInfo is input chart or output chart depending on 'input' parameter
+			var chartInfo = input ? $scope.inputChartActive : $scope.outputChartActive;
 			// work out chart popup window title
 			var popupTitle = $scope.activeScenario.name + ': ' + chartInfo.name;
 
@@ -189,12 +189,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			document.getElementById(chart.id).style.visibility = visibility ? VISIBLE : HIDDEN;
 		};
 
-		// changes currently active secondary chart to the given chart. updates visibility, etc
-		$scope.selectSecondaryChart = function(chart) {
+		// changes currently active output chart to the given chart. updates visibility, etc
+		$scope.selectOutputChart = function(chart) {
 			// set old chart to be invisible
-			$scope.setChartVisible($scope.secondaryChartActive, false);
-			// set new chart to be active secondary chart, and make it visible
-			$scope.secondaryChartActive = chart;
+			$scope.setChartVisible($scope.outputChartActive, false);
+			// set new chart to be active output chart, and make it visible
+			$scope.outputChartActive = chart;
 			$scope.setChartVisible(chart, true);
 		};
 
@@ -213,13 +213,13 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.charts = null;
 			}
 			// empty the chart div elements and set all to invisible
-			for (var i = 0; i < $scope.mainCharts.length; i++) {
-				$scope.setChartVisible($scope.mainCharts[i], false);
-				document.getElementById($scope.mainCharts[i].id).innerHTML = '';
+			for (var i = 0; i < $scope.inputChartInfos.length; i++) {
+				$scope.setChartVisible($scope.inputChartInfos[i], false);
+				document.getElementById($scope.inputChartInfos[i].id).innerHTML = '';
 			}
-			for (var i = 0; i < $scope.secondaryCharts.length; i++) {
-				$scope.setChartVisible($scope.secondaryCharts[i], false);
-				document.getElementById($scope.secondaryCharts[i].id).innerHTML = '';
+			for (var i = 0; i < $scope.outputChartInfos.length; i++) {
+				$scope.setChartVisible($scope.outputChartInfos[i], false);
+				document.getElementById($scope.outputChartInfos[i].id).innerHTML = '';
 			}
 		};
 
@@ -338,9 +338,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							$scope.charts.push(newChart);
 							// link plot data to the element for use by popup window setup later
 							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData[i].data };
-							// make the appropriate main and secondary chart divs visible
-							$scope.setChartVisible($scope.mainChartActive, true);
-							$scope.setChartVisible($scope.secondaryChartActive, true);
+							// make the appropriate input and output chart divs visible
+							$scope.setChartVisible($scope.inputChartActive, true);
+							$scope.setChartVisible($scope.outputChartActive, true);
 						}
 						// reset progress bar for next use
 						document.getElementById('simulation-progress-bar').style.width = '0%';

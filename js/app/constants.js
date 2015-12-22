@@ -33,14 +33,12 @@ var DEFAULT_SCENARIOS = [
  *
  * Changing these also requires changing ids in simulate.js around line ~600 (variable 'simulatedData')
  */
-// main charts are input charts
-var MAIN_CHARTS = [
+var INPUT_CHART_INFOS = [
 	// ...
 
 	{ id: 'base-chart-co2-emissions', name: 'CO2 Emissions', lines: 1 }
 ];
-// secondary charts are output charts
-var SECONDARY_CHARTS = [
+var OUTPUT_CHART_INFOS = [
 	// ...
 
 	{ id: 'chart-co2-concentration', name: 'CO2 Concentration', lines: 1 },
