@@ -199,7 +199,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.setChartVisible(chart, true);
 		};
 
-		// destroys all previous charts
+		// destroys both input and charts
 		$scope.destroyCharts = function() {
 			// set charts to inactive
 			$scope.chartsActive = false;
@@ -226,6 +226,26 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.setChartVisible($scope.inputChartInfos[i], false);
 				document.getElementById($scope.inputChartInfos[i].id).innerHTML = '';
 			}
+			for (var i = 0; i < $scope.outputChartInfos.length; i++) {
+				$scope.setChartVisible($scope.outputChartInfos[i], false);
+				document.getElementById($scope.outputChartInfos[i].id).innerHTML = '';
+			}
+		};
+
+		// destroys output charts only
+		$scope.destroyOutputCharts = function() {
+			// set charts to inactive
+			$scope.chartsActive = false;
+			// detach output charts
+			if ($scope.outputCharts != null) {
+				for (var i = 0; i < $scope.outputCharts.length; i++) {
+					if ($scope.outputCharts[i] !== '') { // placeholder added at the end to update binding
+						$scope.outputCharts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
+					}
+				}
+				$scope.outputCharts = [];
+			}
+			// empty output chart div elements and set to invisible
 			for (var i = 0; i < $scope.outputChartInfos.length; i++) {
 				$scope.setChartVisible($scope.outputChartInfos[i], false);
 				document.getElementById($scope.outputChartInfos[i].id).innerHTML = '';
@@ -304,6 +324,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// @TODO: take forcing into account when drawing input charts
 			// draw input charts
 			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);
+			// link plot data to the element for use by popup window setup later
+			document.getElementById($scope.inputChartActive.id).plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
 			$scope.inputCharts.push(co2Chart);
 			// set input chart visible
 			$scope.setChartVisible($scope.inputChartActive, true);
@@ -315,6 +337,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			var setup = simulationSetup($scope.activeScenario.id);
 			// @TODO: take forcing into account when drawing input charts
 			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);
+			document.getElementById($scope.inputChartActive.id).plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
 			$scope.inputCharts.push(co2Chart);
 			$scope.setChartVisible($scope.inputChartActive, true);
 		}, 0);

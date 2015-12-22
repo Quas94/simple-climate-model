@@ -67,7 +67,7 @@ div[id*='chart-'] {
   /** Chart positionings absolute except for base-chart */
   position: absolute;
   /** Make them invisible to start with */
-  /*visibility: hidden;*/
+  visibility: hidden;
 }
 div[id*='base-chart-'] {
   position: relative;
