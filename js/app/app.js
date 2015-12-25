@@ -199,39 +199,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.setChartVisible(chart, true);
 		};
 
-		// destroys both input and charts
-		$scope.destroyCharts = function() {
-			// set charts to inactive
-			$scope.chartsActive = false;
-
-			// detach all charts
-			if ($scope.inputCharts != null) {
-				for (var i = 0; i < $scope.inputCharts.length; i++) {
-					if ($scope.inputCharts[i] !== '') { // placeholder added at the end to update binding
-						$scope.inputCharts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
-					}
-				}
-				$scope.inputCharts = [];
-			}
-			if ($scope.outputCharts != null) {
-				for (var i = 0; i < $scope.outputCharts.length; i++) {
-					if ($scope.outputCharts[i] !== '') { // placeholder added at the end to update binding
-						$scope.outputCharts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
-					}
-				}
-				$scope.outputCharts = [];
-			}
-			// empty the chart div elements and set all to invisible
-			for (var i = 0; i < $scope.inputChartInfos.length; i++) {
-				$scope.setChartVisible($scope.inputChartInfos[i], false);
-				document.getElementById($scope.inputChartInfos[i].id).innerHTML = '';
-			}
-			for (var i = 0; i < $scope.outputChartInfos.length; i++) {
-				$scope.setChartVisible($scope.outputChartInfos[i], false);
-				document.getElementById($scope.outputChartInfos[i].id).innerHTML = '';
-			}
-		};
-
 		// destroys output charts only
 		$scope.destroyOutputCharts = function() {
 			// set charts to inactive
@@ -249,6 +216,27 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			for (var i = 0; i < $scope.outputChartInfos.length; i++) {
 				$scope.setChartVisible($scope.outputChartInfos[i], false);
 				document.getElementById($scope.outputChartInfos[i].id).innerHTML = '';
+			}
+		};
+
+		// destroys both input and charts
+		$scope.destroyCharts = function() {
+			// call the destroy output charts function, then manually destroy input charts
+			$scope.destroyOutputCharts();
+
+			// detach input charts
+			if ($scope.inputCharts != null) {
+				for (var i = 0; i < $scope.inputCharts.length; i++) {
+					if ($scope.inputCharts[i] !== '') { // placeholder added at the end to update binding
+						$scope.inputCharts[i].detach(); // ^ for more info, see $scope.runScenario->worker.onmessage
+					}
+				}
+				$scope.inputCharts = [];
+			}
+			// empty input chart div elements and set to invisible
+			for (var i = 0; i < $scope.inputChartInfos.length; i++) {
+				$scope.setChartVisible($scope.inputChartInfos[i], false);
+				document.getElementById($scope.inputChartInfos[i].id).innerHTML = '';
 			}
 		};
 
@@ -320,7 +308,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.activeScenario.active = true;
 
 			// draw the input charts immediately
-			var setup = simulationSetup($scope.activeScenario.id);
+			var setup = simulationSetupReduced($scope.activeScenario.id);
 			// @TODO: take forcing into account when drawing input charts
 			// draw input charts
 			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);

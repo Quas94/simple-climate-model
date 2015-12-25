@@ -25,51 +25,24 @@ var updateProgress = function() {
 };
 
 /**
- * Reduces the number of points in a dataset by averaging. This greatly increases the responsiveness of the viewport thread (plotting over
+ * Reduces the number of points in a dataset. This greatly increases the responsiveness of the viewport thread (plotting over
  * 5,000 points on a Chartist chart lags the framerate).
-*/
+ *
+ * Reduction is done by only preserving every x-th value, where x denotes the number of original values divided by GOAL_POINTS.
+ */
 var reducePoints = function(original) {
-	var goal = 800; // number of points in the result
+	var GOAL_POINTS = 3000; // number of points in the result
 	var result = []; // the array that will be returned
-	var iterations = original.length / goal;
-	// if (iterations < 2) throw new Error('iterations < 2 in simulate.reducePoints: ' + iterations);
-	if (iterations < 2) {
+	var x = original.length / GOAL_POINTS;
+	if (x < 2) {
 		// just return original, no reductions required
 		return original;
 	}
-	var i = 0; // index in original dataset
-	var breakOuter = false;
-	while (i < original.length && !breakOuter) {
-		var total = 0;
-		var roundedI = Math.round(i);
-		var j;
-		for (j = 0; j < iterations; j++) { // average and merge the next 'iteration' number of points
-			if (roundedI + j >= original.length) {
-				breakOuter = true;
-				break;
-			}
-			total += original[roundedI + j];
-		}
-		// increment i by iterations to keep up
-		i += iterations;
-		// calculate average and plug into result
-		var average = total / j;
-		// console.log('average = ' + average);
-		result.push(average);
+	for (var i = 0; i < GOAL_POINTS; i++) {
+		// set result[i] to the closest corresponding index in original
+		result[i] = original[Math.round(i * x)];
 	}
 	return result;
-};
-
-/**
- * Special case for reducing years: needs rounding
- */
-var reduceYearsPoints = function(years) {
-	var reduced = reducePoints(years);
-	var rounded = [];
-	for (var i = 0; i < reduced.length; i++) {
-		rounded[i] = Math.round(reduced[i]);
-	}
-	return rounded;
 };
 
 /**
@@ -79,6 +52,8 @@ var reduceYearsPoints = function(years) {
  * Returns references to the created Chartist charts via Worker postMessage.
  */
 var simulate = function() {
+	updateProgress();
+	
 	// Ocean (Glotter)
 	var Cat = [ 596 ];
 	var Cup = [ 713 ];
@@ -211,14 +186,11 @@ var simulate = function() {
 		co2e[i] = emissions.CO2[i] * F1;
 	}
 
-	/*
-	// TEMPORARILY DISABLED: causes bugs when running multiple scenarios back to back
-	years = reduceYearsPoints(years);
+	years = reducePoints(years);
 	Tsurf = reducePoints(Tsurf);
 	To = reducePoints(To);
-	co2e = co2e; // don't reduce input datasets
 	C_CO2 = reducePoints(C_CO2);
-	*/
+	// co2 irrelevant here, inputs are separate from the outputs
 
 	// model simulation complete, post message back to draw the output charts
 	var simulatedData = {

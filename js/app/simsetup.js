@@ -10,12 +10,14 @@
  * Returns an object with relevant input variables and datasets.
  */
 var simulationSetup = function(scenarioId) {
+	// DT and alb0 undefined upon page load, initialise to default values
+	if (typeof(DT) === 'undefined' && typeof(alb0) === 'undefined') {
+		DT = DEFAULT_SIM_CONSTS.DT;
+		alb0 = DEFAULT_SIM_CONSTS.alb0;
+	}
+
 	// name of the scenario
 	var scenario;
-
-	// TEMPORARY
-	var DT = 1 / 12;
-	var alb0 = 0.31;
 
 	// emission values
 	var emissions = {
@@ -228,7 +230,7 @@ var simulationSetup = function(scenarioId) {
 				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
 			}
 
-			// albedo - @TODO needs fixing, doesn't work quite right
+			// albedo
 			albSet = true; // mark the albedo as already set so the default initialisation chunk below won't overwrite
 			for (var i = 1; i <= numYears; i++) {
 				alb[i - 1] = alb0 + 0.1; // alb(1:length(years))=alb0+0.1;
@@ -286,7 +288,7 @@ var simulationSetup = function(scenarioId) {
 
 			var areaIce = 7e6;
 			var areaEarth = 4 * Math.PI * square(6400);
-			var arcticAlbedoChange = (0.9 - 0.1) / 2; // factor of 2 because it only has effect in the summer
+			var arcticAlbedoChange = (0.9 - 0.1) / 2; // factor of 2 because it only takes effect in the summer
 			var planetAlbedoChange = arcticAlbedoChange * areaIce / (areaIce + areaEarth);
 
 			// set albedo
@@ -412,3 +414,19 @@ var simulationSetup = function(scenarioId) {
 	};
 	return ret;
 }
+
+/**
+ * Used in place of a direct simulationSetup() call from within app.mainCtrl.$scope.selectScenario().
+ *
+ * Reduces years and emissions with the reducePoints() function.
+ */
+var simulationSetupReduced = function(scenarioId) {
+	var setup = simulationSetup(scenarioId);
+	// reducePoints() returns a new array, no need to worry about modifying original data
+	setup.emissions.CH4 = reducePoints(setup.emissions.CH4);
+	setup.emissions.CO2 = reducePoints(setup.emissions.CO2);
+	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
+	setup.emissions.volc = reducePoints(setup.emissions.volc);
+	setup.years = reducePoints(setup.years);
+	return setup;
+};
