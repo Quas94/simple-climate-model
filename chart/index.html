@@ -39,13 +39,7 @@
 
 		var id = 'popupChart';
 
-		if (data.data.length == 1) {
-			plotData(id, data.years, data.data[0]);
-		} else if (data.data.length == 2) {
-			plotData2(id, data.years, data.data[0], data.data[1]);
-		} else {
-			throw new Error('invalid data length for popup: ' + data.data.length);
-		}
+		plotData(id, data.years, data.data);
 
 	</script>
 </body>

@@ -9,60 +9,52 @@ var getChartOptions = function() {
 		width: 720,
 		height: 480,
 		chartPadding: {
-			right: 30 // so the text at the right hand side doesn't get cut off
+			right: 30 // so the labels on the far right don't get cut off
 		},
 	};
 	return options;
 };
 
-// @TODO make generic version of plotData function which takes in 'data' as an array of data arrays
-// @TODO make x-axis labels land on rounder, nicer numbers
-// plots the singular set of data given, onto the div with the given id
-var plotData = function(chartId, years, d) {
-	// get default options
-	var options = getChartOptions();
-
-	// plot single set of data
-	var data = {
-		labels: [],
-		series: [ [] ]
-	};
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		data.labels[i] = '';
-		if (i % 80 == 0) { // 10 labels on the y-axis, since simulate.reduce() functions reduce datasets to 800 elements
-			data.labels[i] = years[i];
+/**
+ * Plots the set of data on the page (onto the div element with the given id).
+ * Automatically detects the number of sets of data and deals with it accordingly.
+ */
+var plotData = function(chartId, years, data) {
+	// make sure that data series lengths are all equivalent, and same as years length
+	for (var i = 0; i < data.length; i++) {
+		if (data[i].length != years.length) {
+			throw new Error('data length = ' + data[i].length + ' (i = ' + i + '), years.length = ' + years.length);
 		}
-		data.series[0][i] = d[i];
 	}
-	// draw data
-	return new Chartist.Line('#' + chartId, data, options);
+
+	var options = getChartOptions();
+	var plot = {
+		labels: [],
+		series: []
+	};
+
+	for (var i = 0; i < data.length; i++) {
+		var s = [];
+		for (var j = 0; j < data[i].length; j++) {
+			s[j] = data[i][j];
+		}
+		plot.series.push(s);
+	}
+
+	// fill labels with years
+	var nextYear = 0;
+	var numLabels = 10; // number of labels we want to display along the x axis
+	var yearInc = years.length / numLabels;
+	for (var i = 0; i < years.length; i++) {
+		plot.labels[i] = '';
+		if (i == Math.round(nextYear)) {
+			nextYear += yearInc;
+			plot.labels[i] = Math.round(years[i]);
+		}
+	}
+	// add the last label (on top of numLabels) manually
+	plot.labels.push(Math.floor(nextYear));
+
+	// actually render
+	return new Chartist.Line('#' + chartId, plot, options);
 };
-
-// plots the 2 sets of data that are given, onto the div with the given id
-// returns reference to the new Chartist chart object
-var plotData2 = function(chartId, years, data1, data2) {
-	// get default options
-	var options = getChartOptions();
-
-	// plot surface temperature
-	// create data object
-	var data = {
-		labels: [],
-		series: [ [], [] ] // internal arrays are surface-temp and ocean-temp
-	};
-
-	// fill labels and data
-	for (var i = 0; i < years.length; i++) {
-		data.labels[i] = '';
-		if (i % 80 == 0) { // only show year label every 10 years
-			data.labels[i] = years[i];
-		}
-		// surface temperature
-		data.series[0][i] = data1[i];
-		// ocean temperature
-		data.series[1][i] = data2[i];
-	}
-	// draw temperatures
-	return new Chartist.Line('#' + chartId, data, options);
-}

@@ -311,7 +311,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			var setup = simulationSetupReduced($scope.activeScenario.id);
 			// @TODO: take forcing into account when drawing input charts
 			// draw input charts
-			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);
+			var co2Chart = plotData($scope.inputChartActive.id, setup.years, [ setup.emissions.CO2 ]);
 			// link plot data to the element for use by popup window setup later
 			document.getElementById($scope.inputChartActive.id).plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
 			$scope.inputCharts.push(co2Chart);
@@ -322,9 +322,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// draws the input chart of the initial activeScenario upon page load (same code as lines above)
 		// needs to be in timeout to let the page load first
 		$timeout(function() {
-			var setup = simulationSetup($scope.activeScenario.id);
+			var setup = simulationSetupReduced($scope.activeScenario.id);
 			// @TODO: take forcing into account when drawing input charts
-			var co2Chart = plotData($scope.inputChartActive.id, setup.years, setup.emissions.CO2);
+			var co2Chart = plotData($scope.inputChartActive.id, setup.years, [ setup.emissions.CO2 ]);
 			document.getElementById($scope.inputChartActive.id).plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
 			$scope.inputCharts.push(co2Chart);
 			$scope.setChartVisible($scope.inputChartActive, true);
@@ -364,16 +364,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						// set output charts to new array
 						$scope.outputCharts = [];
 						for (var i = 0; i < retData.length; i++) {
-							// @TODO combined plotData and plotData2
-							var newChart;
 							var dataLen = retData[i].data.length;
-							if (dataLen == 2) {
-								newChart = plotData2(retData[i].id, retYears, retData[i].data[0], retData[i].data[1]);
-							} else if (dataLen == 1) {
-								newChart = plotData(retData[i].id, retYears, retData[i].data[0]);
-							} else {
-								throw new Error('dataLen = ' + dataLen);
-							}
+							var newChart = plotData(retData[i].id, retYears, retData[i].data);
 							$scope.outputCharts.push(newChart);
 							// link plot data to the element for use by popup window setup later
 							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData[i].data };
