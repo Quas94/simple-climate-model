@@ -2,12 +2,30 @@
  * Source that contains a bunch of functions for charting data.
  */
 
- // returns a set of options
+// constants for bootstrap widths (xs, sm, md, lg) in pixels
+var BOOTSTRAP_MIN_WIDTH_MD = 992;
+
+// returns a set of options
 var getChartOptions = function() {
-	// chart dimensions and other options
+	// work out width and height of chart
+	var winWidth = window.innerWidth;
+	var winHeight = window.innerHeight;
+	var width;
+	if (winWidth >= BOOTSTRAP_MIN_WIDTH_MD) {
+		// we're on the larger setting
+		var sidebarWidth = winWidth / 12; // sidebar takes 1 column only
+		width = (winWidth - sidebarWidth) / 2 * 0.9; // ~10% of space reserved for labels, margins etc
+	} else {
+
+	}
+	// height is 67% of width (for now)
+	var height = Math.round(width / 3 * 2);
+
+	// construct options object
 	var options = {
-		width: 720,
-		height: 480,
+		width: width,
+		height: height,
+		showPoint: false,
 		chartPadding: {
 			right: 30 // so the labels on the far right don't get cut off
 		},

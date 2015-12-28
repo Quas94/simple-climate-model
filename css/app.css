@@ -76,24 +76,29 @@ div[id*='base-chart-'] {
 /**
  * Chartist graphs styles
  */
+.ct-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 .ct-series-a .ct-line {
 	stroke: red;
-	stroke-width: 2px;
+	stroke-width: 1px;
 }
 
 .ct-series-a .ct-point {
 	stroke: red;
-	stroke-width: 2px;
+	stroke-width: 1px;
 }
 
 .ct-series-b .ct-line {
 	stroke: blue;
-	stroke-width: 2px;
+	stroke-width: 1px;
 }
 
 .ct-series-b .ct-point {
 	stroke: blue;
-	stroke-width: 2px;
+	stroke-width: 1px;
 }
 
 /*
