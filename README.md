@@ -17,7 +17,7 @@ Important TODO list:
 - validation of global variables when user modifies them
 
 - flatline/grey out input charts if their corresponding forcing checkbox is unticked
-- chart axis labels, line labels
+- chart axis labels, legend
 - temperatures for some scenarios are bugged?
 - output charts don't have rightmost x-axis label
 - figure out + fix issue where charts are going vertical + overshooting sometimes -are they NaNs?

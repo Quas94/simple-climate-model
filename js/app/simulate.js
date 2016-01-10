@@ -207,6 +207,8 @@ var simulate = function() {
 	R_SO2 = multiplyAllBy(R_SO2, F3);
 	R_volc = multiplyAllBy(R_volc, F4);
 	R_sol = multiplyAllBy(R_sol, F5);
+	// divide sea level by 1,000
+	SL = multiplyAllBy(SL, 0.001);
 
 	years = reducePoints(years);
 	Tsurf = reducePoints(Tsurf);
@@ -230,6 +232,7 @@ var simulate = function() {
 	bulbs_in_sw = reducePoints(bulbs_in_sw);
 	bulbs_out_lw = reducePoints(bulbs_out_lw);
 	bulbs_out_sw = reducePoints(bulbs_out_sw);
+	SL = reducePoints(SL);
 
 	// bulbs net
 	var bulbs_net = [];
@@ -285,6 +288,10 @@ var simulate = function() {
 			{
 				id: 'chart-lw',
 				data: [ bulbs_in_lw, bulbs_in_sw, bulbs_out_lw, bulbs_out_sw, bulbs_net ]
+			},
+			{
+				id: 'chart-sea-level',
+				data: [ SL ]
 			}
 		]
 	};
