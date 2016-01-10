@@ -129,7 +129,12 @@
 					<div class="col-md-6">
 						<div class="panel panel-danger">
 							<div class="panel-heading" id="main-heading">
-								<button class="btn btn-xs btn-danger">{{ inputChartActive.name }}</button>
+								<span class="dropdown">
+									<button class="btn btn-xs btn-danger dropdown-toggle" type="button" data-toggle="dropdown">{{ inputChartActive.name }} <span class="caret"></span></button>
+									<ul class="dropdown-menu">
+										<li ng-repeat="chart in inputChartInfos"><a href="#" ng-click="selectInputChart(chart)">{{ chart.name }}</a></li>
+									</ul>
+								</span>
 								<button class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="inputCharts.length == 0" ng-click="popupChart(true)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">

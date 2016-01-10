@@ -201,6 +201,15 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.setChartVisible(chart, true);
 		};
 
+		// changes currently active input chart to the given chart. updates visibility, etc
+		$scope.selectInputChart = function(chart) {
+			// set old chart to be invisible
+			$scope.setChartVisible($scope.inputChartActive, false);
+			// set new chart to be active input chart and make it visible
+			$scope.inputChartActive = chart;
+			$scope.setChartVisible(chart, true);
+		};
+
 		// destroys output charts only
 		$scope.destroyOutputCharts = function() {
 			// set charts to inactive
@@ -312,10 +321,17 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// draw the input charts immediately
 			var setup = simulationSetupReduced($scope.activeScenario.id);
 			// @TODO: take forcing into account when drawing input charts
-			// draw input charts
-			var co2Chart = plotData($scope.inputChartActive.id, setup.years, [ setup.emissions.CO2 ]);
-			// link plot data to the element for use by popup window setup later
-			document.getElementById($scope.inputChartActive.id).plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
+
+			// draw input charts and link plot data to the element for use by popup window setup later
+			var co2Chart = plotData('base-chart-co2-emissions', setup.years, [ setup.emissions.CO2 ]);
+			document.getElementById('base-chart-co2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
+			var ch4Chart = plotData('chart-ch4-emissions', setup.years, [ setup.emissions.CH4 ]);
+			document.getElementById('chart-ch4-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CH4 ] };
+			var ch4Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ]);
+			document.getElementById('chart-so2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.SO2 ] };
+			var ch4Chart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ]);
+			document.getElementById('chart-volc-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.volc ] };
+
 			$scope.inputCharts.push(co2Chart);
 			// set input chart visible
 			$scope.setChartVisible($scope.inputChartActive, true);
@@ -326,8 +342,16 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$timeout(function() {
 			var setup = simulationSetupReduced($scope.activeScenario.id);
 			// @TODO: take forcing into account when drawing input charts
-			var co2Chart = plotData($scope.inputChartActive.id, setup.years, [ setup.emissions.CO2 ]);
-			document.getElementById($scope.inputChartActive.id).plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
+			// THE FOLLOWING INPUT CHART DRAWING LINES MUST BE EXACTLY IDENTICAL TO THE ONES JUST ABOVE
+			// draw input charts and link plot data to the element for use by popup window setup later
+			var co2Chart = plotData('base-chart-co2-emissions', setup.years, [ setup.emissions.CO2 ]);
+			document.getElementById('base-chart-co2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
+			var ch4Chart = plotData('chart-ch4-emissions', setup.years, [ setup.emissions.CH4 ]);
+			document.getElementById('chart-ch4-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CH4 ] };
+			var ch4Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ]);
+			document.getElementById('chart-so2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.SO2 ] };
+			var ch4Chart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ]);
+			document.getElementById('chart-volc-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.volc ] };
 			$scope.inputCharts.push(co2Chart);
 			$scope.setChartVisible($scope.inputChartActive, true);
 		}, 0);
