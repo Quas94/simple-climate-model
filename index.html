@@ -32,6 +32,8 @@
 	<script type="text/javascript" src="./js/app/data.js"></script>
 	<!-- Function imports and definitions -->
 	<script type="text/javascript" src="./js/app/functions.js"></script>
+	<!-- Default scenario description text bodies -->
+	<script type="text/javascript" src="./js/app/descriptions.js"></script>
 	<!-- Constants file -->
 	<script type="text/javascript" src="./js/app/constants.js"></script>
 	<!-- Simulation main function -->
@@ -115,8 +117,9 @@
 							<div class="panel-heading">Details</div>
 							<div class="panel-body">
 								<p>Scenario Name: {{ activeScenario.name }}</p>
-								<p>Description: some description of the scenario...</p>
+								<p>Description: {{ getBriefDescription(activeScenario.id) }}</p>
 								<p ng-repeat="chart in inputChartInfos">Test: {{ chart.name }}</p>
+								<button class="btn" data-toggle="modal" data-target="#scenario-detail-modal">More...</button>
 							</div>
 						</div>
 					</div>
@@ -249,6 +252,24 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createScenario()" ng-disabled="createScenarioName == ''">Create</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Detailed scenario information modal -->
+	<div id="scenario-detail-modal" class="modal fade" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title">Scenario {{ activeScenario.name }} - Detailed Information</h4>
+				</div>
+				<div class="modal-body">
+					<p>Description: {{ descriptions[activeScenario.id] }}</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>

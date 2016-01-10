@@ -36,6 +36,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// fetch other relevant constants
 		$scope.inputChartInfos = INPUT_CHART_INFOS;
 		$scope.outputChartInfos = OUTPUT_CHART_INFOS;
+		// fetch default scenario descriptions
+		$scope.descriptions = DESCRIPTIONS;
 
 		// make the first scenario active
 		$scope.activeScenario = $scope.scenarios[0];
@@ -420,6 +422,16 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.activeScenario = null; // set active scenario to null
 			}
 		};
+
+		// fetches the brief description of the scenario with the given id
+		// the 'brief description' is just the first 100 characters of the description
+		$scope.getBriefDescription = function(sid) {
+			var text = $scope.descriptions[sid] || 'information not set';
+			if (text.length > DESCRIPTION_CUTOFF_LIMIT) {
+				return text.substring(0, DESCRIPTION_CUTOFF_LIMIT) + '...';
+			}
+			return text;
+		}
 
 		$scope.isSidebarActive = function(active) {
 			return active ? 'active' : '';
