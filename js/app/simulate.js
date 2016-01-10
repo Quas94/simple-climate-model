@@ -179,11 +179,34 @@ var simulate = function() {
 
 	// -------------------------------------- END OF MODEL -------------------------------------- \\
 
-	// last bit of manipulation on co2 emissions
-	// @TODO update this bit when dynamic chart update on forcing checkbox input change is being done
+	// incrementing C_CH4 by C_CH4pi
+	for (var i = 0; i < C_CH4.length; i++) {
+		C_CH4[i] += C_CH4pi;
+	}
+	// multiplication by forcings
+	// @TODO forcings check
+	// co2 emissions
 	var co2e = [];
 	for (var i = 0; i < emissions.CO2.length; i++) {
 		co2e[i] = emissions.CO2[i] * F1;
+	}
+	// greenhouse gases CO2/CH4
+	for (var i = 0; i < R_CO2.length; i++) {
+		R_CO2[i] *= F1;
+	}
+	for (var i = 0; i < R_CH4.length; i++) {
+		R_CH4[i] *= F2;
+	}
+	// aerosols SO2/volc
+	for (var i = 0; i < R_SO2.length; i++) {
+		R_SO2[i] *= F3;
+	}
+	for (var i = 0; i < R_volc.length; i++) {
+		R_volc[i] *= F4;
+	}
+	// solar
+	for (var i = 0; i < R_sol.length; i++) {
+		R_sol[i] *= F5;
 	}
 
 	years = reducePoints(years);
@@ -204,6 +227,26 @@ var simulate = function() {
 			{
 				id: 'chart-co2-concentration',
 				data: [ C_CO2 ]
+			},
+			{
+				id: 'chart-ch4-concentration',
+				data: [ C_CH4 ]
+			},
+			{
+				id: 'chart-gg',
+				data: [ R_CO2, R_CH4 ]
+			},
+			{
+				id: 'chart-aerosols',
+				data: [ R_SO2, R_volc ]
+			},
+			{
+				id: 'chart-solar',
+				data: [ R_sol ]
+			},
+			{
+				id: 'chart-albedo',
+				data: [ alb ]
 			},
 		]
 	};

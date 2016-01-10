@@ -34,8 +34,6 @@ var DEFAULT_SCENARIOS = [
  * Changing these also requires changing ids in simulate.js around line ~600 (variable 'simulatedData')
  */
 var INPUT_CHART_INFOS = [
-	// ...
-
 	{ id: 'chart-ch4-emissions', name: 'CH4 Emissions', lines: 1 },
 	{ id: 'chart-so2-emissions', name: 'SO2 Emissions', lines: 1 },
 	{ id: 'chart-volc-emissions', name: 'Volcanic Emissions', lines: 1 },
@@ -43,8 +41,11 @@ var INPUT_CHART_INFOS = [
 	{ id: 'base-chart-co2-emissions', name: 'CO2 Emissions', lines: 1 },
 ];
 var OUTPUT_CHART_INFOS = [
-	// ...
-
+	{ id: 'chart-gg', name: 'Greenhouse Gases', lines: 2 },
+	{ id: 'chart-aerosols', name: 'Aerosols', lines: 2 },
+	{ id: 'chart-solar', name: 'Solar', lines: 1 },
+	{ id: 'chart-albedo', name: 'Albedo', lines: 1 },
+	{ id: 'chart-ch4-concentration', name: 'CH4 Concentration', lines: 1 },
 	{ id: 'chart-co2-concentration', name: 'CO2 Concentration', lines: 1 },
 	// Chartbase has to come last as it doesn't have absolute positioning
 	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures', lines: 2 }

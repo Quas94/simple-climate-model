@@ -71,7 +71,7 @@ var plotData = function(chartId, years, data) {
 		}
 	}
 	// add the last label (on top of numLabels) manually
-	plot.labels.push(Math.floor(nextYear));
+	plot.labels.push(years[Math.floor(nextYear)]);
 
 	// actually render
 	return new Chartist.Line('#' + chartId, plot, options);
