@@ -35,6 +35,14 @@
   margin-top: -1px;
 }
 
+.textarea-no-resize {
+  resize: none;
+}
+
+.span-error {
+  color: red;
+}
+
 /**
  * Modal stuff: progress modal, edit globals modal, etc
  */

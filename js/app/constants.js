@@ -29,6 +29,11 @@ var DEFAULT_SCENARIOS = [
 ];
 
 /**
+ * The id number at which custom scenarios begin.
+ */
+var CUSTOM_SCENARIO_ID_START = 100;
+
+/**
  * Chart div ids
  *
  * Changing these also requires changing ids in simulate.js around line ~600 (variable 'simulatedData')

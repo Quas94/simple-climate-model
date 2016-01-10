@@ -32,7 +32,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.defaultScenarios = DEFAULT_SCENARIOS;
 		$scope.scenarios = DEFAULT_SCENARIOS; // the current scenarios list. is either DEFAULT_SCENARIOS (can't be changed) or customScenarios
 		var customScenarios = []; // list of custom scenarios
-		var nextCustomScenarioId = 100; // start custom scenario ids from 100 onwards
+		var nextCustomScenarioId = CUSTOM_SCENARIO_ID_START; // start custom scenario ids from 100 onwards
 		// fetch other relevant constants
 		$scope.inputChartInfos = INPUT_CHART_INFOS;
 		$scope.outputChartInfos = OUTPUT_CHART_INFOS;
@@ -59,9 +59,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		var popupList = [];
 		$scope.popupListLength = popupList.length;
 
-		// model linked to input for new scenario name, and new scenario base
+		// model linked to input for new scenario name, base and description
 		$scope.createScenarioName = '';
 		$scope.createScenarioBase = '0';
+		$scope.createScenarioDesc = '';
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -342,6 +343,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.activeScenario = foundScenario;
 			$scope.activeScenario.active = true;
 
+			// @TODO handle custom charts properly
+			if ($scope.activeScenario.id >= CUSTOM_SCENARIO_ID_START) {
+				return;
+			}
+
 			$scope.showInputCharts();
 		};
 
@@ -398,22 +404,45 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			};
 		};
 
+		// checks if the currently entered name in the new scenario form has already been taken
+		$scope.scenarioNameTaken = function() {
+			var nameTaken = false;
+			for (var i = 0; i < $scope.defaultScenarios.length; i++) {
+				if ($scope.defaultScenarios[i].name.toLowerCase() === $scope.createScenarioName.toLowerCase()) {
+					nameTaken = true;
+					break;
+				}
+			}
+			if (!nameTaken) {
+				for (var i = 0; i < $scope.scenarios.length; i++) {
+					if ($scope.scenarios[i].name.toLowerCase() === $scope.createScenarioName.toLowerCase()) {
+						nameTaken = true;
+						break;
+					}
+				}
+			}
+			return nameTaken;
+		}
+
 		// creates a new scenario
 		$scope.createScenario = function() {
-			// temporary: just add a dummy scenario to the list
 			if ($scope.scenarios === customScenarios) { // check that we do have the custom scenarios active right now
-				// add to list of scenarios
-				$scope.scenarios.push({
-					id: nextCustomScenarioId,
-					name: $scope.createScenarioName,
-					isdefault: false,
-				});
-				// @TODO handle copying of base scenario
-				console.log('base scenario is ' + $scope.createScenarioBase);
-				// change to the newly created scenario
-				$scope.selectScenario(nextCustomScenarioId);
-				// increment next custom scenario id counter
-				nextCustomScenarioId++;
+				$timeout(function() {
+					// add to list of scenarios
+					$scope.scenarios.push({
+						id: nextCustomScenarioId,
+						name: $scope.createScenarioName,
+						isdefault: false,
+					});
+					// add description to descriptions array
+					$scope.descriptions[nextCustomScenarioId] = $scope.createScenarioDesc;
+					// @TODO handle copying of base scenario
+					// console.log('base scenario is ' + $scope.createScenarioBase);
+					// change to the newly created scenario
+					$scope.selectScenario(nextCustomScenarioId);
+					// increment next custom scenario id counter
+					nextCustomScenarioId++;
+				}, 0); // use timeout to let modal close first
 			}
 		};
 
@@ -443,7 +472,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// fetches the brief description of the scenario with the given id
 		// the 'brief description' is just the first 100 characters of the description
 		$scope.getBriefDescription = function(sid) {
-			var text = $scope.descriptions[sid] || 'information not set';
+			var text = $scope.descriptions[sid] || '< BLANK >';
 			if (text.length > DESCRIPTION_CUTOFF_LIMIT) {
 				return text.substring(0, DESCRIPTION_CUTOFF_LIMIT) + '...';
 			}
@@ -457,6 +486,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.clearNewScenario = function() {
 			$scope.createScenarioName = '';
 			$scope.createScenarioBase = '0'; // default option
+			$scope.createScenarioDesc = '';
 		}
 	}]);
 

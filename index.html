@@ -239,7 +239,7 @@
 					<div class="col-xs-10 col-xs-offset-1">
 						<form class="form-horizontal">
 							<div class="form-group">
-								<label class="control-label">Scenario Name</label>
+								<label class="control-label">Scenario Name <span class="span-error" ng-if="scenarioNameTaken()">(name already in use)</span></label>
 								<input type="text" class="form-control input-md" ng-model="createScenarioName">
 							</div>
 							<div class="form-group">
@@ -249,13 +249,17 @@
 									<option ng-repeat="scenario in defaultScenarios" ng-value="scenario.id">{{ scenario.name }}</option>
 								</select>
 							</div>
+							<div class="form-group">
+								<label for="new-scenario-desc">Description</label>
+								<textarea class="form-control" rows="5" class="textarea-no-resize" id="new-scenario-desc" ng-model="createScenarioDesc"></textarea>
+							</div>
 						</form>
 					</div>
 				</div>
 				<div class="clearfix padding-20px"></div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createScenario()" ng-disabled="createScenarioName == ''">Create</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createScenario()" ng-disabled="createScenarioName == '' || scenarioNameTaken()">Create</button>
 				</div>
 			</div>
 		</div>
