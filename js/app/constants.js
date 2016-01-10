@@ -45,6 +45,10 @@ var OUTPUT_CHART_INFOS = [
 	{ id: 'chart-aerosols', name: 'Aerosols', lines: 2 },
 	{ id: 'chart-solar', name: 'Solar', lines: 1 },
 	{ id: 'chart-albedo', name: 'Albedo', lines: 1 },
+	{ id: 'chart-at-up-lo', name: 'AT, UP & LO Inventories', lines: 3 },
+	{ id: 'chart-veg-soil-npp', name: 'Veg, Soil & NPP Inventories', lines: 3 },
+	{ id: 'chart-ph', name: 'pH', lines: 1 },
+	{ id: 'chart-lw', name: '60W Light Bulbs', lines: 4 },
 	{ id: 'chart-ch4-concentration', name: 'CH4 Concentration', lines: 1 },
 	{ id: 'chart-co2-concentration', name: 'CO2 Concentration', lines: 1 },
 	// Chartbase has to come last as it doesn't have absolute positioning

@@ -17,8 +17,10 @@ Important TODO list:
 - validation of global variables when user modifies them
 
 - flatline/grey out input charts if their corresponding forcing checkbox is unticked
-- chart axis labels
-- figure out + fix issue where charts are going vertical + overshooting sometimes
+- chart axis labels, line labels
+- temperatures for some scenarios are bugged?
+- output charts don't have rightmost x-axis label
+- figure out + fix issue where charts are going vertical + overshooting sometimes -are they NaNs?
 - resizing issues to do with page layout and graph display (including popups)
 - remainder of input/output charts
 - copying data across to custom scenarios (deep copy!)

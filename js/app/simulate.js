@@ -179,10 +179,21 @@ var simulate = function() {
 
 	// -------------------------------------- END OF MODEL -------------------------------------- \\
 
+	// manipulation of data at end, just before plotting
 	// incrementing C_CH4 by C_CH4pi
 	for (var i = 0; i < C_CH4.length; i++) {
 		C_CH4[i] += C_CH4pi;
 	}
+
+	// AT, UP and LO inventories
+	Cat = subtractByFirstIndex(Cat);
+	Cup = subtractByFirstIndex(Cup);
+	Clo = subtractByFirstIndex(Clo);
+	// veg, soil and npp inventories
+	N = subtractByFirstIndex(N);
+	P = subtractByFirstIndex(P);
+	So = subtractByFirstIndex(So);
+
 	// multiplication by forcings
 	// @TODO forcings check
 	// co2 emissions
@@ -191,29 +202,40 @@ var simulate = function() {
 		co2e[i] = emissions.CO2[i] * F1;
 	}
 	// greenhouse gases CO2/CH4
-	for (var i = 0; i < R_CO2.length; i++) {
-		R_CO2[i] *= F1;
-	}
-	for (var i = 0; i < R_CH4.length; i++) {
-		R_CH4[i] *= F2;
-	}
-	// aerosols SO2/volc
-	for (var i = 0; i < R_SO2.length; i++) {
-		R_SO2[i] *= F3;
-	}
-	for (var i = 0; i < R_volc.length; i++) {
-		R_volc[i] *= F4;
-	}
-	// solar
-	for (var i = 0; i < R_sol.length; i++) {
-		R_sol[i] *= F5;
-	}
+	R_CO2 = multiplyAllBy(R_CO2, F1);
+	R_CH4 = multiplyAllBy(R_CH4, F2);
+	R_SO2 = multiplyAllBy(R_SO2, F3);
+	R_volc = multiplyAllBy(R_volc, F4);
+	R_sol = multiplyAllBy(R_sol, F5);
 
 	years = reducePoints(years);
 	Tsurf = reducePoints(Tsurf);
 	To = reducePoints(To);
 	C_CO2 = reducePoints(C_CO2);
-	// co2 irrelevant here, inputs are separate from the outputs
+	C_CH4 = reducePoints(C_CH4);
+	R_CO2 = reducePoints(R_CO2);
+	R_CH4 = reducePoints(R_CH4);
+	R_SO2 = reducePoints(R_SO2);
+	R_volc = reducePoints(R_volc);
+	R_sol = reducePoints(R_sol);
+	alb = reducePoints(alb);
+	Cat = reducePoints(Cat);
+	Cup = reducePoints(Cup);
+	Clo = reducePoints(Clo);
+	N = reducePoints(N);
+	P = reducePoints(P);
+	So = reducePoints(So);
+	pH = reducePoints(pH);
+	bulbs_in_lw = reducePoints(bulbs_in_lw);
+	bulbs_in_sw = reducePoints(bulbs_in_sw);
+	bulbs_out_lw = reducePoints(bulbs_out_lw);
+	bulbs_out_sw = reducePoints(bulbs_out_sw);
+
+	// bulbs net
+	var bulbs_net = [];
+	for (var i = 0; i < bulbs_in_lw.length; i++) {
+		bulbs_net[i] = bulbs_in_lw[i] + bulbs_in_sw[i] - bulbs_out_lw[i] - bulbs_out_sw[i];
+	}
 
 	// model simulation complete, post message back to draw the output charts
 	var simulatedData = {
@@ -248,6 +270,22 @@ var simulate = function() {
 				id: 'chart-albedo',
 				data: [ alb ]
 			},
+			{
+				id: 'chart-at-up-lo',
+				data: [ Cat, Cup, Clo ]
+			},
+			{
+				id: 'chart-veg-soil-npp',
+				data: [ N, P, So ]
+			},
+			{
+				id: 'chart-ph',
+				data: [ pH ]
+			},
+			{
+				id: 'chart-lw',
+				data: [ bulbs_in_lw, bulbs_in_sw, bulbs_out_lw, bulbs_out_sw, bulbs_net ]
+			}
 		]
 	};
 

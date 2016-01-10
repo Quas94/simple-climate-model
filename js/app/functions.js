@@ -163,3 +163,21 @@ var arrfind = function(haystack, needle) {
 var objcpy = function(original) {
     return JSON.parse(JSON.stringify(original));
 };
+
+// subjects all numbers in the array by the first index
+// for use before plotting (in simulate.js) for Cat, Cup, Clo, etc...
+var subtractByFirstIndex = function(array) {
+    var first = array[0];
+    for (var i = 0; i < array.length; i++) {
+        array[i] -= first;
+    }
+    return array;
+};
+
+// multiplies all elements in the given array by the given value
+var multiplyAllBy = function(array, by) {
+    for (var i = 0; i < array.length; i++) {
+        array[i] *= by;
+    }
+    return array;
+}

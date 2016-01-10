@@ -92,13 +92,33 @@ div[id*='base-chart-'] {
 }
 
 .ct-series-b .ct-line {
-	stroke: blue;
-	stroke-width: 1px;
+  stroke: blue;
+  stroke-width: 1px;
 }
 
 .ct-series-b .ct-point {
-	stroke: blue;
-	stroke-width: 1px;
+  stroke: blue;
+  stroke-width: 1px;
+}
+
+.ct-series-c .ct-line {
+  stroke: green;
+  stroke-width: 1px;
+}
+
+.ct-series-c .ct-point {
+  stroke: green;
+  stroke-width: 1px;
+}
+
+.ct-series-d .ct-line {
+  stroke: orange;
+  stroke-width: 1px;
+}
+
+.ct-series-d .ct-point {
+  stroke: orange;
+  stroke-width: 1px;
 }
 
 /*
