@@ -180,4 +180,4 @@ var multiplyAllBy = function(array, by) {
         array[i] *= by;
     }
     return array;
-}
+};

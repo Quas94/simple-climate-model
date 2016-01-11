@@ -15,7 +15,7 @@ Important TODO list:
 - revisit method of fetching default scenarios when custom scenarios are possible: make sure defaults aren't modified
 - validation of global variables when user modifies them
 - outputting results in savable data format
-- temperatures for some scenarios are bugged?
+- temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged
 
 - copying data across to custom scenarios (deep copy!)
 - modifying custom scenarios

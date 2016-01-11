@@ -303,35 +303,50 @@ var simulate = function() {
 onmessage = function(e) {
 	// activate upon message which contains simulation consts and scenario id
 	var data = e.data;
+	// scenario id at which custom scenarios begin
+	var customScenarioStart = data.customScenarioStart;
 	// set scenarioId
 	scenarioId = data.id;
-	// for all elements inside sc, set it to this.element
+
+	var setup;
+	// set progress percentage to zero
+	progressPercentage = 0;
+
+	// for constants, set to this.element
 	var keys = Object.keys(data.consts);
 	for (var i = 0; i < keys.length; i++) {
 		this[keys[i]] = data.consts[keys[i]];
 	}
-	// do the same as above for forcings
+	// set all forcings to 'this'
 	var keys = Object.keys(data.forcings);
 	for (var i = 0; i < keys.length; i++) {
 		this[keys[i]] = data.forcings[keys[i]];
 	}
-	// set data values
-	this.XLS_RCPH = data.rcph;
-	this.XLS_RCPH_ROWS = data.rcphr;
-	this.XLS_RCPH_COLS = data.rcphc;
-	this.TAU_LINE = data.tline;
-	this.XLS_TSI = data.tsi;
-	// set progress percentage to zero
-	progressPercentage = 0;
 
 	// import functions.js
 	importScripts('functions.js');
+	
+	// if default scenario
+	if (scenarioId < customScenarioStart) {
+		// set data values
+		this.XLS_RCPH = data.rcph;
+		this.XLS_RCPH_ROWS = data.rcphr;
+		this.XLS_RCPH_COLS = data.rcphc;
+		this.TAU_LINE = data.tline;
+		this.XLS_TSI = data.tsi;
 
-	// import simsetup.js
-	importScripts('simsetup.js');
+		// import simsetup.js
+		importScripts('simsetup.js');
 
-	var setup = simulationSetup(scenarioId);
-	this.scenario = setup.scenario;
+		setup = simulationSetup(scenarioId);
+	} else {
+		// custom scenario - directly copy from data
+		setup = data.customData;
+		// if (setup === undefined) setup = 'undeinfed';
+		// postMessage({ type: 'error', error: setup });
+	}
+	
+	// this.scenario = setup.scenario;
 	this.emissions = setup.emissions;
 	this.TSI = setup.TSI;
 	this.mTSI = setup.mTSI;

@@ -15,6 +15,8 @@ var simulationSetup = function(scenarioId) {
 		DT = DEFAULT_SIM_CONSTS.DT;
 		alb0 = DEFAULT_SIM_CONSTS.alb0;
 	}
+	// make sure scenarioId is of type Number
+	scenarioId = Number(scenarioId);
 
 	// name of the scenario
 	var scenario;
@@ -65,7 +67,7 @@ var simulationSetup = function(scenarioId) {
 
 		// Volcanic stuff precalculated by Matlab and plugged into TAU_LINE constant (defined in data.js)
 		// may need to be altered in the future depending on specifics of custom data input
-		emissions.volc = TAU_LINE;
+		emissions.volc = arrcpy(TAU_LINE);
 
 		// SOLAR
 		// load 'TSI_WLS_ann_1610_2008.xls'
@@ -88,9 +90,9 @@ var simulationSetup = function(scenarioId) {
 		// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'
 		case 1:
 			scenario = 'RCP6';
-			emissions.CH4 = rcphi[48];
-			emissions.CO2 = rcphi[47];
-			emissions.SO2 = rcphi[60];
+			emissions.CH4 = arrcpy(rcphi[48]);
+			emissions.CO2 = arrcpy(rcphi[47]);
+			emissions.SO2 = arrcpy(rcphi[60]);
 			// set all elements in TSI equal to the first one
 			for (var i = 1; i < TSI.length; i++) {
 				TSI[i] = TSI[0];
@@ -98,21 +100,21 @@ var simulationSetup = function(scenarioId) {
 			break;
 		case 2:
 			scenario = 'RCP45';
-			emissions.CH4 = rcphi[51];
-			emissions.CO2 = rcphi[50];
-			emissions.SO2 = rcphi[61];
+			emissions.CH4 = arrcpy(rcphi[51]);
+			emissions.CO2 = arrcpy(rcphi[50]);
+			emissions.SO2 = arrcpy(rcphi[61]);
 			break;
 		case 3:
 			scenario = 'RCP3';
-			emissions.CH4 = rcphi[54];
-			emissions.CO2 = rcphi[53];
-			emissions.SO2 = rcphi[62];
+			emissions.CH4 = arrcpy(rcphi[54]);
+			emissions.CO2 = arrcpy(rcphi[53]);
+			emissions.SO2 = arrcpy(rcphi[62]);
 			break;
 		case 4:
 			scenario = 'RCP85';
-			emissions.CH4 = rcphi[57];
-			emissions.CO2 = rcphi[56];
-			emissions.SO2 = rcphi[63];
+			emissions.CH4 = arrcpy(rcphi[57]);
+			emissions.CO2 = arrcpy(rcphi[56]);
+			emissions.SO2 = arrcpy(rcphi[63]);
 			break;
 		case 5:
 			// create synthetic time series
@@ -142,7 +144,7 @@ var simulationSetup = function(scenarioId) {
 				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
 			}
 
-			emissions.CH4 = ts; // @TODO check with alex about the *0 in these 4 lines from matlab code
+			emissions.CH4 = ts;
 			emissions.CO2 = arrcpy(ts); // call arrcpy for deep copy because this will be modified
 			emissions.SO2 = ts;
 			emissions.volc = ts;
@@ -254,8 +256,8 @@ var simulationSetup = function(scenarioId) {
 		case 11:
 			scenario = 'RCP85 + Geoengineering (i)';
 
-			emissions.CH4 = rcphi[57];
-			emissions.CO2 = rcphi[56];
+			emissions.CH4 = arrcpy(rcphi[57]);
+			emissions.CO2 = arrcpy(rcphi[56]);
 			emissions.SO2 = arrcpy(rcphi[63]); // modified below
 
 			var ind = arrfind(years, 2015);
@@ -282,9 +284,9 @@ var simulationSetup = function(scenarioId) {
 		case 12:
 			scenario = 'Arctic Ice Loss';
 
-			emissions.CH4 = rcphi[57];
-			emissions.CO2 = rcphi[56];
-			emissions.SO2 = rcphi[63];
+			emissions.CH4 = arrcpy(rcphi[57]);
+			emissions.CO2 = arrcpy(rcphi[56]);
+			emissions.SO2 = arrcpy(rcphi[63]);
 
 			var areaIce = 7e6;
 			var areaEarth = 4 * Math.PI * square(6400);
@@ -324,8 +326,8 @@ var simulationSetup = function(scenarioId) {
 
 		case 14:
 			scenario = 'High Aerosol Emissions from 2020';
-			emissions.CH4 = rcphi[57];
-			emissions.CO2 = rcphi[56];
+			emissions.CH4 = arrcpy(rcphi[57]);
+			emissions.CO2 = arrcpy(rcphi[56]);
 			emissions.SO2 = arrcpy(rcphi[63]); // so2 will be modified below
 
 			var ind = arrfind(years, 2020);
@@ -337,9 +339,9 @@ var simulationSetup = function(scenarioId) {
 
 		case 15:
 			scenario = 'Albedo increased from 0.3 to 0.32 at 2020';
-			emissions.CH4 = rcphi[57];
-			emissions.CO2 = rcphi[56];
-			emissions.SO2 = rcphi[63];
+			emissions.CH4 = arrcpy(rcphi[57]);
+			emissions.CO2 = arrcpy(rcphi[56]);
+			emissions.SO2 = arrcpy(rcphi[63]);
 
 			var ind = arrfind(years, 2020);
 			// set albedo increase
@@ -392,11 +394,16 @@ var simulationSetup = function(scenarioId) {
 			break;
 
 		default:
+			// handle custom scenario
+
+			// custom scenario: albedo always set inside here
+			albSet = true;
+
 			throw new Error('Unsupported scenario ID: ' + scenarioId);
 	}
 
 	// initialise albedo array - do after switch scenarios because some of them modify the years array greatly
-	if (!albSet) { // scenario 9 will have set this flag to true
+	if (!albSet) { // some of the default scenarios + all custom scenarios will have set this flag to true
 		for (var i = 0; i < years.length; i++) {
 			alb[i] = alb0;
 		}

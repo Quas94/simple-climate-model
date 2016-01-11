@@ -33,6 +33,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.scenarios = DEFAULT_SCENARIOS; // the current scenarios list. is either DEFAULT_SCENARIOS (can't be changed) or customScenarios
 		var customScenarios = []; // list of custom scenarios
 		var nextCustomScenarioId = CUSTOM_SCENARIO_ID_START; // start custom scenario ids from 100 onwards
+		var customScenarioData = []; // stores objects containing data for custom scenarios
 		// fetch other relevant constants
 		$scope.inputChartInfos = INPUT_CHART_INFOS;
 		$scope.outputChartInfos = OUTPUT_CHART_INFOS;
@@ -360,8 +361,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// if it's the default scenario that is being run
 			$scope.chartsActive = true;
 
-			// activate the worker thread
-			worker.postMessage({
+			var workerMessageObject = {
+				// id at which custom scenarios begin
+				customScenarioStart: CUSTOM_SCENARIO_ID_START,
+
+				// scenario specific data
 				id: $scope.activeScenario.id,
 				consts: $scope.globalVariables,
 				forcings: $scope.forcings,
@@ -370,14 +374,21 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				rcphc: XLS_RCPH_COLS,
 				tline: TAU_LINE,
 				tsi: XLS_TSI
-			});
+			};
+			if ($scope.activeScenario.id >= CUSTOM_SCENARIO_ID_START) {
+				// if custom scenario, set custom data
+				workerMessageObject.customData = customScenarioData[$scope.activeScenario.id];
+			}
+			// actually pass through the message
+			worker.postMessage(workerMessageObject);
+
 			// set to update page on recept of message from worker
 			worker.onmessage = function(e) {
 				if (e.data.type === 'update') {
 					// update message - update progress bar
 					var percent = e.data.percent;
 					document.getElementById('simulation-progress-bar').style.width = percent + '%';
-				} else if (e.data.type == 'finish') {
+				} else if (e.data.type === 'finish') {
 					$timeout(function() {
 						// close modal progress bar
 						$('#progress-modal').modal('hide');
@@ -398,6 +409,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							$scope.setChartVisible($scope.outputChartActive, true);
 						}
 					}, 400);
+				} else if (e.data.type === 'error') {
+					console.log('Web-worker indicating error...');
+					throw new Error(e.data.error);
 				} else {
 					throw new Error('Invalid message type received from worker: ' + e.data.type);
 				}
@@ -436,8 +450,14 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					});
 					// add description to descriptions array
 					$scope.descriptions[nextCustomScenarioId] = $scope.createScenarioDesc;
-					// @TODO handle copying of base scenario
-					// console.log('base scenario is ' + $scope.createScenarioBase);
+
+					// copy over data from the chosen base scenario
+					// $scope.createScenarioBase models the base scenario id
+					var baseId = $scope.createScenarioBase;
+					// copy the emissions over
+					// (simulationSetup returns a copy of all the referenced data)
+					customScenarioData[nextCustomScenarioId] = simulationSetup(baseId);
+
 					// change to the newly created scenario
 					$scope.selectScenario(nextCustomScenarioId);
 					// increment next custom scenario id counter
