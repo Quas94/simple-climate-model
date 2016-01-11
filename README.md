@@ -18,6 +18,7 @@ Important TODO list:
 - temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged
 
 - copying data across to custom scenarios (deep copy!)
+- create blank canvases for custom scenarios with no base
 - modifying custom scenarios
 
 Minor TODO list:

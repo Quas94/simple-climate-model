@@ -253,9 +253,14 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 		};
 
+		// draw sthe input charts
 		$scope.showInputCharts = function() {
-			// draw the input charts immediately
-			var setup = simulationSetupReduced($scope.activeScenario.id);
+			var setup;
+			if ($scope.activeScenario.id >= CUSTOM_SCENARIO_ID_START) {
+				setup = customScenarioData[$scope.activeScenario.id];
+			} else {
+				setup = simulationSetupReduced($scope.activeScenario.id);
+			}
 			// @TODO: take forcing into account when drawing input charts
 
 			// draw input charts and link plot data to the element for use by popup window setup later
@@ -343,11 +348,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 			$scope.activeScenario = foundScenario;
 			$scope.activeScenario.active = true;
-
-			// @TODO handle custom charts properly
-			if ($scope.activeScenario.id >= CUSTOM_SCENARIO_ID_START) {
-				return;
-			}
 
 			$scope.showInputCharts();
 		};
@@ -454,9 +454,14 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					// copy over data from the chosen base scenario
 					// $scope.createScenarioBase models the base scenario id
 					var baseId = $scope.createScenarioBase;
-					// copy the emissions over
-					// (simulationSetup returns a copy of all the referenced data)
-					customScenarioData[nextCustomScenarioId] = simulationSetup(baseId);
+					if (baseId != 0) { // if we are basing it off a defualt scenario
+						// copy the emissions and other setup data over
+						// (simulationSetup returns a copy of all the referenced data)
+						customScenarioData[nextCustomScenarioId] = simulationSetup(baseId);
+					} else {
+						// @TODO create a blank canvas for the new scenario
+						console.log('Created custom scenario that isn\'t based on an existing default scenario.');
+					}
 
 					// change to the newly created scenario
 					$scope.selectScenario(nextCustomScenarioId);

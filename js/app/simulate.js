@@ -325,7 +325,7 @@ onmessage = function(e) {
 
 	// import functions.js
 	importScripts('functions.js');
-	
+
 	// if default scenario
 	if (scenarioId < customScenarioStart) {
 		// set data values
@@ -342,7 +342,7 @@ onmessage = function(e) {
 	} else {
 		// custom scenario - directly copy from data
 		setup = data.customData;
-		// if (setup === undefined) setup = 'undeinfed';
+		// if (setup === undefined) setup = 'undefined';
 		// postMessage({ type: 'error', error: setup });
 	}
 	
