@@ -65,6 +65,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.createScenarioBase = '0';
 		$scope.createScenarioDesc = '';
 
+		// status of the 'save' button in the edit custom scenario inputs modal
+		$scope.editInputsSaveDisabled = true;
+
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
 		$scope.globalVarCols = [ [], [], [], [], [], [] ]; // 6 columns
@@ -175,11 +178,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					}
 				}
 			}, 200);
-		};
-
-		// activates the modal to edit the given input charts
-		$scope.editChart = function() {
-
 		};
 
 		// close all popups created by the popupChart() function
@@ -497,6 +495,19 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			} else {
 				$scope.activeScenario = null; // set active scenario to null
 			}
+		};
+
+		// called when the custom input edits modal is opened
+		$scope.openCustomInputEdits = function() {
+			// draw the chart
+			var editData = customScenarioData[$scope.activeScenario.id];
+			var editDataInput = [ editData.emissions[$scope.inputChartActive.varname] ];
+			plotData('edit-custom-inputs-chart', editData.years, editDataInput);
+		};
+
+		// saves the changes made in the edit custom inputs modal
+		$scope.saveCustomInputEdits = function() {
+
 		};
 
 		// fetches the brief description of the scenario with the given id

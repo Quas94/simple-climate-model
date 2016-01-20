@@ -16,7 +16,7 @@ var getChartOptions = function() {
 		var sidebarWidth = winWidth / 12; // sidebar takes 1 column only
 		width = (winWidth - sidebarWidth) / 2 * 0.9; // ~10% of space reserved for labels, margins etc
 	} else {
-
+		// @TODO smaller settings
 	}
 	// height is 67% of width (for now)
 	var height = Math.round(width / 3 * 2);

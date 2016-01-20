@@ -61,6 +61,16 @@
     }
 }
 
+#edit-custom-inputs-modal {
+  top: 5%;
+}
+
+@media screen and (min-width: 768px) {
+    .edit-custom-inputs-modal-dialog {
+        width: 60%;
+    }
+}
+
 /**
  * Simulation progress
  */
