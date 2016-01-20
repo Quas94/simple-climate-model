@@ -134,7 +134,10 @@
 										<li ng-repeat="chart in inputChartInfos"><a href="#" ng-click="selectInputChart(chart)">{{ chart.name }}</a></li>
 									</ul>
 								</span>
+								<!-- Open in new window button -->
 								<button class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="inputCharts.length == 0" ng-click="popupChart(true)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
+								<!-- Open editing modal button -->
+								<button ng-if="true" class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" title="Edit input values {{ standardActive == 'active' ? '(enabled for custom scenarios only)' : '' }}"><i class="glyphicon glyphicon-pencil"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
 								<div class="ct-chart" ng-repeat="chart in inputChartInfos" id="{{ chart.id }}"></div>
@@ -278,6 +281,24 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal in which editing custom scenario input data is done -->
+	<div id="edit-custom-inputs-modal" class="modal fade" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title">Edit {{ activeScenario.name }}: {{ inputChartActive.name }}</h4>
+				</div>
+				<div class="modal-body">
+					<p>Editing</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
 				</div>
 			</div>
 		</div>

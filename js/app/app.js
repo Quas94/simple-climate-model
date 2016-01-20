@@ -177,6 +177,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}, 200);
 		};
 
+		// activates the modal to edit the given input charts
+		$scope.editChart = function() {
+
+		};
+
 		// close all popups created by the popupChart() function
 		$scope.closeAllPopups = function() {
 			for (var i = 0; i < popupList.length; i++) {
