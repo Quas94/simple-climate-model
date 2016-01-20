@@ -15,9 +15,9 @@ Important TODO list:
 - revisit method of fetching default scenarios when custom scenarios are possible: make sure defaults aren't modified
 - validation of global variables when user modifies them
 - outputting results in savable data format
-- temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged
+- temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged. something to do with
+  the 'albedo increase' scenario?
 
-- copying data across to custom scenarios (deep copy!)
 - create blank canvases for custom scenarios with no base
 - modifying custom scenarios
 

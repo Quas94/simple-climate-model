@@ -253,11 +253,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 		};
 
-		// draw sthe input charts
+		// draws the input charts
 		$scope.showInputCharts = function() {
 			var setup;
 			if ($scope.activeScenario.id >= CUSTOM_SCENARIO_ID_START) {
-				setup = customScenarioData[$scope.activeScenario.id];
+				setup = simulationSetupReduced2(customScenarioData[$scope.activeScenario.id]);
 			} else {
 				setup = simulationSetupReduced($scope.activeScenario.id);
 			}

@@ -152,8 +152,7 @@ var simulate = function() {
 
 		// solar
 		R_sol[y] = ((TSI[y] - mTSI) / 4) * (1 - alb[y]) - TSI[y] / 4 * (alb[y] - alb0);
-		if (isNaN(R_sol[y])) throw new Error('y = ' + y + ', TSI[y] = ' + TSI[y] + ', alb[y] = ' + alb[y] + ', alb0 = ' + alb0);
-
+		
 		// temperature model
 		var RF_GG = F1 * R_CO2[y - 1] + F2 * R_CH4[y - 1];
 		RF_[y] = RF_GG + F3 * R_SO2[y - 1] + F4 * R_volc[y - 1] + F5 * R_sol[y];

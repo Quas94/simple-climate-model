@@ -250,6 +250,7 @@ var simulationSetup = function(scenarioId) {
 			for (var i = (1 / DT * 1001); i <= numYears; i++) {
 				alb[i - 1] = alb0;
 			}
+
 			break;
 
 		case 10:
@@ -394,11 +395,6 @@ var simulationSetup = function(scenarioId) {
 			break;
 
 		default:
-			// handle custom scenario
-
-			// custom scenario: albedo always set inside here
-			albSet = true;
-
 			throw new Error('Unsupported scenario ID: ' + scenarioId);
 	}
 
@@ -430,6 +426,18 @@ var simulationSetup = function(scenarioId) {
 var simulationSetupReduced = function(scenarioId) {
 	var setup = simulationSetup(scenarioId);
 	// reducePoints() returns a new array, no need to worry about modifying original data
+	setup.emissions.CH4 = reducePoints(setup.emissions.CH4);
+	setup.emissions.CO2 = reducePoints(setup.emissions.CO2);
+	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
+	setup.emissions.volc = reducePoints(setup.emissions.volc);
+	setup.years = reducePoints(setup.years);
+	return setup;
+};
+
+/**
+ * Similar to the above function.
+ */
+var simulationSetupReduced2 = function(setup) {
 	setup.emissions.CH4 = reducePoints(setup.emissions.CH4);
 	setup.emissions.CO2 = reducePoints(setup.emissions.CO2);
 	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
