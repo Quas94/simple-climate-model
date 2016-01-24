@@ -67,6 +67,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// status of the 'save' button in the edit custom scenario inputs modal
 		$scope.editInputsSaveDisabled = true;
+		// modes of the edit custom inputs modal
+		$scope.EDIT_MODE_INITIAL = 0;
+		$scope.EDIT_MODE_FORM = 1;
+		// current mode of the edit custom inputs modal
+		$scope.editCustomInputsMode = $scope.EDIT_MODE_INITIAL;
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -508,6 +513,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// saves the changes made in the edit custom inputs modal
 		$scope.saveCustomInputEdits = function() {
 
+		};
+
+		// changes mode when the edit custom inputs button is clicked
+		$scope.editInputsSetMode = function(mode) {
+			$scope.editCustomInputsMode = mode;
 		};
 
 		// fetches the brief description of the scenario with the given id

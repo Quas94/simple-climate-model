@@ -16,6 +16,7 @@ Imminent TODO list:
   the 'albedo increase' scenario?
 
 - modifying custom scenarios
+- adding additional years to scenario inputs
 - create blank canvases for custom scenarios with no base
 - flatline/grey out input charts if their corresponding forcing checkbox is unticked
 

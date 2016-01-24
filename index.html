@@ -295,12 +295,28 @@
 					<h4 class="modal-title">Edit Scenario Input Data</h4>
 				</div>
 				<div class="modal-body">
-					<p>You are currently editing:</p>
-					<p>Scenario: {{ activeScenario.name }}</p>
-					<p>Chart: {{ inputChartActive.name }}</p>
-					<div class="ct-chart" id="edit-custom-inputs-chart"></div>
+					<div class="row">
+						<div class="col-md-3">
+							<p>You are currently editing:</p>
+							<p>Scenario: {{ activeScenario.name }}</p>
+							<p>Chart: {{ inputChartActive.name }}</p>
+							<hr />
+							<div id="edit-custom-inputs-btn" ng-if="editCustomInputsMode == EDIT_MODE_INITIAL">
+								<button class="btn btn-default" ng-click="editInputsSetMode(EDIT_MODE_FORM)">Edit</button>
+							</div>
+							<div id="edit-custom-inputs-range" ng-if="editCustomInputsMode == EDIT_MODE_FORM">
+								<div class="form-group">Start Year <input class="form-control" type="text"></div>
+								<div class="form-group">End Year <input class="form-control" type="text"></div>
+								<div class="form-group">Gradient <input class="form-control" type="text"></div>
+								<button class="btn btn-primary" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Back</button>
+							</div>
+						</div>
+						<div class="col-md-9">
+							<div class="ct-chart" id="edit-custom-inputs-chart"></div>
+						</div>
+					</div>
 				</div>
-				<div class="modal-footer">
+				<div class="modal-footer margin-top-25px">
 					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveCustomInputEdits()" id="edit-globals-save" ng-disabled="editInputsSaveDisabled">Save</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 				</div>
