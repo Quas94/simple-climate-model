@@ -497,6 +497,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				throw new Error('Currently active custom scenario (id = ' + $scope.activeScenario.id + ') is not in $scope.scenarios?');
 			}
 			$scope.scenarios.splice(index, 1);
+			// clear input charts
+			$scope.destroyCharts();
 			// pass active status to another custom scenario (if there are any left), and update $scope.activeScenario
 			if ($scope.scenarios.length > 0) { // if there are still scenarios remaining
 				if (index == $scope.scenarios.length) { // if it was the last item, we move index up by one. otherwise remains the same
@@ -504,6 +506,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				}
 				$scope.activeScenario = $scope.scenarios[index];
 				$scope.activeScenario.active = true;
+				// show input charts for the newly selected scenario
+				$scope.showInputCharts();
 			} else {
 				$scope.activeScenario = null; // set active scenario to null
 			}
@@ -574,7 +578,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 			if (errs.length > 0) {
 				// errors were discovered, don't process - spit out error message and return from function early
-				$scope.editCustomInputsError = errs.join(' ');
+				$scope.editCustomInputsError = errs.join('<br />');
 				return;
 			}
 

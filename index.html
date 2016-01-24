@@ -323,9 +323,7 @@
 									<button class="btn btn-success">Save</button>
 								</div>
 								<div class="clearfix"></div>
-								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px">
-									{{ editCustomInputsError }}
-								</p>
+								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px" ng-bind-html="editCustomInputsError"></p>
 								<p ng-if="editCustomInputsSuccess !== ''" class="span-success margin-top-10px">
 									{{ editCustomInputsSuccess }}
 								</p>
