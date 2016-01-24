@@ -70,8 +70,15 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// modes of the edit custom inputs modal
 		$scope.EDIT_MODE_INITIAL = 0;
 		$scope.EDIT_MODE_FORM = 1;
+		$scope.EDIT_MODE_CONFIRM = 2;
 		// current mode of the edit custom inputs modal
 		$scope.editCustomInputsMode = $scope.EDIT_MODE_INITIAL;
+		// input model variables
+		$scope.editCustomInputsFields = {};
+		// error message field for editing custom inputs
+		$scope.editCustomInputsError = '';
+		// success message field for editing custom inputs
+		$scope.editCustomInputsSuccess = '';
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -510,14 +517,80 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			plotData('edit-custom-inputs-chart', editData.years, editDataInput);
 		};
 
-		// saves the changes made in the edit custom inputs modal
-		$scope.saveCustomInputEdits = function() {
-
-		};
-
 		// changes mode when the edit custom inputs button is clicked
 		$scope.editInputsSetMode = function(mode) {
 			$scope.editCustomInputsMode = mode;
+
+			// if setting mode to initial, clear the fields
+			if (mode === $scope.EDIT_MODE_INITIAL) {
+				$scope.editCustomInputsFields = {};
+				$scope.editCustomInputsError = '';
+				$scope.editCustomInputsSuccess = '';
+			}
+		};
+
+		// saves the changes made in the edit custom inputs modal, and clears the fields
+		$scope.closeCustomInputEdits = function() {
+			// @TODO push the updated values into the actual input datasets
+
+			// lastly, set inputs mode to initial
+			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
+		};
+
+		// tests the input edits, and shows the effects
+		$scope.editInputsTest = function() {
+			// is integer function for use below
+			var isInteger = function(num) {
+				return ((num % 1) === 0);
+			};
+			// work out minimum and maximum years
+			var dataYears = customScenarioData[$scope.activeScenario.id].years;
+			var minYear = dataYears[0];
+			var maxYear = dataYears[dataYears.length - 1];
+			// @TODO possibly adjust bounds?
+			// bounds of input data
+			var maxValue = 10000;
+			var minValue = -maxValue;
+			// error messages array
+			var errs = [];
+			// firstly, check that the input values are numeric and within bounds
+			var fields = $scope.editCustomInputsFields;
+			var startYear = parseInt(fields.startYear);
+			var endYear = parseInt(fields.endYear);
+			if (!isInteger(fields.startYear) || startYear < minYear || startYear >= maxYear) {
+				errs.push('Start year invalid.');
+			}
+			if (!isInteger(fields.endYear) || endYear <= minYear || endYear > maxYear) {
+				errs.push('End year invalid.');
+			}
+			if (isNaN(fields.startValue) || startValue < minValue || startValue > minValue) {
+				errs.push('Start value invalid.');
+			}
+			if (isNaN(fields.endValue) || endValue < minValue || endValue > maxValue) {
+				errs.push('End value invalid.');
+			}
+			if (errs.length == 0 && startYear >= endYear) {
+				errs.push('Start year must come before end year.');
+			}
+			if (errs.length > 0) {
+				// errors were discovered, don't process - spit out error message and return from function early
+				$scope.editCustomInputsError = errs.join(' ');
+				return;
+			}
+
+			// clear errors text
+			$scope.editCustomInputsError = '';
+			// fill success text
+			$scope.editCustomInputsSuccess = 'Success! Check the new chart on the right and save if you wish to make these changes permanent.';
+
+			var startValue = Number(fields.startValue);
+			var endValue = Number(fields.endValue);
+
+			// make a copy of the input data and modify the copy
+			var editDataCopy = arrcpy(customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname]);
+
+			// if everything checks out, set mode to confirmation
+			$scope.editInputsSetMode($scope.EDIT_MODE_CONFIRM);
 		};
 
 		// fetches the brief description of the scenario with the given id

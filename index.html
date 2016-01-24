@@ -291,7 +291,6 @@
 		<div class="modal-dialog edit-custom-inputs-modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 					<h4 class="modal-title">Edit Scenario Input Data</h4>
 				</div>
 				<div class="modal-body">
@@ -304,11 +303,32 @@
 							<div id="edit-custom-inputs-btn" ng-if="editCustomInputsMode == EDIT_MODE_INITIAL">
 								<button class="btn btn-default" ng-click="editInputsSetMode(EDIT_MODE_FORM)">Edit</button>
 							</div>
-							<div id="edit-custom-inputs-range" ng-if="editCustomInputsMode == EDIT_MODE_FORM">
-								<div class="form-group">Start Year <input class="form-control" type="text"></div>
-								<div class="form-group">End Year <input class="form-control" type="text"></div>
-								<div class="form-group">Gradient <input class="form-control" type="text"></div>
-								<button class="btn btn-primary" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Back</button>
+							<div id="edit-custom-inputs-range" ng-if="editCustomInputsMode != EDIT_MODE_INITIAL">
+								<div class="form-group">
+									Range Start
+									<input class="form-control" type="text" placeholder="start year" ng-model="editCustomInputsFields.startYear" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
+									<input class="form-control" type="text" placeholder="start value" ng-model="editCustomInputsFields.startValue" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
+								</div>
+								<div class="form-group">
+									Range End
+									<input class="form-control" type="text" placeholder="end year" ng-model="editCustomInputsFields.endYear" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
+									<input class="form-control" type="text" placeholder="end value" ng-model="editCustomInputsFields.endValue" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
+								</div>
+								<div class="pull-right" ng-if="editCustomInputsMode == EDIT_MODE_FORM">
+									<button class="btn btn-primary" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Back</button>
+									<button class="btn btn-warning" ng-click="editInputsTest()">Test</button>
+								</div>
+								<div class="pull-right" ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
+									<button class="btn btn-primary" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Discard</button>
+									<button class="btn btn-success">Save</button>
+								</div>
+								<div class="clearfix"></div>
+								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px">
+									{{ editCustomInputsError }}
+								</p>
+								<p ng-if="editCustomInputsSuccess !== ''" class="span-success margin-top-10px">
+									{{ editCustomInputsSuccess }}
+								</p>
 							</div>
 						</div>
 						<div class="col-md-9">
@@ -317,8 +337,7 @@
 					</div>
 				</div>
 				<div class="modal-footer margin-top-25px">
-					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveCustomInputEdits()" id="edit-globals-save" ng-disabled="editInputsSaveDisabled">Save</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeCustomInputEdits()" id="edit-globals-save" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">Finish</button>
 				</div>
 			</div>
 		</div>
