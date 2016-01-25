@@ -21,7 +21,6 @@ Imminent TODO list:
 - flatline/grey out input charts if their corresponding forcing checkbox is unticked
 
 Later TODO list:
-- figure out + fix issue where charts are going vertical + overshooting sometimes - are they NaNs?
 - revisit popup windows name detection once modifying scenarios is working
 - chart axis labels, legend
 - resizing issues to do with page layout and graph display (including popups)

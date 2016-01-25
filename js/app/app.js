@@ -654,8 +654,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 			// clear backup
 			$scope.editCustomInputsBackup = null;
-			// debug output
-			console.log(customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname]);
 		};
 
 		// fetches the brief description of the scenario with the given id

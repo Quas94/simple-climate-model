@@ -25,10 +25,13 @@ var getChartOptions = function() {
 	var options = {
 		width: width,
 		height: height,
-		showPoint: true,
+		showPoint: false,
 		chartPadding: {
 			right: 30 // so the labels on the far right don't get cut off
 		},
+		lineSmooth: Chartist.Interpolation.simple({
+			divisor: 2
+		}),
 	};
 	return options;
 };
