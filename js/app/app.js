@@ -79,6 +79,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.editCustomInputsError = '';
 		// success message field for editing custom inputs
 		$scope.editCustomInputsSuccess = '';
+		// holds the backed up copy of data for editing custom scenarios
+		$scope.editCustomInputsBackup = null;
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -513,12 +515,16 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 		};
 
-		// called when the custom input edits modal is opened
-		$scope.openCustomInputEdits = function() {
-			// draw the chart
+		// plots the custom inputs chart in the edit custom data modal
+		$scope.plotCustomInputsChart = function() {
 			var editData = customScenarioData[$scope.activeScenario.id];
 			var editDataInput = [ editData.emissions[$scope.inputChartActive.varname] ];
 			plotData('edit-custom-inputs-chart', editData.years, editDataInput);
+		};
+
+		// called when the custom input edits modal is opened
+		$scope.openCustomInputEdits = function() {
+			$scope.plotCustomInputsChart();
 		};
 
 		// changes mode when the edit custom inputs button is clicked
@@ -535,10 +541,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// saves the changes made in the edit custom inputs modal, and clears the fields
 		$scope.closeCustomInputEdits = function() {
-			// @TODO push the updated values into the actual input datasets
-
-			// lastly, set inputs mode to initial
+			// set inputs mode to initial
 			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
+
+			// redraw the current active input chart
+			$scope.destroyCharts();
+			$scope.showInputCharts();
 		};
 
 		// tests the input edits, and shows the effects
@@ -547,8 +555,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			var isInteger = function(num) {
 				return ((num % 1) === 0);
 			};
+			// current custom scenario data
+			var currentCustomScenarioData = customScenarioData[$scope.activeScenario.id];
 			// work out minimum and maximum years
-			var dataYears = customScenarioData[$scope.activeScenario.id].years;
+			var dataYears = currentCustomScenarioData.years;
 			var minYear = dataYears[0];
 			var maxYear = dataYears[dataYears.length - 1];
 			// @TODO possibly adjust bounds?
@@ -582,19 +592,58 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				return;
 			}
 
+			// no errors
 			// clear errors text
 			$scope.editCustomInputsError = '';
 			// fill success text
 			$scope.editCustomInputsSuccess = 'Success! Check the new chart on the right and save if you wish to make these changes permanent.';
+			// set mode to confirmation
+			$scope.editInputsSetMode($scope.EDIT_MODE_CONFIRM);
 
+			// update chart being shown in modal
 			var startValue = Number(fields.startValue);
 			var endValue = Number(fields.endValue);
-
 			// make a copy of the input data and modify the copy
-			var editDataCopy = arrcpy(customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname]);
+			var dataCopyValues = arrcpy(currentCustomScenarioData.emissions[$scope.inputChartActive.varname]);
+			var dataCopyYears = currentCustomScenarioData.years; // years won't be modified
 
-			// if everything checks out, set mode to confirmation
-			$scope.editInputsSetMode($scope.EDIT_MODE_CONFIRM);
+			var valuesDiff = endValue - startValue;
+			var gradient = valuesDiff / (endYear - startYear); // rise divided by run
+
+			if (dataCopyValues.length != dataCopyYears.length) {
+				throw new Error('values and years lengths are different, ' + dataCopyValues.length + ' and ' + dataCopyYears.length + ' respectively');
+			}
+
+			// loop through the copy and update the values
+			for (var i = 0; i < dataCopyYears.length; i++) {
+				// check that this index is within the modification year range specified by user
+				if (dataCopyYears[i] >= startYear && dataCopyYears[i] <= endYear) {
+					var diffYears = dataCopyYears[i] - startYear;
+					dataCopyValues[i] = startValue + (diffYears * gradient);
+				}
+			}
+
+			// backup original data first
+			$scope.editCustomInputsBackup = currentCustomScenarioData.emissions[$scope.inputChartActive.varname];
+			// insert copy into scenario data and redraw chart
+			currentCustomScenarioData.emissions[$scope.inputChartActive.varname] = dataCopyValues;
+			$scope.plotCustomInputsChart();
+		};
+
+		// notifies of confirmation choice - discard (false) vs save (true)
+		$scope.editInputsConfirmationChoice = function(choice) {
+			if (choice) {
+				// save the changes - no action required in here
+			} else {
+				// discard the changes - re-instate backup
+				customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
+				// redraw chart
+				$scope.plotCustomInputsChart();
+			}
+			// clear backup
+			$scope.editCustomInputsBackup = null;
+			// set mode back to initial
+			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
 		};
 
 		// fetches the brief description of the scenario with the given id
@@ -619,7 +668,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 	}]);
 
 // page has fully loaded
-angular.element(document).ready(function () {
+angular.element(document).ready(function() {
 });
 
 // on change of input fields in edit globals modal, enable save and restore buttons

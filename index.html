@@ -319,8 +319,8 @@
 									<button class="btn btn-warning" ng-click="editInputsTest()">Test</button>
 								</div>
 								<div class="pull-right" ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
-									<button class="btn btn-primary" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Discard</button>
-									<button class="btn btn-success">Save</button>
+									<button class="btn btn-primary" ng-click="editInputsConfirmationChoice(false)">Discard</button>
+									<button class="btn btn-success" ng-click="editInputsConfirmationChoice(true)">Save</button>
 								</div>
 								<div class="clearfix"></div>
 								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px" ng-bind-html="editCustomInputsError"></p>
