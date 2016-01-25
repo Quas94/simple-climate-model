@@ -81,6 +81,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.editCustomInputsSuccess = '';
 		// holds the backed up copy of data for editing custom scenarios
 		$scope.editCustomInputsBackup = null;
+		// flag for whether or not changes were made in the edit custom data modal
+		$scope.editCustomInputsChanged = false;
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -524,7 +526,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// called when the custom input edits modal is opened
 		$scope.openCustomInputEdits = function() {
+			// draw the chart in the modal
 			$scope.plotCustomInputsChart();
+			// set changed flag to false
+			$scope.editCustomInputsChanged = false;
 		};
 
 		// changes mode when the edit custom inputs button is clicked
@@ -544,9 +549,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// set inputs mode to initial
 			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
 
-			// redraw the current active input chart
-			$scope.destroyCharts();
-			$scope.showInputCharts();
+			// if inputs were changed, redraw the current active input chart
+			if ($scope.editCustomInputsChanged) {
+				$scope.destroyCharts();
+				$scope.showInputCharts();
+			}
 		};
 
 		// tests the input edits, and shows the effects
@@ -633,17 +640,22 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// notifies of confirmation choice - discard (false) vs save (true)
 		$scope.editInputsConfirmationChoice = function(choice) {
 			if (choice) {
-				// save the changes - no action required in here
+				// set changed flag to true
+				$scope.editCustomInputsChanged = true;
+				// set mode back to initial, changes already made in $scope.editInputsTest() function
+				$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
 			} else {
 				// discard the changes - re-instate backup
 				customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
 				// redraw chart
 				$scope.plotCustomInputsChart();
+				// set mode back to form
+				$scope.editInputsSetMode($scope.EDIT_MODE_FORM);
 			}
 			// clear backup
 			$scope.editCustomInputsBackup = null;
-			// set mode back to initial
-			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
+			// debug output
+			console.log(customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname]);
 		};
 
 		// fetches the brief description of the scenario with the given id

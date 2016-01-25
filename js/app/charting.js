@@ -25,7 +25,7 @@ var getChartOptions = function() {
 	var options = {
 		width: width,
 		height: height,
-		showPoint: false,
+		showPoint: true,
 		chartPadding: {
 			right: 30 // so the labels on the far right don't get cut off
 		},
