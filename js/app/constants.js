@@ -39,11 +39,10 @@ var CUSTOM_SCENARIO_ID_START = 100;
  * Changing these also requires changing ids in simulate.js around line ~600 (variable 'simulatedData')
  */
 var INPUT_CHART_INFOS = [
+	{ id: 'chart-co2-emissions', name: 'CO2 Emissions', varname: 'CO2', lines: 1 },
 	{ id: 'chart-ch4-emissions', name: 'CH4 Emissions', varname: 'CH4', lines: 1 },
 	{ id: 'chart-so2-emissions', name: 'SO2 Emissions', varname: 'SO2', lines: 1 },
 	{ id: 'chart-volc-emissions', name: 'Volcanic Emissions', varname: 'volc', lines: 1 },
-	// Chartbase has to come last as it doesn't have absolute positioning
-	{ id: 'base-chart-co2-emissions', name: 'CO2 Emissions', varname: 'CO2', lines: 1 },
 ];
 var OUTPUT_CHART_INFOS = [
 	{ id: 'chart-gg', name: 'Greenhouse Gases', lines: 2 },
@@ -80,13 +79,21 @@ var DEFAULT_FORCINGS = {
 };
 // strings to describe each forcing variable
 var FORCINGS_NAMES = [
-	'error: this should not be shown', // index 0
+	'error: this should not be shown (1)', // index 0
 	'CO2',
 	'CH4',
 	'SO2',
 	'Volcanics',
 	'Solar',
 	'Internal variability'
+];
+// variable name corresponding to each forcing (except 5. solar and 6. internal variability)
+var FORCINGS_VARNAMES = [
+	'error: this should not be shown (2)',
+	'CO2',
+	'CH4',
+	'SO2',
+	'volc'
 ];
 
 /**

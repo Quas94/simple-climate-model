@@ -108,6 +108,34 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.forcings = objcpy(DEFAULT_FORCINGS);
 		};
 
+		// determines whether or not this input chart's forcing is enabled (and thus, whether or not this
+		// chart can be displayed)
+		$scope.isInputChartForcingEnabled = function(eid) {
+			// determine the varname of this chart
+			var varname = '';
+		    for (var i = 0; i < INPUT_CHART_INFOS.length; i++) {
+		        if (INPUT_CHART_INFOS[i].id === eid) {
+		            varname = INPUT_CHART_INFOS[i].varname;
+		            break;
+		        }
+		    }
+		    if (varname === '') {
+		    	throw new Error('Chart info varname not found, id = ' + eid);
+		    }
+
+		    // work out which index of FORCINGS_VARNAMES is equivalent to varname
+		    var fnum = -1;
+		    for (var i = 0; i < FORCINGS_VARNAMES.length; i++) {
+		    	if (FORCINGS_VARNAMES[i] === varname) {
+		    		fnum = i;
+		    		break;
+		    	}
+		    }
+		    if (fnum === -1) {
+		    	throw new Error('Forcing index/fnum with varname = ' + varname + ' not found.');
+		    }
+		    return $scope.forcings[$scope.getForcingVar(fnum)];
+		};
 		// opens the edit globals modal. right now, only task is to set 'save' button to disabled
 		$scope.openEditGlobals = function() {
 			document.getElementById('edit-globals-save').disabled = true;
@@ -280,11 +308,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			} else {
 				setup = simulationSetupReduced($scope.activeScenario.id);
 			}
-			// @TODO: take forcing into account when drawing input charts
 
 			// draw input charts and link plot data to the element for use by popup window setup later
-			var co2Chart = plotData('base-chart-co2-emissions', setup.years, [ setup.emissions.CO2 ]);
-			document.getElementById('base-chart-co2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
+			var co2Chart = plotData('chart-co2-emissions', setup.years, [ setup.emissions.CO2 ]);
+			document.getElementById('chart-co2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
 			var ch4Chart = plotData('chart-ch4-emissions', setup.years, [ setup.emissions.CH4 ]);
 			document.getElementById('chart-ch4-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CH4 ] };
 			var ch4Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ]);
@@ -679,6 +706,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 // page has fully loaded
 angular.element(document).ready(function() {
+	// plot the empty input chart
+	plotEmptyChart('chart-empty');
+	// plot the base input chart, which will never be visible, but is necessary to keep the panel size constant
+	plotEmptyChart('base-chart-never-shown');
 });
 
 // on change of input fields in edit globals modal, enable save and restore buttons

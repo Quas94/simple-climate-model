@@ -140,7 +140,10 @@
 								<button class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" title="Edit input values {{ standardActive == 'active' ? '(enabled for advanced mode only)' : '' }}" ng-click="openCustomInputEdits()"><i class="glyphicon glyphicon-pencil"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
-								<div class="ct-chart" ng-repeat="chart in inputChartInfos" id="{{ chart.id }}"></div>
+								<div class="ct-chart" ng-repeat="chart in inputChartInfos" id="{{ chart.id }}" ng-show="isInputChartForcingEnabled(chart.id)"></div>
+								<div class="ct-chart" id="chart-empty" ng-show="!isInputChartForcingEnabled(inputChartActive.id)"></div>
+								<!-- This last one is the base chart for inputs, and is never visible -->
+								<div class="ct-chart" id="base-chart-never-shown"></div>
 							</div>
 						</div>
 					</div>

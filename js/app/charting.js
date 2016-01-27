@@ -79,3 +79,18 @@ var plotData = function(chartId, years, data) {
 	// actually render
 	return new Chartist.Line('#' + chartId, plot, options);
 };
+
+/**
+ * Plots an empty chart into the div with the given id.
+ *
+ * @TODO make this 'empty' chart truly empty, and prettier
+ */
+var plotEmptyChart = function(chartId) {
+	var options = getChartOptions();
+	var plot = {
+		labels: [ 0 ],
+		series: [ [ 0 ] ]
+	};
+	// actually render
+	return new Chartist.Line('#' + chartId, plot, options);
+};

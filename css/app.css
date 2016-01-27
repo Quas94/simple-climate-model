@@ -103,6 +103,10 @@ div[id*='base-chart-'] {
   position: relative;
 }
 
+#chart-empty {
+  visibility: visible;
+}
+
 /**
  * Chartist graphs styles
  */
