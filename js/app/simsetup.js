@@ -34,6 +34,9 @@ var simulationSetup = function(scenarioId) {
 	var mTSI = 0;
 	// albedo
 	var alb = [];
+	// flag for whether or not albedo has already been initialised in switch handler
+	// if this flag is set, the default albedo setter at the bottom (just below the switch statement) won't be executed
+	var albSet = false;
 
 	// years for simulation
 	var years = [];
@@ -81,10 +84,6 @@ var simulationSetup = function(scenarioId) {
 			}
 		}
 	}
-
-	// flag for whether or not albedo has already been initialised in switch handler
-	// if this flag is set, the default albedo setter at the bottom (just below the switch statement) won't be executed
-	var albSet = false;
 
 	switch (scenarioId) {
 		// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'

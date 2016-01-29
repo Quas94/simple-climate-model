@@ -143,7 +143,7 @@
 								<div class="ct-chart" ng-repeat="chart in inputChartInfos" id="{{ chart.id }}" ng-show="isInputChartForcingEnabled(chart.id)"></div>
 								<div class="ct-chart" id="chart-empty" ng-show="!isInputChartForcingEnabled(inputChartActive.id)"></div>
 								<!-- This last one is the base chart for inputs, and is never visible -->
-								<div class="ct-chart" id="base-chart-never-shown"></div>
+								<div class="ct-chart" id="base-chart-never-shown" ng-show="activeScenario != null"></div>
 							</div>
 						</div>
 					</div>
@@ -245,15 +245,23 @@
 					<div class="col-xs-10 col-xs-offset-1">
 						<form class="form-horizontal">
 							<div class="form-group">
-								<label class="control-label">Scenario Name <span class="span-error" ng-if="scenarioNameTaken()">(name already in use)</span></label>
-								<input type="text" class="form-control input-md" ng-model="createScenarioName">
+								<label class="control-label">Scenario Name* <span class="span-error" ng-if="scenarioNameTaken()">already in use</span></label>
+								<input type="text" class="form-control input-sm" ng-model="createScenarioName">
 							</div>
 							<div class="form-group">
 								<label for="base-scenario">Base Scenario</label>
-								<select class="form-control" ng-model="createScenarioBase">
+								<select class="form-control input-sm" ng-model="createScenarioBase">
 									<option value="0">[ None ]</option>
 									<option ng-repeat="scenario in defaultScenarios" ng-value="scenario.id">{{ scenario.name }}</option>
 								</select>
+							</div>
+							<div class="form-group" ng-show="createScenarioBase == 0">
+								<label class="control-label">Start Year* <span class="span-error" ng-if="createScenarioStartYear !== '' && !createScenarioValidateStartYear()">invalid</span></label>
+								<input type="text" class="form-control input-sm" ng-model="createScenarioStartYear">
+							</div>
+							<div class="form-group" ng-show="createScenarioBase == 0">
+								<label class="control-label">End Year* <span class="span-error" ng-if="createScenarioEndYear !== '' && (!createScenarioValidateEndYear() || !createScenarioEndYearGreater())">invalid</span><span class="span-error" ng-if="createScenarioEndYear !== '' && createScenarioValidateEndYear() && !createScenarioEndYearGreater()"> (must be greater than start year)</span></label>
+								<input type="text" class="form-control input-sm" ng-model="createScenarioEndYear">
 							</div>
 							<div class="form-group">
 								<label for="new-scenario-desc">Description</label>
@@ -264,7 +272,7 @@
 				</div>
 				<div class="clearfix padding-20px"></div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createScenario()" ng-disabled="createScenarioName == '' || scenarioNameTaken()">Create</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createScenario()" ng-disabled="createScenarioName == '' || scenarioNameTaken() || !createScenarioValidateStartYear() || !createScenarioValidateEndYear() || !createScenarioEndYearGreater">Create</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 				</div>
 			</div>

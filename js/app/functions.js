@@ -181,3 +181,14 @@ var multiplyAllBy = function(array, by) {
     }
     return array;
 };
+
+// checks whether or not the given parameter is a valid year
+var isValidYear = function(year) {
+    if (year === '') return false;
+    if (isNaN(year)) return false;
+    year = Number(year);
+    if ((year % 1) !== 0) return false;
+    if (year < 0 || year > MAX_SIMULATION_YEAR) return false;
+    
+    return true;
+};

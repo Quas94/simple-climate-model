@@ -15,9 +15,11 @@ Imminent TODO list:
 - temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged. something to do with
   the 'albedo increase' scenario?
 
-- modifying custom scenarios
 - adding additional years to scenario inputs
-- create blank canvases for custom scenarios with no base
+  -- should add year range to details panel
+- create blank canvases for custom scenarios with no base: half done. ISSUES:
+  -- the last few years cut off? (eg. 2,000 -> 1,997) noticeable when editing input data
+  -- some output graphs have no output at all (temperatures and a few others) - anything to do with rcphi?
 - flatline/grey out input charts if their corresponding forcing checkbox is unticked
 
 Later TODO list:

@@ -5,6 +5,11 @@
  */
 
 /**
+ * The maximum year that simulations can run until
+ */
+var MAX_SIMULATION_YEAR = 10000;
+
+/**
  * Default scenarios
  *
  * Attribute 'isdefault' defines this scenario as a default scenario, that can't be deleted as opposed to user-created custom scenarios.

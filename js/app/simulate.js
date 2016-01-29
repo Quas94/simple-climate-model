@@ -31,7 +31,8 @@ var updateProgress = function() {
  * Reduction is done by only preserving every x-th value, where x denotes the number of original values divided by GOAL_POINTS.
  */
 var reducePoints = function(original) {
-	var GOAL_POINTS = 3000; // number of points in the result
+	// @TODO work out optimal number of goal points that doesn't produce any negative effect on output results
+	var GOAL_POINTS = 500; // number of points in the result
 	var result = []; // the array that will be returned
 	var x = original.length / GOAL_POINTS;
 	if (x < 2) {

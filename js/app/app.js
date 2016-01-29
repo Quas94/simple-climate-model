@@ -60,10 +60,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		var popupList = [];
 		$scope.popupListLength = popupList.length;
 
-		// model linked to input for new scenario name, base and description
+		// model linked to input for new scenario name, base and description, and start/end years if no base
 		$scope.createScenarioName = '';
 		$scope.createScenarioBase = '0';
 		$scope.createScenarioDesc = '';
+		$scope.createScenarioStartYear = '';
+		$scope.createScenarioEndYear = '';
 
 		// status of the 'save' button in the edit custom scenario inputs modal
 		$scope.editInputsSaveDisabled = true;
@@ -464,30 +466,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			};
 		};
 
-		// checks if the currently entered name in the new scenario form has already been taken
-		$scope.scenarioNameTaken = function() {
-			var nameTaken = false;
-			for (var i = 0; i < $scope.defaultScenarios.length; i++) {
-				if ($scope.defaultScenarios[i].name.toLowerCase() === $scope.createScenarioName.toLowerCase()) {
-					nameTaken = true;
-					break;
-				}
-			}
-			if (!nameTaken) {
-				for (var i = 0; i < $scope.scenarios.length; i++) {
-					if ($scope.scenarios[i].name.toLowerCase() === $scope.createScenarioName.toLowerCase()) {
-						nameTaken = true;
-						break;
-					}
-				}
-			}
-			return nameTaken;
-		}
-
 		// creates a new scenario
 		$scope.createScenario = function() {
 			if ($scope.scenarios === customScenarios) { // check that we do have the custom scenarios active right now
-				$timeout(function() {
+				$timeout(function() { // use timeout to let modal close first
 					// add to list of scenarios
 					$scope.scenarios.push({
 						id: nextCustomScenarioId,
@@ -505,15 +487,46 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						// (simulationSetup returns a copy of all the referenced data)
 						customScenarioData[nextCustomScenarioId] = simulationSetup(baseId);
 					} else {
-						// @TODO create a blank canvas for the new scenario
-						console.log('Created custom scenario that isn\'t based on an existing default scenario.');
+						// create blank canvas for the new scenario
+						// blank emissions elements - fill with zeroes
+						var blankEmissionsArray = [];
+						var yearsArray = [];
+						var startYear = Number($scope.createScenarioStartYear);
+						var endYear = Number($scope.createScenarioEndYear);
+						for (var i = startYear; i <= endYear; i++) {
+							blankEmissionsArray.push(0);
+							yearsArray.push(i);
+						}
+						var albArray = [];
+						for (var i = 0; i < yearsArray.length; i++) {
+							albArray[i] = alb0;
+						}
+						// data object for new scenario
+						var blankData = {
+							scenario: $scope.createScenarioName,
+							emissions: {
+								CO2: arrcpy(blankEmissionsArray),
+								CH4: arrcpy(blankEmissionsArray),
+								SO2: arrcpy(blankEmissionsArray),
+								volc: arrcpy(blankEmissionsArray)
+							},
+							// @TODO determine values for blank TSI, mTSI, alb
+							TSI: [ 0 ],
+							mTSI: 0,
+							alb: albArray,
+							years: yearsArray,
+							// @TODO confirm rcphi not needed in data that's plugged into simulate()
+							// rcphi: rcphi
+						};
+						// push into custom scenario data array for use
+						customScenarioData[nextCustomScenarioId] = blankData;
 					}
 
 					// change to the newly created scenario
 					$scope.selectScenario(nextCustomScenarioId);
 					// increment next custom scenario id counter
 					nextCustomScenarioId++;
-				}, 0); // use timeout to let modal close first
+				}, 0);
 			}
 		};
 
@@ -691,17 +704,57 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				return text.substring(0, DESCRIPTION_CUTOFF_LIMIT) + '...';
 			}
 			return text;
-		}
+		};
 
 		$scope.isSidebarActive = function(active) {
 			return active ? 'active' : '';
 		};
 
+		// checks if the currently entered name in the new scenario form has already been taken
+		$scope.scenarioNameTaken = function() {
+			var nameTaken = false;
+			for (var i = 0; i < $scope.defaultScenarios.length; i++) {
+				if ($scope.defaultScenarios[i].name.toLowerCase() === $scope.createScenarioName.toLowerCase()) {
+					nameTaken = true;
+					break;
+				}
+			}
+			if (!nameTaken) {
+				for (var i = 0; i < $scope.scenarios.length; i++) {
+					if ($scope.scenarios[i].name.toLowerCase() === $scope.createScenarioName.toLowerCase()) {
+						nameTaken = true;
+						break;
+					}
+				}
+			}
+			return nameTaken;
+		};
+
+		// clears the create scenario modal
 		$scope.clearNewScenario = function() {
 			$scope.createScenarioName = '';
 			$scope.createScenarioBase = '0'; // default option
 			$scope.createScenarioDesc = '';
-		}
+			$scope.createScenarioStartYear = '';
+			$scope.createScenarioEndYear = '';
+		};
+
+		// returns true if base is 'none' and start year is valid in the create scenario modal
+		$scope.createScenarioValidateStartYear = function() {
+			if ($scope.createScenarioBase != 0) return true;
+			return isValidYear($scope.createScenarioStartYear);
+		};
+
+		// returns true if base is 'none' and end year is valid in the create scenario modal
+		$scope.createScenarioValidateEndYear = function() {
+			if ($scope.createScenarioBase != 0) return true;
+			return isValidYear($scope.createScenarioEndYear);
+		};
+
+		// returns true if end year isn't empty, and end year is numerically larger than start year
+		$scope.createScenarioEndYearGreater = function() {
+			return (Number($scope.createScenarioEndYear) > Number($scope.createScenarioStartYear));
+		};
 	}]);
 
 // page has fully loaded
