@@ -15,16 +15,15 @@ Imminent TODO list:
 - temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged. something to do with
   the 'albedo increase' scenario?
 - check if pH chart is bugged - always peaks really early and levels off
-- update default-selected input charts
 
 - adding additional years to scenario inputs
   -- should add year range to details panel
 - create blank canvases for custom scenarios with no base: done but buggy. ISSUES:
   -- the last few years cut off? (eg. 2,000 -> 1,997) noticeable when editing input data
   -- some output graphs have no output at all (temperatures and a few others) - anything to do with rcphi?
-- flatline/grey out input charts if their corresponding forcing checkbox is unticked
 
 Later TODO list:
+- confirm which TSI and alb datasets to use, currently using 'defaults' (app.js -> createScenario, ~line 510)
 - revisit popup windows name detection once modifying scenarios is working
 - chart axis labels, legend
 - resizing issues to do with page layout and graph display (including popups)

@@ -153,11 +153,17 @@ var simulate = function() {
 
 		// solar
 		R_sol[y] = ((TSI[y] - mTSI) / 4) * (1 - alb[y]) - TSI[y] / 4 * (alb[y] - alb0);
+		// if (isNaN(R_sol[y])) throw new Error('y = ' + y + ', R_sol[y] = ' + R_sol[y] + ', TSI[y] = ' + TSI[y] + ', mTSI = ' + mTSI + ', alb[y] = ' + alb[y] + ', alb0 = ' + alb0);
 		
 		// temperature model
 		var RF_GG = F1 * R_CO2[y - 1] + F2 * R_CH4[y - 1];
 		RF_[y] = RF_GG + F3 * R_SO2[y - 1] + F4 * R_volc[y - 1] + F5 * R_sol[y];
+		//if (isNaN(RF_[y])) throw new Error('y = ' + y + ', RF_[y] = ' + RF_[y] + ', RF_GG = ' + RF_GG + ', F3 = ' + F3 + ', R_SO2[y-1] = ' + R_SO2[y-1] + ', F4 = ' + F4 +
+		//	', R_volc[y-1] = ' + R_volc[y-1] + ', F5 = ' + F5 + ', R_sol[y] = ' + R_sol[y]);
 		Ts[y] = Ts[y - 1] + DT * (RF_[y - 1] - L * Ts[y - 1] - g * (Ts[y - 1] - To[y - 1])) / Cs;
+
+		//if (isNaN(Ts[y])) throw new Error('NaN: Ts[' + y + '] is NaN, DT = ' + DT + ', RF_[y-1] = ' + RF_[y-1] + ', L = ' + L + ', Ts[y-1] ' + Ts[y-1] + ', g = ' + g +
+		//	', To[y-1] = ' + To[y-1] + ', Cs = ' + Cs);
 		
 		To[y] = To[y - 1] + DT * (g * (Ts[y - 1] - To[y - 1])) / Co;
 		Tsurf[y] = Ts[y] + F6 * deltaT[y];

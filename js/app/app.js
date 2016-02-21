@@ -497,9 +497,19 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							blankEmissionsArray.push(0);
 							yearsArray.push(i);
 						}
+						// albedo
 						var albArray = [];
 						for (var i = 0; i < yearsArray.length; i++) {
 							albArray[i] = alb0;
+						}
+						// TSI/mTSI, copied from ~line 75 of simsetup
+						var TSI = interp1(XLS_TSI[0], XLS_TSI[2], yearsArray);
+						var mTSI = nanmean(TSI); // mTSI is equal to the mean of all the non-NaN elements of TSI
+						// if TSI has NaN elements, set those to equal mTSI
+						for (var i = 0; i < TSI.length; i++) {
+							if (isNaN(TSI[i])) {
+								TSI[i] = mTSI;
+							}
 						}
 						// data object for new scenario
 						var blankData = {
@@ -511,8 +521,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 								volc: arrcpy(blankEmissionsArray)
 							},
 							// @TODO determine values for blank TSI, mTSI, alb
-							TSI: [ 0 ],
-							mTSI: 0,
+							TSI: TSI,
+							mTSI: mTSI,
 							alb: albArray,
 							years: yearsArray,
 							// @TODO confirm rcphi not needed in data that's plugged into simulate()
