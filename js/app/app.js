@@ -44,9 +44,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.activeScenario = $scope.scenarios[0];
 		$scope.activeScenario.active = true;
 
-		// initial active charts are the last ones (ie. the base ones with relative positioning instead of absolute)
-		$scope.inputChartActive = INPUT_CHART_INFOS[INPUT_CHART_INFOS.length - 1];
-		$scope.outputChartActive = OUTPUT_CHART_INFOS[OUTPUT_CHART_INFOS.length - 1];
+		// initial active charts
+		$scope.inputChartActive = INPUT_CHART_INFOS[0]; // CO2 emissions
+		$scope.outputChartActive = OUTPUT_CHART_INFOS[OUTPUT_CHART_INFOS.length - 1]; // surface and ocean temperatures
 		// variable which marks whether or not charts are currently being displayed
 		$scope.chartsActive = false;
 		// the references to the currently displayed Chartist chart objects
