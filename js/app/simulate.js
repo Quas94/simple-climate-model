@@ -113,6 +113,8 @@ var simulate = function() {
 		var a = Cup[y - 1] / Alk;
 		var H = (-k1 * (1 - a) + sqrt(square(k1) * square(1 - a) - 4 * k1 * k2 * (1 - 2 * a))) / 2; // hydrogen concentration
 		pH[y] = -log10(H);
+		// following line is to prevent the cliff right at the beginning of the pH chart because index 0 has value 0 incorrectly
+		if (y == 1) pH[0] = pH[y];
 		var B = 1 / (1 + k1 / H + k1 * k2 / square(H)); // ratio of dissolved CO2 to total oceanic carbon (B=B(pH))
 
 		// terrestrial from Svirezhev
