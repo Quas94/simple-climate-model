@@ -430,6 +430,7 @@ var simulationSetupReduced = function(scenarioId) {
 	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
 	setup.emissions.volc = reducePoints(setup.emissions.volc);
 	setup.years = reducePoints(setup.years);
+	setup.alb = reducePoints(setup.alb);
 	return setup;
 };
 
@@ -442,5 +443,6 @@ var simulationSetupReduced2 = function(setup) {
 	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
 	setup.emissions.volc = reducePoints(setup.emissions.volc);
 	setup.years = reducePoints(setup.years);
+	setup.alb = reducePoints(setup.alb);
 	return setup;
 };

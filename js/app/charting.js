@@ -43,6 +43,7 @@ var getChartOptions = function() {
 var plotData = function(chartId, years, data) {
 	// make sure that data series lengths are all equivalent, and same as years length
 	for (var i = 0; i < data.length; i++) {
+		// console.log('data = ' + JSON.stringify(data));
 		if (data[i].length != years.length) {
 			throw new Error('data length = ' + data[i].length + ' (i = ' + i + '), years.length = ' + years.length);
 		}

@@ -124,6 +124,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		    if (varname === '') {
 		    	throw new Error('Chart info varname not found, id = ' + eid);
 		    }
+		    if (varname === 'alb') {
+		    	return true; // alb is always displayed, doesn't have an option to turn forcing off for
+		    }
 
 		    // work out which index of FORCINGS_VARNAMES is equivalent to varname
 		    var fnum = -1;
@@ -316,9 +319,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			document.getElementById('chart-co2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
 			var ch4Chart = plotData('chart-ch4-emissions', setup.years, [ setup.emissions.CH4 ]);
 			document.getElementById('chart-ch4-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CH4 ] };
-			var ch4Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ]);
+			var so2Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ]);
 			document.getElementById('chart-so2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.SO2 ] };
-			var ch4Chart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ]);
+			var albChart = plotData('chart-alb', setup.years, [ setup.alb ] );
+			document.getElementById('chart-alb').plotInfo = { y: setup.years, data: [ setup.alb ] };
+			var volcChart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ]);
 			document.getElementById('chart-volc-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.volc ] };
 
 			$scope.inputCharts.push(co2Chart);
@@ -482,7 +487,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					// copy over data from the chosen base scenario
 					// $scope.createScenarioBase models the base scenario id
 					var baseId = $scope.createScenarioBase;
-					if (baseId != 0) { // if we are basing it off a defualt scenario
+					if (baseId != 0) { // if we are basing it off a default scenario
 						// copy the emissions and other setup data over
 						// (simulationSetup returns a copy of all the referenced data)
 						customScenarioData[nextCustomScenarioId] = simulationSetup(baseId);
@@ -570,7 +575,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// plots the custom inputs chart in the edit custom data modal
 		$scope.plotCustomInputsChart = function() {
 			var editData = customScenarioData[$scope.activeScenario.id];
-			var editDataInput = [ editData.emissions[$scope.inputChartActive.varname] ];
+			var editDataInput;
+			if ($scope.inputChartActive.varname == 'alb') {
+				editDataInput = [ editData.alb ];
+			} else {
+				editDataInput = [ editData.emissions[$scope.inputChartActive.varname] ];
+			}
 			plotData('edit-custom-inputs-chart', editData.years, editDataInput);
 		};
 
@@ -661,7 +671,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			var startValue = Number(fields.startValue);
 			var endValue = Number(fields.endValue);
 			// make a copy of the input data and modify the copy
-			var dataCopyValues = arrcpy(currentCustomScenarioData.emissions[$scope.inputChartActive.varname]);
+			var dataCopyValues;
+			if ($scope.inputChartActive.varname === 'alb') {
+				dataCopyValues = arrcpy(currentCustomScenarioData.alb);
+			} else {
+				dataCopyValues = arrcpy(currentCustomScenarioData.emissions[$scope.inputChartActive.varname]);
+			}
 			var dataCopyYears = currentCustomScenarioData.years; // years won't be modified
 
 			var valuesDiff = endValue - startValue;
@@ -680,10 +695,14 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				}
 			}
 
-			// backup original data first
-			$scope.editCustomInputsBackup = currentCustomScenarioData.emissions[$scope.inputChartActive.varname];
-			// insert copy into scenario data and redraw chart
-			currentCustomScenarioData.emissions[$scope.inputChartActive.varname] = dataCopyValues;
+			// backup original data first, then insert copy into scenario data and redraw chart
+			if ($scope.inputChartActive.varname === 'alb') {
+				$scope.editCustomInputsBackup = currentCustomScenarioData.alb;
+				currentCustomScenarioData.alb = dataCopyValues;
+			} else {
+				$scope.editCustomInputsBackup = currentCustomScenarioData.emissions[$scope.inputChartActive.varname];
+				currentCustomScenarioData.emissions[$scope.inputChartActive.varname] = dataCopyValues;
+			}
 			$scope.plotCustomInputsChart();
 		};
 
@@ -696,7 +715,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
 			} else {
 				// discard the changes - re-instate backup
-				customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
+				if ($scope.inputChartActive.varname === alb) {
+					customScenarioData[$scope.activeScenario.id].alb = $scope.editCustomInputsBackup;
+				} else {
+					customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
+				}
 				// redraw chart
 				$scope.plotCustomInputsChart();
 				// set mode back to form

@@ -228,7 +228,6 @@ var simulate = function() {
 	R_SO2 = reducePoints(R_SO2);
 	R_volc = reducePoints(R_volc);
 	R_sol = reducePoints(R_sol);
-	alb = reducePoints(alb);
 	Cat = reducePoints(Cat);
 	Cup = reducePoints(Cup);
 	Clo = reducePoints(Clo);
@@ -276,10 +275,6 @@ var simulate = function() {
 			{
 				id: 'chart-solar',
 				data: [ R_sol ]
-			},
-			{
-				id: 'chart-albedo',
-				data: [ alb ]
 			},
 			{
 				id: 'chart-at-up-lo',

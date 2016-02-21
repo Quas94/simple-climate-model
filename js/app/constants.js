@@ -41,19 +41,19 @@ var CUSTOM_SCENARIO_ID_START = 100;
 /**
  * Chart div ids
  *
- * Changing these also requires changing ids in simulate.js around line ~600 (variable 'simulatedData')
+ * Changing these also requires changing ids in simulate.js around line ~250 (variable 'simulatedData')
  */
 var INPUT_CHART_INFOS = [
 	{ id: 'chart-co2-emissions', name: 'CO2 Emissions', varname: 'CO2', lines: 1 },
 	{ id: 'chart-ch4-emissions', name: 'CH4 Emissions', varname: 'CH4', lines: 1 },
 	{ id: 'chart-so2-emissions', name: 'SO2 Emissions', varname: 'SO2', lines: 1 },
+	{ id: 'chart-alb', name: 'Albedo', varname: 'alb', lines: 1 },
 	{ id: 'chart-volc-emissions', name: 'Volcanic Emissions', varname: 'volc', lines: 1 },
 ];
 var OUTPUT_CHART_INFOS = [
 	{ id: 'chart-gg', name: 'Greenhouse Gases', lines: 2 },
 	{ id: 'chart-aerosols', name: 'Aerosols', lines: 2 },
 	{ id: 'chart-solar', name: 'Solar', lines: 1 },
-	{ id: 'chart-albedo', name: 'Albedo', lines: 1 },
 	{ id: 'chart-at-up-lo', name: 'AT, UP & LO Inventories', lines: 3 },
 	{ id: 'chart-veg-soil-npp', name: 'Veg, Soil & NPP Inventories', lines: 3 },
 	{ id: 'chart-ph', name: 'pH', lines: 1 },
