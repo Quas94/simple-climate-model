@@ -355,7 +355,6 @@ onmessage = function(e) {
 	this.mTSI = setup.mTSI;
 	this.alb = setup.alb;
 	this.years = setup.years;
-	this.rcphi = setup.rcphi;
 
 	// wait half a second before running
 	setTimeout(function() {

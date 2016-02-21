@@ -143,10 +143,10 @@ var simulationSetup = function(scenarioId) {
 				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
 			}
 
-			emissions.CH4 = ts;
-			emissions.CO2 = arrcpy(ts); // call arrcpy for deep copy because this will be modified
-			emissions.SO2 = ts;
-			emissions.volc = ts;
+			emissions.CH4 = arrcpy(ts);
+			emissions.CO2 = arrcpy(ts);
+			emissions.SO2 = arrcpy(ts);
+			emissions.volc = arrcpy(ts);
 
 			// emissionCO2(1/DT*5:1/DT*15)=20;
 			// there will be an offset of 1 month here due to index start diff (js=0 and matlab=1) but shouldn't really matter
@@ -181,9 +181,9 @@ var simulationSetup = function(scenarioId) {
 			}
 
 			emissions.CH4 = arrcpy(ts); // call arrcpy for deep copy because this will be modified
-			emissions.CO2 = ts;
-			emissions.SO2 = ts;
-			emissions.volc = ts;
+			emissions.CO2 = arrcpy(ts);
+			emissions.SO2 = arrcpy(ts);
+			emissions.volc = arrcpy(ts);
 
 			// emissionCH4(1/DT*5:1/DT*15)=1000;
 			for (var i = (1 / DT * 5); i <= (1 / DT * 15); i++) {
@@ -219,10 +219,10 @@ var simulationSetup = function(scenarioId) {
 				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
 			}
 
-			emissions.CH4 = ts;
-			emissions.CO2 = ts;
-			emissions.SO2 = ts;
-			emissions.volc = ts;
+			emissions.CH4 = arrcpy(ts);
+			emissions.CO2 = arrcpy(ts);
+			emissions.SO2 = arrcpy(ts);
+			emissions.volc = arrcpy(ts);
 
 			// solar irradiance
 			mTSI = 1365;
@@ -356,10 +356,10 @@ var simulationSetup = function(scenarioId) {
 
 		case 16:
 			scenario = 'Changes in TSI';
-			emissions.CH4 = years;
-			emissions.CO2 = years;
-			emissions.SO2 = years;
-			emissions.volc = years;
+			emissions.CH4 = arrcpy(years);
+			emissions.CO2 = arrcpy(years);
+			emissions.SO2 = arrcpy(years);
+			emissions.volc = arrcpy(years);
 			mTSI = 1365;
 			for (var i = 0; i < TSI.length; i++) {
 				TSI[i] = mTSI;
@@ -378,10 +378,10 @@ var simulationSetup = function(scenarioId) {
 
 		case 17:
 			scenario = 'Volcanic Eruption';
-			emissions.CH4 = years;
-			emissions.CO2 = years;
-			emissions.SO2 = years;
-			emissions.volc = arrcpy(years); // since volc will be modified down below
+			emissions.CH4 = arrcpy(years);
+			emissions.CO2 = arrcpy(years);
+			emissions.SO2 = arrcpy(years);
+			emissions.volc = arrcpy(years);
 			var indStart = arrfind(years, 2000);
 			var indEnd = arrfind(years, 2002);
 			for (var i = indStart; i < indEnd; i++) {
@@ -411,8 +411,7 @@ var simulationSetup = function(scenarioId) {
 		TSI: TSI,
 		mTSI: mTSI,
 		alb: alb,
-		years: years,
-		rcphi: rcphi
+		years: years
 	};
 	return ret;
 }
@@ -424,25 +423,37 @@ var simulationSetup = function(scenarioId) {
  */
 var simulationSetupReduced = function(scenarioId) {
 	var setup = simulationSetup(scenarioId);
+	//console.log('Before reductions: ' + setup.emissions.CH4.length + ', ' + setup.emissions.CO2.length + ', ' + setup.emissions.SO2.length + ', ' +
+	//	setup.emissions.volc.length + ', ' + setup.years.length + ', ' + setup.alb.length);
 	// reducePoints() returns a new array, no need to worry about modifying original data
 	setup.emissions.CH4 = reducePoints(setup.emissions.CH4);
 	setup.emissions.CO2 = reducePoints(setup.emissions.CO2);
 	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
 	setup.emissions.volc = reducePoints(setup.emissions.volc);
+	setup.TSI = reducePoints(setup.TSI);
 	setup.years = reducePoints(setup.years);
 	setup.alb = reducePoints(setup.alb);
+	//console.log('After reductions: ' + setup.emissions.CH4.length + ', ' + setup.emissions.CO2.length + ', ' + setup.emissions.SO2.length + ', ' +
+	//	setup.emissions.volc.length + ', ' + setup.years.length + ', ' + setup.alb.length);
 	return setup;
 };
 
 /**
- * Similar to the above function.
+ * Similar to the above function, but instead of passing in the scenario id, the setup data object is directly
+ * passed in.
  */
-var simulationSetupReduced2 = function(setup) {
-	setup.emissions.CH4 = reducePoints(setup.emissions.CH4);
-	setup.emissions.CO2 = reducePoints(setup.emissions.CO2);
-	setup.emissions.SO2 = reducePoints(setup.emissions.SO2);
-	setup.emissions.volc = reducePoints(setup.emissions.volc);
-	setup.years = reducePoints(setup.years);
-	setup.alb = reducePoints(setup.alb);
-	return setup;
+var simulationSetupReducedCustom = function(setup) {
+	// create a separate ret object because we don't want to modify the original setup, since this function is only
+	// being used for rendering. the original setup is still needed for the actual simulation/calculations, and reduction
+	// of the output graphs will be applied AFTER those calculations are done
+	var ret = {};
+	ret.emissions = {};
+	ret.emissions.CH4 = reducePoints(setup.emissions.CH4);
+	ret.emissions.CO2 = reducePoints(setup.emissions.CO2);
+	ret.emissions.SO2 = reducePoints(setup.emissions.SO2);
+	ret.emissions.volc = reducePoints(setup.emissions.volc);
+	ret.TSI = reducePoints(setup.TSI);
+	ret.years = reducePoints(setup.years);
+	ret.alb = reducePoints(setup.alb);
+	return ret;
 };

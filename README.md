@@ -11,9 +11,6 @@ Milestones:
 - Advanced Features
 
 Imminent TODO list:
-- revisit method of fetching default scenarios when custom scenarios are possible: make sure defaults aren't modified
-- temperatures for some scenarios are bugged, sometimes entire app's data gets messed up and bugged. something to do with
-  the 'albedo increase' scenario?
 - input charts for custom scenario years are a bit off
 
 - adding additional years to scenario inputs
