@@ -325,13 +325,13 @@
 									<input class="form-control" type="text" placeholder="end year" ng-model="editCustomInputsFields.endYear" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
 									<input class="form-control" type="text" placeholder="end value" ng-model="editCustomInputsFields.endValue" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
 								</div>
-								<div class="pull-right" ng-if="editCustomInputsMode == EDIT_MODE_FORM">
-									<button class="btn btn-primary" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Cancel</button>
-									<button class="btn btn-warning" ng-click="editInputsTest()">Test Values</button>
+								<div class="row" ng-if="editCustomInputsMode == EDIT_MODE_FORM">
+									<div class="col-xs-5 col-xs-offset-2 minimal-padding"><button class="btn btn-primary btn-wide" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Cancel</button></div>
+									<div class="col-xs-5 minimal-padding"><button class="btn btn-warning btn-wide" ng-click="editInputsTest()">Test</button></div>
 								</div>
-								<div class="pull-right" ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
-									<button class="btn btn-primary" ng-click="editInputsConfirmationChoice(false)">Try Again</button>
-									<button class="btn btn-success" ng-click="editInputsConfirmationChoice(true)">Save</button>
+								<div class="row" ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
+									<div class="col-xs-5 col-xs-offset-2 minimal-padding"><button class="btn btn-primary btn-wide" ng-click="editInputsConfirmationChoice(false)">Retry</button></div>
+									<div class="col-xs-5 minimal-padding"><button class="btn btn-success btn-wide" ng-click="editInputsConfirmationChoice(true)">Save</button></div>
 								</div>
 								<div class="clearfix"></div>
 								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px" ng-bind-html="editCustomInputsError"></p>

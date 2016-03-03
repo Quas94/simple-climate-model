@@ -23,11 +23,16 @@
 }
 
 .no-left-padding {
-  padding-left: 0px;
+  padding-left: 0;
+}
+
+.minimal-padding {
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .no-bottom-margin {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .btn-wide {

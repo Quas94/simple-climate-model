@@ -716,11 +716,13 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
 			} else {
 				// discard the changes - re-instate backup
-				if ($scope.inputChartActive.varname === alb) {
+				if ($scope.inputChartActive.varname === 'alb') {
 					customScenarioData[$scope.activeScenario.id].alb = $scope.editCustomInputsBackup;
 				} else {
 					customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
 				}
+				// get rid of success message
+				$scope.editCustomInputsSuccess = '';
 				// redraw chart
 				$scope.plotCustomInputsChart();
 				// set mode back to form
