@@ -5,7 +5,8 @@
 
 	<!-- Google font (Raleway) -->
 	<link href="./css/raleway.css" rel="stylesheet" type="text/css">
-
+	<!-- Hint.css tooltips -->
+	<link href="./css/hint.min.css" rel="stylesheet" type="text/css">
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css">
 	<!-- Angular.js minified js library -->
@@ -55,8 +56,8 @@
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="{{ standardActive }}" id="li-standard-mode"><a href="#" ng-click="changeMode('standard')">Standard</a></li>
-					<li class="{{ advancedActive }}"><a href="#" ng-click="changeMode('advanced')">Advanced</a></li>
+					<li class="{{ standardActive }} hint--bottom" data-hint="Standard mode contains all the default scenarios,&#10;which cannot be modified" id="li-standard-mode"><a href="#" ng-click="changeMode('standard')">Standard</a></li>
+					<li class="{{ advancedActive }} hint--bottom" data-hint="Custom mode allows you to edit scenario input data,&#10;and also create new scenarios based off any of the&#10;default scenarios, or from a blank canvas"><a href="#" ng-click="changeMode('advanced')">Advanced</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="#">Report a bug</a></li>
@@ -88,20 +89,20 @@
 						<div class="panel panel-success">
 							<div class="panel-heading">Actions</div>
 							<div class="panel-body">
-								<button class="btn btn-primary btn-sm btn-wide" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
-								<button class="btn btn-default btn-sm btn-wide" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()">Edit Scenario Settings</button>
-								<button class="btn btn-default btn-sm btn-wide" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" title="Edit input values {{ standardActive == 'active' ? '(enabled for advanced mode only)' : '' }}" ng-click="openCustomInputEdits()">Edit Scenario Data</button>
-								<button class="btn btn-default btn-sm btn-wide" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
+								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Run through the current scenario" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
+								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit settings such as number of years, etc' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()">Edit Scenario Settings</button>
+								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit the data values on this scenario\'s input charts' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" ng-click="openCustomInputEdits()">Edit Scenario Data</button>
+								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="Edit global variables which are shared by every scenario" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button> -->
-								<button class="btn btn-danger btn-sm btn-wide" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
+								<button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-3 no-left-padding">
 						<div class="panel panel-warning">
 							<div class="panel-heading">Forcings
-								<span class="pull-right"><button class="btn btn-warning btn-xs btn-in-heading" ng-click="setForcingDefaults()">Set Defaults</button></span>
+								<span class="pull-right"><button class="btn btn-warning btn-xs btn-in-heading hint--bottom" data-hint="Set the forcings to their defaults" ng-click="setForcingDefaults()">Set Defaults</button></span>
 							</div>
 							<div class="panel-body">
 								<div class="col-xs-11 col-xs-offset-1">
@@ -137,9 +138,9 @@
 									</ul>
 								</span>
 								<!-- Open in new window button -->
-								<button class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="inputCharts.length == 0" ng-click="popupChart(true)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-danger btn-in-heading pull-right hint--bottom" data-hint="Open chart in new window" ng-disabled="inputCharts.length == 0" ng-click="popupChart(true)"><i class="glyphicon glyphicon-share"></i></button>
 								<!-- Open editing modal button -->
-								<button class="btn btn-sm btn-danger btn-in-heading pull-right" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" title="Edit input values {{ standardActive == 'active' ? '(enabled for advanced mode only)' : '' }}" ng-click="openCustomInputEdits()"><i class="glyphicon glyphicon-pencil"></i></button>
+								<button class="btn btn-sm btn-danger btn-in-heading pull-right hint--bottom" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit the data values on this scenario\'s input charts' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" ng-click="openCustomInputEdits()"><i class="glyphicon glyphicon-pencil"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
 								<div class="ct-chart" ng-repeat="chart in inputChartInfos" id="{{ chart.id }}" ng-show="isInputChartForcingEnabled(chart.id)"></div>
@@ -158,7 +159,7 @@
 										<li ng-repeat="chart in outputChartInfos"><a href="#" ng-click="selectOutputChart(chart)">{{ chart.name }}</a></li>
 									</ul>
 								</span>
-								<button class="btn btn-sm btn-info btn-in-heading pull-right" ng-disabled="outputCharts.length == 0" ng-click="popupChart(false)" title="Open chart in new window"><i class="glyphicon glyphicon-share"></i></button>
+								<button class="btn btn-sm btn-info btn-in-heading pull-right hint--bottom-left" data-hint="Open chart in new window" ng-disabled="outputCharts.length == 0" ng-click="popupChart(false)"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="secondary-panel">
 								<div class="ct-chart" ng-repeat="chart in outputChartInfos" id="{{ chart.id }}"></div>

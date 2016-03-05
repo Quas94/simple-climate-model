@@ -2,6 +2,20 @@
 	font-family: 'Raleway', sans-serif;
 }
 
+/* don't carry uppercase into hint.css hints */
+[data-hint]:after {
+  text-transform: none;
+  white-space: pre;
+}
+
+[data-hint] {
+  z-index: 10 !important; /* hints always on top */
+}
+
+.modal-content {
+  z-index: 11 !important; /* modals on top of the hints */
+}
+
 .main {
 	padding-top: 70px;
 }
@@ -62,6 +76,10 @@
 /* Keeps btn-inverse font black at all times, instead of changing to white which is hard to read */
 .btn-inverse:hover, .btn-inverse:active, .btn-inverse:focus {
   color: #000;
+}
+
+.btn:focus {
+    outline-width: 0 !important;
 }
 
 .textarea-no-resize {
