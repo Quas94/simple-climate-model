@@ -89,8 +89,8 @@
 						<div class="panel panel-success">
 							<div class="panel-heading">Actions</div>
 							<div class="panel-body">
-								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Run through the current scenario" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
-								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit settings such as number of years, etc' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()">Edit Scenario Settings</button>
+								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Run the current scenario with the input datasets below" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
+								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit settings such as number of years, etc' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()" data-toggle="modal" data-target="#edit-custom-settings-modal">Edit Scenario Settings</button>
 								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit the data values on this scenario\'s input charts' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" ng-click="openCustomInputEdits()">Edit Scenario Data</button>
 								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="Edit global variables which are shared by every scenario" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
@@ -222,7 +222,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 					<h4 class="modal-title" id="confirmation-title">Delete Scenario: {{ activeScenario.name }}</h4>
 				</div>
 				<div class="modal-body">
@@ -241,7 +241,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 					<h4 class="modal-title" id="confirmation-title">Create Custom Scenario</h4>
 				</div>
 				<div class="modal-body">
@@ -287,7 +287,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 					<h4 class="modal-title">Scenario {{ activeScenario.name }} - Detailed Information</h4>
 				</div>
 				<div class="modal-body">
@@ -300,12 +300,30 @@
 		</div>
 	</div>
 
-	<!-- Modal in which editing custom scenario input data is done -->
+	<!-- Edit custom scenario settings modal -->
+	<div id="edit-custom-settings-modal" class="modal fade" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title">Editing Scenario: {{ activeScenario.name }} (Settings)</h4>
+				</div>
+				<div class="modal-body">
+					Edit stuff here
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Edit custom scenario inputs modal -->
 	<div id="edit-custom-inputs-modal" class="modal fade" role="dialog" data-backdrop="static" tabindex="-1" data-keyboard="false">
 		<div class="modal-dialog edit-custom-inputs-modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Editing Scenario: <span class="underline">{{ activeScenario.name }}</span></h4>
+					<h4 class="modal-title">Editing Scenario: <span class="underline">{{ activeScenario.name }}</span> (Data)</h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">
@@ -363,7 +381,7 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-        			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
 					<h4 class="modal-title">Warning</h4>
 				</div>
 				<div class="modal-body">

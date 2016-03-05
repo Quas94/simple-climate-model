@@ -596,6 +596,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.editCustomInputsChanged = false;
 		};
 
+		// called when the custom settings modal is opened
+		$scope.openEditScenarioSettings = function() {
+
+		};
+
 		// changes mode when the edit custom inputs button is clicked
 		$scope.editInputsSetMode = function(mode) {
 			$scope.editCustomInputsMode = mode;
