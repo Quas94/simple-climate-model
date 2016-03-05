@@ -262,6 +262,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// set new chart to be active input chart and make it visible
 			$scope.inputChartActive = chart;
 			$scope.setChartVisible(chart, true);
+			// if the 'edit data' modal is open, also update the chart being displayed in that, and set mode to initial
+			$scope.plotCustomInputsChart();
+			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
 		};
 
 		// destroys output charts only

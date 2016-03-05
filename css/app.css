@@ -26,9 +26,16 @@
   padding-left: 0;
 }
 
-.minimal-padding {
-  padding-left: 3px;
-  padding-right: 3px;
+.no-padding {
+  padding: 0;
+}
+
+.min-padding-right {
+  padding-right: 5px;
+}
+
+.min-padding-left {
+  padding-left: 5px;
 }
 
 .no-bottom-margin {
@@ -40,12 +47,21 @@
   margin-bottom: 1px;
 }
 
+.full-width {
+  width: 100%;
+}
+
 .padding-20px {
   padding-bottom: 20px;
 }
 
 .btn-in-heading {
   margin-top: -1px;
+}
+
+/* Keeps btn-inverse font black at all times, instead of changing to white which is hard to read */
+.btn-inverse:hover, .btn-inverse:active, .btn-inverse:focus {
+  color: #000;
 }
 
 .textarea-no-resize {
@@ -208,3 +224,6 @@ div[id*='base-chart-'] {
   background-color: #fff;
 }
 
+.underline {
+  text-decoration: underline;
+}

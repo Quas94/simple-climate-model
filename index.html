@@ -89,9 +89,11 @@
 							<div class="panel-heading">Actions</div>
 							<div class="panel-body">
 								<button class="btn btn-primary btn-sm btn-wide" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
+								<button class="btn btn-default btn-sm btn-wide" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()">Edit Scenario Settings</button>
+								<button class="btn btn-default btn-sm btn-wide" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" title="Edit input values {{ standardActive == 'active' ? '(enabled for advanced mode only)' : '' }}" ng-click="openCustomInputEdits()">Edit Scenario Data</button>
 								<button class="btn btn-default btn-sm btn-wide" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
-								<button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button>
-								<button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button>
+								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
+								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button> -->
 								<button class="btn btn-danger btn-sm btn-wide" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
 							</div>
 						</div>
@@ -302,14 +304,17 @@
 		<div class="modal-dialog edit-custom-inputs-modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Edit Scenario Input Data</h4>
+					<h4 class="modal-title">Editing Scenario: <span class="underline">{{ activeScenario.name }}</span></h4>
 				</div>
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-md-3">
-							<p>You are currently editing:</p>
-							<p>Scenario: {{ activeScenario.name }}</p>
-							<p>Chart: {{ inputChartActive.name }}</p>
+							<span class="dropdown">
+								<button class="btn btn-inverse btn-sm btn-wide dropdown-toggle" type="button" data-toggle="dropdown" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">{{ inputChartActive.name }} <span class="caret"></span></button>
+								<ul class="dropdown-menu full-width">
+									<li ng-repeat="chart in inputChartInfos"><a href="#" ng-click="selectInputChart(chart)">{{ chart.name }}</a></li>
+								</ul>
+							</span>
 							<hr />
 							<div id="edit-custom-inputs-btn" ng-if="editCustomInputsMode == EDIT_MODE_INITIAL">
 								<button class="btn btn-default" ng-click="editInputsSetMode(EDIT_MODE_FORM)">Edit</button>
@@ -325,13 +330,13 @@
 									<input class="form-control" type="text" placeholder="end year" ng-model="editCustomInputsFields.endYear" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
 									<input class="form-control" type="text" placeholder="end value" ng-model="editCustomInputsFields.endValue" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
 								</div>
-								<div class="row" ng-if="editCustomInputsMode == EDIT_MODE_FORM">
-									<div class="col-xs-5 col-xs-offset-2 minimal-padding"><button class="btn btn-primary btn-wide" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Cancel</button></div>
-									<div class="col-xs-5 minimal-padding"><button class="btn btn-warning btn-wide" ng-click="editInputsTest()">Test</button></div>
+								<div ng-if="editCustomInputsMode == EDIT_MODE_FORM">
+									<div class="col-xs-6 no-padding min-padding-right"><button class="btn btn-primary btn-wide" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Cancel</button></div>
+									<div class="col-xs-6 no-padding min-padding-left"><button class="btn btn-warning btn-wide" ng-click="editInputsTest()">Test</button></div>
 								</div>
-								<div class="row" ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
-									<div class="col-xs-5 col-xs-offset-2 minimal-padding"><button class="btn btn-primary btn-wide" ng-click="editInputsConfirmationChoice(false)">Retry</button></div>
-									<div class="col-xs-5 minimal-padding"><button class="btn btn-success btn-wide" ng-click="editInputsConfirmationChoice(true)">Save</button></div>
+								<div ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
+									<div class="col-xs-6 no-padding min-padding-right"><button class="btn btn-primary btn-wide" ng-click="editInputsConfirmationChoice(false)">Retry</button></div>
+									<div class="col-xs-6 no-padding min-padding-left"><button class="btn btn-success btn-wide" ng-click="editInputsConfirmationChoice(true)">Save</button></div>
 								</div>
 								<div class="clearfix"></div>
 								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px" ng-bind-html="editCustomInputsError"></p>
