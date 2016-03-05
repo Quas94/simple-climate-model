@@ -12,7 +12,6 @@ Milestones:
 
 Imminent TODO list:
 - input charts for custom scenario years are a bit off
-- sometimes lines are squiggly when editing
 
 - adding additional years to scenario inputs
   -- should add year range to details panel

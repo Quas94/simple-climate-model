@@ -791,6 +791,20 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.createScenarioEndYearGreater = function() {
 			return (Number($scope.createScenarioEndYear) > Number($scope.createScenarioStartYear));
 		};
+
+		$scope.createScenarioButtonEnabled = function() {
+			// required for based and non-based custom scenarios
+			if ($scope.createScenarioName == '' || $scope.scenarioNameTaken()) {
+				return false;
+			}
+			// required for based custom scenarios
+			if ($scope.createScenarioBase == 0 && (!$scope.createScenarioValidateStartYear() ||
+				!$scope.createScenarioValidateEndYear() || !$scope.createScenarioEndYearGreater())) {
+				return false;
+			}
+			// success
+			return true;
+		};
 	}]);
 
 // page has fully loaded
