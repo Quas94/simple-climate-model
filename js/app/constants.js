@@ -5,9 +5,11 @@
  */
 
 /**
- * The maximum year that simulations can run until
+ * Simulation year bounds and constraints
  */
+var MIN_SIMULATION_YEAR = 0;
 var MAX_SIMULATION_YEAR = 10000;
+var MIN_NUM_YEARS = 100; // scenarios cannot run for less than 100 years
 
 /**
  * Default scenarios

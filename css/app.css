@@ -16,6 +16,23 @@
   z-index: 11 !important; /* modals on top of the hints */
 }
 
+/** Slider */
+.slider.slider-horizontal {
+  width: 90% !important;
+}
+
+.slider-selection {
+  background: #414141;
+}
+
+.min-slider-handle, .max-slider-handle {
+  background: #414141;
+}
+
+.slider-track-low, .slider-track-high {
+  /* background: #BABABA; */
+}
+
 .main {
 	padding-top: 70px;
 }
@@ -73,6 +90,10 @@
   margin-top: -1px;
 }
 
+.text-center {
+  text-align: center;
+}
+
 /* Keeps btn-inverse font black at all times, instead of changing to white which is hard to read */
 .btn-inverse:hover, .btn-inverse:active, .btn-inverse:focus {
   color: #000;
@@ -94,6 +115,10 @@
   color: green;
 }
 
+.span-highlight {
+  color: orange;
+}
+
 /**
  * Modal stuff: progress modal, edit globals modal, etc
  */
@@ -102,7 +127,7 @@
   text-align: center;
 }
 
-#confirmation-modal, #scenario-detail-modal {
+#confirmation-modal, #scenario-detail-modal, #edit-custom-settings-modal {
   top: 25%;
 }
 

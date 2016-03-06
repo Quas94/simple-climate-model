@@ -192,3 +192,28 @@ var isValidYear = function(year) {
     
     return true;
 };
+
+// updates the supplied dataset when the year range has changed
+var yearsAltered = function(data, range) {
+    // loop through every year of the new range
+    // if before old range, set to same as the value of first year in old range
+    // if after old range, set to same as the value of last year in old range
+    // otherwise just copy
+    var curYearBase = range.newMin;
+    while (curYearBase <= range.newMax) {
+        for (var curYear = curYearBase; curYear < curYearBase + 1; curYear += DEFAULT_SIM_CONSTS.DT) {
+            // go through 1 time step at a time
+            if (curYear <= range.min) {
+                // before old range
+
+            } else if (curYear >= range.max) {
+                // after old range
+
+            } else {
+                // within old range, simply copy
+
+            }
+        }
+        curYearBase++;
+    }
+};

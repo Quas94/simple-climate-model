@@ -16,7 +16,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// - web worker support
 		// - object.keys
 		if (typeof(Worker) === 'undefined' ||
-			new Object().hasOwnProperty('keys')) { // @TODO check if this is a valid method for checking for support
+			new Object().hasOwnProperty('keys')) {
 
 			$('#warning-modal').modal('show');
 		}
@@ -25,7 +25,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// create a copy of the default simulation constants to use as our 'global variables'
 		$scope.globalVariables = objcpy(DEFAULT_SIM_CONSTS);
-		// fetch the default scenarios to begin with
+		// whether the app is in standard mode or advanced mode
 		$scope.standardActive = 'active'; // start with standard mode
 		$scope.advancedActive = '';
 		// make sure select input for create scenario modal always has access to default scenario list, to base new scenarios off of
@@ -67,6 +67,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.createScenarioStartYear = '';
 		$scope.createScenarioEndYear = '';
 
+		// whether or not the edit inputs modal is open
+		$scope.editInputsOpen = false;
 		// status of the 'save' button in the edit custom scenario inputs modal
 		$scope.editInputsSaveDisabled = true;
 		// modes of the edit custom inputs modal
@@ -85,6 +87,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.editCustomInputsBackup = null;
 		// flag for whether or not changes were made in the edit custom data modal
 		$scope.editCustomInputsChanged = false;
+
+		// custom scenario settings
+		$scope.customScenarioYears = {};
+		$scope.editScenarioSettingsError = '';
+		$scope.editScenarioSettingsWarning = '';
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -263,8 +270,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.inputChartActive = chart;
 			$scope.setChartVisible(chart, true);
 			// if the 'edit data' modal is open, also update the chart being displayed in that, and set mode to initial
-			$scope.plotCustomInputsChart();
-			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
+			if ($scope.editInputsOpen) {
+				$scope.plotCustomInputsChart();
+				$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
+			}
 		};
 
 		// destroys output charts only
@@ -313,7 +322,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			var setup;
 			if ($scope.activeScenario.id >= CUSTOM_SCENARIO_ID_START) {
 				setup = simulationSetupReducedCustom(customScenarioData[$scope.activeScenario.id]);
-				// setup = customScenarioData[$scope.activeScenario.id];
 			} else {
 				setup = simulationSetupReduced($scope.activeScenario.id);
 			}
@@ -594,11 +602,82 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.plotCustomInputsChart();
 			// set changed flag to false
 			$scope.editCustomInputsChanged = false;
+			// set open flag to true
+			$scope.editInputsOpen = true;
+		};
+
+		// saves the changes made in the edit custom inputs modal, and clears the fields
+		$scope.closeCustomInputEdits = function() {
+			// set inputs mode to initial
+			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
+			// update flag
+			$scope.editInputsOpen = false;
+
+			// if inputs were changed, redraw the current active input chart
+			if ($scope.editCustomInputsChanged) {
+				$scope.destroyCharts();
+				$scope.showInputCharts();
+			}
 		};
 
 		// called when the custom settings modal is opened
 		$scope.openEditScenarioSettings = function() {
+			// update years model
+			var data = customScenarioData[$scope.activeScenario.id];
+			var min = data.years[0];
+			var max = data.years[data.years.length - 1];
+			var csy = $scope.customScenarioYears;
+			csy.min = min;
+			csy.max = max;
+			csy.newMin = min;
+			csy.newMax = max;
+			// update slider positions
+			numYearsSlider.setValue([min, max]);
+			// set error and warning to blank
+			$scope.editScenarioSettingsError = '';
+			$scope.editScenarioSettingsWarning = '';
+		};
 
+		var numYearsSlider = new Slider('#numYearsSlider', {
+			step: 10,
+			tooltip: 'hide',
+			min: MIN_SIMULATION_YEAR,
+			max: MAX_SIMULATION_YEAR,
+			value: [ MIN_SIMULATION_YEAR, MAX_SIMULATION_YEAR ]
+		});
+
+		// attach listeners to slider
+		numYearsSlider.on('slide', function(value) {
+			var valueA = value[0];
+			var valueB = value[1];
+			// set newMin (use Math.min/max because sometimes value[0] < value[1] due to a bug in bootstrap-slider library)
+			$scope.customScenarioYears.newMin = Math.min(valueA, valueB);
+			$scope.customScenarioYears.newMax = Math.max(valueA, valueB);
+			// update warning
+			var csy = $scope.customScenarioYears;
+			var deletion = (csy.newMin > csy.min) || (csy.newMax < csy.max);
+			var diffSatisfactory = (Math.abs(csy.newMin - csy.newMax) >= MIN_NUM_YEARS);
+			// use $timeout to force into angular's digest cycle
+			$timeout(function() {
+				if (deletion) {
+					$scope.editScenarioSettingsWarning =
+						'You are deleting years. The input data for those years will also be deleted (unrecoverable).';
+				} else {
+					$scope.editScenarioSettingsWarning = '';
+				}
+				if (!diffSatisfactory) {
+					$scope.editScenarioSettingsError = 'Scenario must run for a minimum of ' + MIN_NUM_YEARS + ' years.';
+				} else {
+					$scope.editScenarioSettingsError = '';
+				}
+			}, 0);
+		});
+
+		// modal has been saved and closed, so update the input datasets
+		$scope.tryEditScenarioSettings = function() {
+			var range = $scope.customScenarioYears;
+			var data = customScenarioData[$scope.activeScenario.id];
+			yearsAltered(data, range);
 		};
 
 		// changes mode when the edit custom inputs button is clicked
@@ -610,18 +689,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.editCustomInputsFields = {};
 				$scope.editCustomInputsError = '';
 				$scope.editCustomInputsSuccess = '';
-			}
-		};
-
-		// saves the changes made in the edit custom inputs modal, and clears the fields
-		$scope.closeCustomInputEdits = function() {
-			// set inputs mode to initial
-			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
-
-			// if inputs were changed, redraw the current active input chart
-			if ($scope.editCustomInputsChanged) {
-				$scope.destroyCharts();
-				$scope.showInputCharts();
 			}
 		};
 

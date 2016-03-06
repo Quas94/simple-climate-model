@@ -26,6 +26,10 @@
 	<!-- Chartist.js minified js library -->
 	<script src="./js/chartist.min.js"></script>
 
+	<!-- Bootstrap slider -->
+	<link rel="stylesheet" type="text/css" href="./css/bootstrap-slider.min.css">
+	<script src="./js/bootstrap-slider.min.js"></script>
+
 	<!-- Our sources -->
 	<!-- Our custom CSS files -->
 	<link rel="stylesheet" type="text/css" href="./css/app.css">
@@ -301,7 +305,7 @@
 	</div>
 
 	<!-- Edit custom scenario settings modal -->
-	<div id="edit-custom-settings-modal" class="modal fade" role="dialog" tabindex="-1">
+	<div id="edit-custom-settings-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -309,10 +313,16 @@
 					<h4 class="modal-title">Editing Scenario: {{ activeScenario.name }} (Settings)</h4>
 				</div>
 				<div class="modal-body">
-					Edit stuff here
+					<div class="text-center">
+						<p>Years: {{ customScenarioYears.newMin }} - {{ customScenarioYears.newMax }}</p>
+						<p><input id="numYearsSlider" type="text" /></p>
+						<p ng-if="editScenarioSettingsWarning !== ''" class="span-highlight">{{ editScenarioSettingsWarning }}</p>
+						<p ng-if="editScenarioSettingsError !== ''" class="span-error">{{ editScenarioSettingsError }}</p>
+					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" ng-click="tryEditScenarioSettings()" ng-disabled="editScenarioSettingsError !== ''" data-dismiss="modal">Update</button>
 				</div>
 			</div>
 		</div>
