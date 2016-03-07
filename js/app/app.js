@@ -586,7 +586,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// plots the custom inputs chart in the edit custom data modal
 		$scope.plotCustomInputsChart = function() {
-			var editData = customScenarioData[$scope.activeScenario.id];
+			// reduce the data for plotting only
+			var editData = simulationSetupReducedCustom(customScenarioData[$scope.activeScenario.id]);
 			var editDataInput;
 			if ($scope.inputChartActive.varname == 'alb') {
 				editDataInput = [ editData.alb ];
@@ -674,14 +675,24 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}, 0);
 		});
 
+		// whether or not scenario years have been altered
+		$scope.scenarioSettingsChanged = function() {
+			return ($scope.customScenarioYears.newMin !== $scope.customScenarioYears.min ||
+					$scope.customScenarioYears.newMax !== $scope.customScenarioYears.max);
+		};
+
 		// modal has been saved and closed, so update the input datasets
-		$scope.tryEditScenarioSettings = function() {
-			var range = $scope.customScenarioYears;
-			var data = customScenarioData[$scope.activeScenario.id];
-			// update data values
-			yearsAltered(data, range);
-			// re-draw charts to show changes
-			$scope.showInputCharts();
+		$scope.editScenarioSettings = function() {
+			if ($scope.scenarioSettingsChanged()) { // no need to update if no changes were made
+				var range = $scope.customScenarioYears;
+				var data = customScenarioData[$scope.activeScenario.id];
+				// update data values
+				yearsAltered(data, range);
+				// re-draw input charts to show changes
+				$scope.showInputCharts();
+				// purge output charts because inputs have been changed
+				$scope.destroyOutputCharts();
+			}
 		};
 
 		// changes mode when the edit custom inputs button is clicked
