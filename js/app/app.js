@@ -641,6 +641,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		var numYearsSlider = new Slider('#numYearsSlider', {
 			step: 10,
 			tooltip: 'hide',
+			focus: true,
 			min: MIN_SIMULATION_YEAR,
 			max: MAX_SIMULATION_YEAR,
 			value: [ MIN_SIMULATION_YEAR, MAX_SIMULATION_YEAR ]

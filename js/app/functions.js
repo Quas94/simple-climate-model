@@ -278,6 +278,11 @@ var yearsAltered = function(data, range) {
             data.TSI.push(oldData.TSI[oldIndex]);
             data.alb.push(oldData.alb[oldIndex]);
             // don't push years, done at the top of this loop
+
+            // if it's the very last year, don't do the time steps until just before the next year.
+            if (curYearBase === range.newMax) {
+                break;
+            }
         }
         curYearBase++;
     }
