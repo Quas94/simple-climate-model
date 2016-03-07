@@ -193,26 +193,91 @@ var isValidYear = function(year) {
     return true;
 };
 
+// checks whether all the arrays within the given array all have equal length
+var arrLensEqual = function(twoDimArray) {
+    if (twoDimArray.length < 2) {
+        throw new Error('Param given to arrLensEqual() only has ' + twoDimArray.length + ' element(s).');
+    }
+    var len = twoDimArray[0].length;
+    for (var i = 1; i < twoDimArray.length; i++) {
+        if (twoDimArray[i].length !== len) {
+            return false;
+        }
+    }
+    return true;
+};
+
 // updates the supplied dataset when the year range has changed
 var yearsAltered = function(data, range) {
+    // check data lengths
+    if (!arrLensEqual([data.emissions.CO2, data.emissions.CH4, data.emissions.SO2, data.emissions.volc, data.TSI, data.alb])) {
+        throw new Error('Array lengths in data ');
+    }
+    // make a copy of old data
+    var oldData = {
+        // scenario: data.scenario,
+        emissions: {
+            CO2: arrcpy(data.emissions.CO2),
+            CH4: arrcpy(data.emissions.CH4),
+            SO2: arrcpy(data.emissions.SO2),
+            volc: arrcpy(data.emissions.volc)
+        },
+        TSI: arrcpy(data.TSI),
+        // mTSI: data.mTSI,
+        alb: arrcpy(data.alb),
+        years: arrcpy(data.years)
+    };
+    // clear the old data references
+    data.emissions.CO2.length = 0;
+    data.emissions.CH4.length = 0;
+    data.emissions.SO2.length = 0;
+    data.emissions.volc.length = 0;
+    data.TSI.length = 0;
+    data.alb.length = 0;
+    data.years.length = 0;
     // loop through every year of the new range
     // if before old range, set to same as the value of first year in old range
     // if after old range, set to same as the value of last year in old range
     // otherwise just copy
     var curYearBase = range.newMin;
+    // the index of the old year's array we're up to
+    var oldYearIndex = -1;
+    // var debugCount = 0;
     while (curYearBase <= range.newMax) {
-        for (var curYear = curYearBase; curYear < curYearBase + 1; curYear += DEFAULT_SIM_CONSTS.DT) {
-            // go through 1 time step at a time
+        // set oldYearIndex to the start if we've entered the old range
+        if (oldYearIndex === -1 && curYearBase >= range.min && curYearBase <= range.max) {
+            // initialise the index to the correct value
+            oldYearIndex = oldData.years.indexOf(curYearBase);
+        }
+        var one = 0.99; // rounding issues. if one == 1, then the 'for' loop below will iterate an extra time (0.9999... < 1)
+        for (var curYear = curYearBase; curYear < curYearBase + one; curYear += DEFAULT_SIM_CONSTS.DT) {
+            // if (debugCount < 100) { debugCount++; console.log(debugCount + ' - ' + curYear); }
+            // add to years array
+            data.years.push(curYear);
+            var oldIndex;
             if (curYear <= range.min) {
                 // before old range
-
+                oldIndex = 0; // set to first index of old range
             } else if (curYear >= range.max) {
                 // after old range
-
+                oldIndex = oldData.emissions.CO2.length - 1; // all lengths should be equal, set to last index of old range
             } else {
                 // within old range, simply copy
-
+                oldIndex = oldYearIndex;
+                // increment oldYearIndex
+                oldYearIndex++;
             }
+            // copy oldData[oldIndex] into data
+            data.emissions.CO2.push(oldData.emissions.CO2[oldIndex]);
+            data.emissions.CH4.push(oldData.emissions.CH4[oldIndex]);
+            data.emissions.SO2.push(oldData.emissions.SO2[oldIndex]);
+            // for volc data, if out of old range, set to 0 flat
+            if (curYear >= range.min && curYear <= range.max) data.emissions.volc.push(oldData.emissions.volc[oldIndex]);
+            else data.emissions.volc.push(0);
+            // TSI and alb
+            data.TSI.push(oldData.TSI[oldIndex]);
+            data.alb.push(oldData.alb[oldIndex]);
+            // don't push years, done at the top of this loop
         }
         curYearBase++;
     }

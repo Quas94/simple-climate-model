@@ -677,7 +677,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.tryEditScenarioSettings = function() {
 			var range = $scope.customScenarioYears;
 			var data = customScenarioData[$scope.activeScenario.id];
+			// update data values
 			yearsAltered(data, range);
+			// re-draw charts to show changes
+			$scope.showInputCharts();
 		};
 
 		// changes mode when the edit custom inputs button is clicked
