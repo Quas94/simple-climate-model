@@ -335,6 +335,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			document.getElementById('chart-so2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.SO2 ] };
 			var albChart = plotData('chart-alb', setup.years, [ setup.alb ] );
 			document.getElementById('chart-alb').plotInfo = { y: setup.years, data: [ setup.alb ] };
+			var solarChart = plotData('chart-solar-input', setup.years, [ setup.TSI ]);
+			document.getElementById('chart-solar-input').plotInfo = { y: setup.years, data: [ setup.TSI ] };
 			var volcChart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ]);
 			document.getElementById('chart-volc-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.volc ] };
 
@@ -589,8 +591,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// reduce the data for plotting only
 			var editData = simulationSetupReducedCustom(customScenarioData[$scope.activeScenario.id]);
 			var editDataInput;
-			if ($scope.inputChartActive.varname == 'alb') {
+			if ($scope.inputChartActive.varname === 'alb') {
 				editDataInput = [ editData.alb ];
+			} else if ($scope.inputChartActive.varname === 'TSI') {
+				editDataInput = [ editData.TSI ];
 			} else {
 				editDataInput = [ editData.emissions[$scope.inputChartActive.varname] ];
 			}
@@ -765,6 +769,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			var dataCopyValues;
 			if ($scope.inputChartActive.varname === 'alb') {
 				dataCopyValues = arrcpy(currentCustomScenarioData.alb);
+			} else if ($scope.inputChartActive.varname === 'TSI') {
+				dataCopyValues = arrcpy(currentCustomScenarioData.TSI);
 			} else {
 				dataCopyValues = arrcpy(currentCustomScenarioData.emissions[$scope.inputChartActive.varname]);
 			}
@@ -790,6 +796,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			if ($scope.inputChartActive.varname === 'alb') {
 				$scope.editCustomInputsBackup = currentCustomScenarioData.alb;
 				currentCustomScenarioData.alb = dataCopyValues;
+			} else if ($scope.inputChartActive.varname === 'TSI') {
+				$scope.editCustomInputsBackup = currentCustomScenarioData.TSI;
+				currentCustomScenarioData.TSI = dataCopyValues;
 			} else {
 				$scope.editCustomInputsBackup = currentCustomScenarioData.emissions[$scope.inputChartActive.varname];
 				currentCustomScenarioData.emissions[$scope.inputChartActive.varname] = dataCopyValues;
@@ -808,6 +817,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				// discard the changes - re-instate backup
 				if ($scope.inputChartActive.varname === 'alb') {
 					customScenarioData[$scope.activeScenario.id].alb = $scope.editCustomInputsBackup;
+				} else if ($scope.inputChartActive.varname === 'TSI') {
+					customScenarioData[$scope.activeScenario.id].TSI = $scope.editCustomInputsBackup;
 				} else {
 					customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
 				}
