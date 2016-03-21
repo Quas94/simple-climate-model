@@ -16,7 +16,6 @@ Imminent TODO list:
 Later TODO list:
 - chart axis labels, legend
 - outputting results in savable data format
-- confirm which TSI and alb datasets to use, currently using 'defaults' (app.js -> createScenario, ~line 510)
 - ability to save/load global variables set, and make it clearer that global variables are global across scenarios? maybe rename them to 'Simulation variables' and allow them to be attached to scenarios (and thus vary between)
 - validation of global variables when user modifies them
 - revisit popup windows name detection once modifying scenarios is working
