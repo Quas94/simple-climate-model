@@ -92,6 +92,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.customScenarioYears = {};
 		$scope.editScenarioSettingsError = '';
 		$scope.editScenarioSettingsWarning = '';
+		// default scenario years range
+		var defaultScenarioYearsRange = '';
 
 		// create a 2d array of keys of globalVariables. each first-dimensional element represents a column, and each second-dimensional
 		// element holds the corresponding key of globalVariables in the position
@@ -324,6 +326,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				setup = simulationSetupReducedCustom(customScenarioData[$scope.activeScenario.id]);
 			} else {
 				setup = simulationSetupReduced($scope.activeScenario.id);
+				// also set the years range variable if it is a default scenario
+				defaultScenarioYearsRange = setup.years[0] + ' - ' + setup.years[setup.years.length - 1];
 			}
 
 			// draw input charts and link plot data to the element for use by popup window setup later
@@ -623,6 +627,25 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				$scope.destroyCharts();
 				$scope.showInputCharts();
 			}
+		};
+
+		// returns a string displaying the range of years in the current scenario
+		$scope.getYearsRange = function() {
+			if ($scope.activeScenario === null) {
+				// no current scenario, return blank string
+				return '';
+			}
+			var startYear;
+			var endYear;
+			if ($scope.standardActive === 'active') {
+				return defaultScenarioYearsRange;
+			} else {
+				// advanced mode, ie. $scope.advancedActive === 'active'
+				var yearsArray = customScenarioData[$scope.activeScenario.id].years;
+				startYear = yearsArray[0];
+				endYear = yearsArray[yearsArray.length - 1];
+			}
+			return startYear + ' - ' + endYear;
 		};
 
 		// called when the custom settings modal is opened

@@ -414,7 +414,7 @@ var simulationSetup = function(scenarioId) {
 		years: years
 	};
 	return ret;
-}
+};
 
 /**
  * Used in place of a direct simulationSetup() call from within app.mainCtrl.$scope.selectScenario().

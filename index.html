@@ -124,6 +124,7 @@
 							<div class="panel-heading">Details</div>
 							<div class="panel-body">
 								<p>Scenario Name: {{ activeScenario.name }}</p>
+								<p>Scenario Range: {{ getYearsRange() }}</p>
 								<p>Description: {{ getBriefDescription(activeScenario.id) }}</p>
 								<button class="btn" data-toggle="modal" data-target="#scenario-detail-modal">More...</button>
 							</div>

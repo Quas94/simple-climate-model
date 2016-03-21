@@ -11,10 +11,7 @@ Milestones:
 - Advanced Features
 
 Imminent TODO list:
-- fix year increments
-
-- adding additional years to scenario inputs
-  -- should add year range to details panel
+- fix year increments - caused by year endings that aren't quite right (see default scenario years range)
 
 Later TODO list:
 - chart axis labels, legend
