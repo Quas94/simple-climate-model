@@ -22,9 +22,9 @@
 	<link rel="stylesheet" type="text/css" href=".././css/app.css">
 </head>
 <body>
-	<div class="panel panel-default">
+	<div class="panel panel-default no-border">
 		<div class="panel-heading" id="panel-title">Chart</div>
-		<div class="panel-body">
+		<div class="panel-body no-padding-bottom">
 			<div class="ct-chart" id="popupChart"></div>
 		</div>
 	</div>
@@ -39,7 +39,7 @@
 
 		var id = 'popupChart';
 
-		plotData(id, data.years, data.data);
+		plotData(id, data.years, data.data, true);
 
 	</script>
 </body>

@@ -14,7 +14,7 @@ var getChartOptions = function() {
 	if (winWidth >= BOOTSTRAP_MIN_WIDTH_MD) {
 		// we're on the larger setting
 		var sidebarWidth = winWidth / 12; // sidebar takes 1 column only
-		width = (winWidth - sidebarWidth) / 2 * 0.9; // ~10% of space reserved for labels, margins etc
+		width = Math.round((winWidth - sidebarWidth) / 2 * 0.9); // ~10% of space reserved for labels, margins etc
 	} else {
 		// @TODO smaller settings
 	}
@@ -40,7 +40,7 @@ var getChartOptions = function() {
  * Plots the set of data on the page (onto the div element with the given id).
  * Automatically detects the number of sets of data and deals with it accordingly.
  */
-var plotData = function(chartId, years, data) {
+var plotData = function(chartId, years, data, popup) {
 	// make sure that data series lengths are all equivalent, and same as years length
 	for (var i = 0; i < data.length; i++) {
 		// console.log('data = ' + JSON.stringify(data));
@@ -50,6 +50,15 @@ var plotData = function(chartId, years, data) {
 	}
 
 	var options = getChartOptions();
+
+	// if this is plotting a popup chart, override default chart options size
+	if (typeof popup !== 'undefined' && popup) {
+		// console.log('Setting popup dimensions! innerWidth = ' + window.innerWidth);
+		options.width = Math.round(window.innerWidth * 0.9);
+		options.height = Math.round(options.width / 4 * 2.75); // a little less than 3 quarters, because of panel title height
+	}
+	// else console.log('Setting normal dimensions.');
+
 	var plot = {
 		labels: [],
 		series: []

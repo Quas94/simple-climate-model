@@ -61,6 +61,14 @@
   padding: 0;
 }
 
+.no-padding-bottom {
+  padding-bottom: 0;
+}
+
+.no-border {
+  border: 0;
+}
+
 .min-padding-right {
   padding-right: 5px;
 }

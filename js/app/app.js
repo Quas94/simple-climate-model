@@ -222,7 +222,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				title: popupTitle
 			};
 			// open the popup, which will access the values set above
-			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=1024,height=768');
+			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=800,height=600');
 			// add to list
 			popupList.push(popup);
 			$scope.popupListLength = popupList.length;

@@ -10,10 +10,10 @@ Milestones:
 - Polished Basic/Intermediate Functionality [done]
 - Advanced Features
 
-Imminent TODO list:
+Bugs list:
 - fix year increments - caused by year endings that aren't quite right (see default scenario years range)
 
-Later TODO list:
+To-do list:
 - chart axis labels, legend
 - outputting results in savable data format
 - ability to save/load global variables set, and make it clearer that global variables are global across scenarios? maybe rename them to 'Simulation variables' and allow them to be attached to scenarios (and thus vary between)
