@@ -48,16 +48,16 @@ var getChartOptions = function(units) {
 					},
 					textAnchor: 'middle'
 				},
-                axisY: {
-                    axisTitle: units,
-                    axisClass: 'ct-axis-title',
-                    offset: {
+				axisY: {
+					axisTitle: units,
+					axisClass: 'ct-axis-title',
+					offset: {
 						x: 0,
 						y: 12
-                    },
+					},
 					textAnchor: 'middle',
-                    flipTitle: true
-                }
+					flipTitle: true
+				}
 			})
 		],
 	};

@@ -71,7 +71,15 @@ var OUTPUT_CHART_INFOS = [
 	{ id: 'chart-ch4-concentration', name: 'CH4 Concentration', lines: 1 },
 	{ id: 'chart-co2-concentration', name: 'CO2 Concentration', lines: 1 },
 	// Chartbase has to come last as it doesn't have absolute positioning
-	{ id: 'base-chart-temperatures', name: 'Surface and Ocean Temperatures', lines: 2 }
+	{
+		id: 'base-chart-temperatures',
+		name: 'Surface and Ocean Temperatures',
+		lines: 2,
+		legend: {
+			'red': 'Surface',
+			'blue': 'Ocean'
+		}
+	}
 ];
 var OUTPUT_AXIS_LABELS = {
 	'base-chart-temperatures': 'Degrees Centigrade',

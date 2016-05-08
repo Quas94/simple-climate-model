@@ -129,7 +129,7 @@
 								<p>Scenario Name: {{ activeScenario.name }}</p>
 								<p>Scenario Range: {{ getYearsRange() }}</p>
 								<p ng-bind-html="'Description: ' + getBriefDescription(activeScenario.id)"></p>
-								<button class="btn" data-toggle="modal" data-target="#scenario-detail-modal">More...</button>
+								<button class="btn" data-toggle="modal" data-target="#scenario-detail-modal">Full Description</button>
 							</div>
 						</div>
 					</div>
@@ -151,6 +151,7 @@
 								<button class="btn btn-sm btn-danger btn-in-heading pull-right hint--bottom" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit the data values on this scenario\'s input charts' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" ng-click="openCustomInputEdits()"><i class="glyphicon glyphicon-pencil"></i></button>
 							</div>
 							<div class="panel-body" id="main-panel">
+								<div id="legend-box-input"></div>
 								<div class="ct-chart" ng-repeat="chart in inputChartInfos" id="{{ chart.id }}" ng-show="isInputChartForcingEnabled(chart.id)"></div>
 								<div class="ct-chart" id="chart-empty" ng-show="!isInputChartForcingEnabled(inputChartActive.id)"></div>
 								<!-- This last one is the base chart for inputs, and is never visible -->
@@ -170,6 +171,13 @@
 								<button class="btn btn-sm btn-info btn-in-heading pull-right hint--bottom-left" data-hint="Open chart in new window" ng-disabled="outputCharts.length == 0" ng-click="popupChart(false)"><i class="glyphicon glyphicon-share"></i></button>
 							</div>
 							<div class="panel-body" id="secondary-panel">
+								<div id="legend-box-output">
+									<div ng-if="scenarioHasRun && outputChartActive.legend != undefined">
+										<p ng-repeat="(key, value) in outputChartActive.legend">
+											<span style="color: {{ key }}"><i class="glyphicon glyphicon-stop"></i> {{ value }}</span>
+										</p>
+									</div>
+								</div>
 								<div class="ct-chart" ng-repeat="chart in outputChartInfos" id="{{ chart.id }}"></div>
 							</div>
 						</div>

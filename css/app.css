@@ -191,6 +191,11 @@ div[id*='chart-'] {
 div[id*='base-chart-'] {
   position: relative;
 }
+div[id*='legend-box-'] {
+  position: absolute;
+  top: 90px;
+  left: 120px;
+}
 
 #chart-empty {
   visibility: visible;

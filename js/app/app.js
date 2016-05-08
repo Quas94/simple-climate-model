@@ -52,6 +52,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// the references to the currently displayed Chartist chart objects
 		$scope.inputCharts = [];
 		$scope.outputCharts = [];
+		// whether or not the currently chosen scenario has been run
+		$scope.scenarioHasRun = false;
 
 		// setup the heading/dropdowns
 		$scope.outputHeading = $scope.outputChartActive.name;
@@ -280,6 +282,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// destroys output charts only
 		$scope.destroyOutputCharts = function() {
+			$scope.scenarioHasRun = false;
 			// set charts to inactive
 			$scope.chartsActive = false;
 			// detach output charts
@@ -460,6 +463,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					var percent = e.data.percent;
 					document.getElementById('simulation-progress-bar').style.width = percent + '%';
 				} else if (e.data.type === 'finish') {
+					$scope.scenarioHasRun = true;
 					$timeout(function() {
 						// close modal progress bar
 						$('#progress-modal').modal('hide');
