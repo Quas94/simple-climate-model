@@ -327,7 +327,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			} else {
 				setup = simulationSetupReduced($scope.activeScenario.id);
 				// also set the years range variable if it is a default scenario
-				defaultScenarioYearsRange = setup.years[0] + ' - ' + setup.years[setup.years.length - 1];
+				defaultScenarioYearsRange = Math.round(setup.years[0]) + ' - ' + Math.round(setup.years[setup.years.length - 1]);
 			}
 
 			// draw input charts and link plot data to the element for use by popup window setup later
@@ -645,7 +645,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				startYear = yearsArray[0];
 				endYear = yearsArray[yearsArray.length - 1];
 			}
-			return startYear + ' - ' + endYear;
+			return Math.round(startYear) + ' - ' + Math.round(endYear);
 		};
 
 		// called when the custom settings modal is opened
