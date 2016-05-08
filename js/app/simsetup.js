@@ -88,6 +88,18 @@ var simulationSetup = function(scenarioId) {
 	switch (scenarioId) {
 		// scenarios dealing with extracting information from 'rcp_hist_RF_CO2e.xls'
 		case 1:
+			scenario = 'RCP3';
+			emissions.CH4 = arrcpy(rcphi[54]);
+			emissions.CO2 = arrcpy(rcphi[53]);
+			emissions.SO2 = arrcpy(rcphi[62]);
+			break;
+		case 2:
+			scenario = 'RCP4.5';
+			emissions.CH4 = arrcpy(rcphi[51]);
+			emissions.CO2 = arrcpy(rcphi[50]);
+			emissions.SO2 = arrcpy(rcphi[61]);
+			break;
+		case 3:
 			scenario = 'RCP6';
 			emissions.CH4 = arrcpy(rcphi[48]);
 			emissions.CO2 = arrcpy(rcphi[47]);
@@ -97,20 +109,8 @@ var simulationSetup = function(scenarioId) {
 				TSI[i] = TSI[0];
 			}
 			break;
-		case 2:
-			scenario = 'RCP45';
-			emissions.CH4 = arrcpy(rcphi[51]);
-			emissions.CO2 = arrcpy(rcphi[50]);
-			emissions.SO2 = arrcpy(rcphi[61]);
-			break;
-		case 3:
-			scenario = 'RCP3';
-			emissions.CH4 = arrcpy(rcphi[54]);
-			emissions.CO2 = arrcpy(rcphi[53]);
-			emissions.SO2 = arrcpy(rcphi[62]);
-			break;
 		case 4:
-			scenario = 'RCP85';
+			scenario = 'RCP8.5';
 			emissions.CH4 = arrcpy(rcphi[57]);
 			emissions.CO2 = arrcpy(rcphi[56]);
 			emissions.SO2 = arrcpy(rcphi[63]);
@@ -281,34 +281,6 @@ var simulationSetup = function(scenarioId) {
 
 			break;
 
-		case 12:
-			scenario = 'Arctic Ice Loss';
-
-			emissions.CH4 = arrcpy(rcphi[57]);
-			emissions.CO2 = arrcpy(rcphi[56]);
-			emissions.SO2 = arrcpy(rcphi[63]);
-
-			var areaIce = 7e6;
-			var areaEarth = 4 * Math.PI * square(6400);
-			var arcticAlbedoChange = (0.9 - 0.1) / 2; // factor of 2 because it only takes effect in the summer
-			var planetAlbedoChange = arcticAlbedoChange * areaIce / (areaIce + areaEarth);
-
-			// set albedo
-			albSet = true;
-			for (var i = 0; i < years.length; i++) {
-				alb[i] = alb0;
-			}
-			var ind1 = arrfind(years, 1980);
-			var ind2 = arrfind(years, 2050);
-			var j = 1;
-			for (var i = ind1; i < ind2; i++, j++) {
-				alb[i] = alb0 - j / (ind2 - ind1 + 1) * planetAlbedoChange;
-			}
-			for (var i = ind2; i < years.length; i++) {
-				alb[i] = alb[ind2 - 1];
-			}
-			break;
-
 		case 13:
 			scenario = 'Forcing switched off at 2020';
 			emissions.CH4 = arrcpy(rcphi[57]); // modified below
@@ -321,36 +293,6 @@ var simulationSetup = function(scenarioId) {
 				emissions.CH4[i] = 0;
 				emissions.CO2[i] = 0;
 				emissions.SO2[i] = 0;
-			}
-			break;
-
-		case 14:
-			scenario = 'High Aerosol Emissions from 2020';
-			emissions.CH4 = arrcpy(rcphi[57]);
-			emissions.CO2 = arrcpy(rcphi[56]);
-			emissions.SO2 = arrcpy(rcphi[63]); // so2 will be modified below
-
-			var ind = arrfind(years, 2020);
-			// for SO2, all indices from 'ind' onwards, set to 1000
-			for (var i = ind; i < years.length; i++) {
-				emissions.SO2[i] = 1000;
-			}
-			break;
-
-		case 15:
-			scenario = 'Albedo increased from 0.3 to 0.32 at 2020';
-			emissions.CH4 = arrcpy(rcphi[57]);
-			emissions.CO2 = arrcpy(rcphi[56]);
-			emissions.SO2 = arrcpy(rcphi[63]);
-
-			var ind = arrfind(years, 2020);
-			// set albedo increase
-			albSet = true;
-			for (var i = 0; i < ind; i++) {
-				alb[i] = alb0;
-			}
-			for (var i = ind; i < years.length; i++) {
-				alb[i] = 0.32;
 			}
 			break;
 

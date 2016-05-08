@@ -27,10 +27,7 @@ var DEFAULT_SCENARIOS = [
 	{ id: 9, name: 'Albedo Increase', isdefault: true },
 	{ id: 10, name: 'RCP85 + Geoengineering 1', isdefault: true },
 	{ id: 11, name: 'RCP85 + Geoengineering 2', isdefault: true },
-	{ id: 12, name: 'Arctic ice loss', isdefault: true },
 	{ id: 13, name: 'Forcing switched off 2020', isdefault: true },
-	{ id: 14, name: 'High aerosol from 2020', isdefault: true },
-	{ id: 15, name: 'Albedo increase from 2020', isdefault: true },
 	{ id: 16, name: 'Changes in TSI', isdefault: true },
 	{ id: 17, name: 'Volcanic Eruption', isdefault: true },
 ];
