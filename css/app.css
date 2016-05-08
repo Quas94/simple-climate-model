@@ -21,8 +21,8 @@
 
 .modal-content {
   z-index: 11 !important; /* modals on top of the hints */
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 /** Slider */
@@ -121,7 +121,7 @@
 
 /* Keeps btn-inverse font black at all times, instead of changing to white which is hard to read */
 .btn-inverse:hover, .btn-inverse:active, .btn-inverse:focus {
-  color: #000;
+  color: #3e3f3a;
 }
 
 .btn:focus {

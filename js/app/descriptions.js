@@ -12,7 +12,7 @@ var DESCRIPTION_CUTOFF_LIMIT = 140; // approximately 2 lines of text
 var DESCRIPTIONS = [];
 
 // array index corresponds to scenario id. check constants.js
-DESCRIPTIONS[1] = 'Radiative forcing reaches 3.1 W/m2 before it returns to 2.6 W/m2 by 2100. This is achieved via ambitious greenhouse gas emissions reductions \
+DESCRIPTIONS[1] = 'Radiative forcing reaches 3.1 W/m2 before it returns to 2.6 W/m2 by 2100. This is achieved via ambitious greenhouse gas emissions reductions.\
 	<div class="padding-10px"></div>\
 	<ul>\
 		<li>Declining use of oil</li>\
@@ -24,7 +24,7 @@ DESCRIPTIONS[1] = 'Radiative forcing reaches 3.1 W/m2 before it returns to 2.6 W
 		<li>CO2 emissions stay at today’s level until 2020, then decline and become negative in 2100</li>\
 		<li>CO2 concentrations peak around 2050, followed by a modest decline to around 400 ppm by 2100</li>\
 		<li>Developed by PBL Netherlands Environmental Assessment Agency</li>';
-DESCRIPTIONS[2] = 'Here radiative forcing is stabilised shortly after year 2100 resulting from relatively ambitious future emissions reductions.\
+DESCRIPTIONS[2] = '<strong>This RCP is developed by the Pacific.</strong> Here radiative forcing is stabilised shortly after year 2100 resulting from relatively ambitious future emissions reductions.\
 	<div class="padding-10px"></div>\
 	<ul>\
 		<li>Lower energy intensity</li>\
@@ -58,13 +58,13 @@ DESCRIPTIONS[4] = 'Often referred to as "Business as Usual". In this scenario th
 		<li>No implementation of climate policies</li>\
 		<li>Comparable to old SRES A1 F1 scenario</li>\
 		<li>Developed by the International Institute for Applied System Analysis in Austria</li>';
-DESCRIPTIONS[7] = 'How would temperatures react to sudden release in CO2?<br />All forcing is kept constant except (i.e. zero emissions) for a 10 year pulse of carbon dioxide (between years 5 and 15) at a rate of 20 PgC/yr. Simulation extends for 2000 years.';
-DESCRIPTIONS[8] = 'How would temperatures react to sudden release in methane?<br />All forcing is kept constant (i.e. zero emissions) except for a 10 year pulse of methane (between years 5 and 15) at a rate of 1000 TgC/yr. Simulation extends for 2000 years.';
-DESCRIPTIONS[9] = 'What would happen if we made the planet more reflective?<br />In this test scenario forcing is kept constant (i.e. zero emissions) except for a jump in the albedo (i.e. an increase in the planetary reflectivity) from 0.31 to 0.4 between years 100 and 1000. Simulation extends for 2000 years.';
-DESCRIPTIONS[10] = 'Geoengineering 1– Can we pump aerosols into the atmosphere to counteract warming?<br />Emissions follow the RCP85 scenario except anthropogenic aerosol emissions are ramped up considerably over the course of the 21st century.';
-DESCRIPTIONS[11] = 'Geoengineering 2. What happens if geoengineering technology suddenly fails?<br />Emissions follow the RCP85 scenario except anthropogenic aerosol emissions are ramped up considerably over the course of the first part of the 21st century. At 2070 aerosol emissions are brought down to zero (to simulate the failure of the geoengineering technology).';
+DESCRIPTIONS[7] = '<p>How would temperatures react to sudden release in CO2?</p><p>All forcing is kept constant except (i.e. zero emissions) for a 10 year pulse of carbon dioxide (between years 5 and 15) at a rate of 20 PgC/yr. Simulation extends for 2000 years.</p>';
+DESCRIPTIONS[8] = '<p>How would temperatures react to sudden release in methane?</p><p>All forcing is kept constant (i.e. zero emissions) except for a 10 year pulse of methane (between years 5 and 15) at a rate of 1000 TgC/yr. Simulation extends for 2000 years.</p>';
+DESCRIPTIONS[9] = '<p>What would happen if we made the planet more reflective?</p><p>In this test scenario forcing is kept constant (i.e. zero emissions) except for a jump in the albedo (i.e. an increase in the planetary reflectivity) from 0.31 to 0.4 between years 100 and 1000. Simulation extends for 2000 years.</p>';
+DESCRIPTIONS[10] = '<p>Can we pump aerosols into the atmosphere to counteract warming?</p><p>Emissions follow the RCP85 scenario except anthropogenic aerosol emissions are ramped up considerably over the course of the 21st century.</p>';
+DESCRIPTIONS[11] = '<p>What happens if geoengineering technology suddenly fails?</p><p>Emissions follow the RCP85 scenario except anthropogenic aerosol emissions are ramped up considerably over the course of the first part of the 21st century. At 2070 aerosol emissions are brought down to zero (to simulate the failure of the geoengineering technology).</p>';
 
-DESCRIPTIONS[13] = 'What would happen if we suddenly stopped all greenhouse gad and aerosol emissions?<br />Emissions initially grow follow the RCP85 scenario but are suddenly reduced to zero in 2020 when fusion technology replaces all energy production.';
+DESCRIPTIONS[13] = '<p>What would happen if we suddenly stopped all greenhouse gad and aerosol emissions?</p><p>Emissions initially grow follow the RCP85 scenario but are suddenly reduced to zero in 2020 when fusion technology replaces all energy production.</p>';
 
-DESCRIPTIONS[16] = 'What happens of Solar output increase or decrease?<br />In this test scenario all forcing is kept constant (i.e. zero emission) except that solar radiation is increased or decreased for two 10 year periods. Simulation extends for 150 years.';
-DESCRIPTIONS[17] = 'How does a large volcanic eruption change global temperatures?<br />In this test scenario all forcing is kept constant (i.e. zero emission) except that between 2000 and 2002 large amounts of volcanic aerosols are released into the atmosphere.';
+DESCRIPTIONS[16] = '<p>What happens of Solar output increase or decrease?</p><p>In this test scenario all forcing is kept constant (i.e. zero emission) except that solar radiation is increased or decreased for two 10 year periods. Simulation extends for 150 years.</p>';
+DESCRIPTIONS[17] = '<p>How does a large volcanic eruption change global temperatures?</p><p>In this test scenario all forcing is kept constant (i.e. zero emission) except that between 2000 and 2002 large amounts of volcanic aerosols are released into the atmosphere.</p>';

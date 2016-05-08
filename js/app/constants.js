@@ -23,13 +23,13 @@ var DEFAULT_SCENARIOS = [
 	{ id: 3, name: 'RCP6', isdefault: true },
 	{ id: 4, name: 'RCP8.5', isdefault: true },
 	{ id: 7, name: 'CO2 Pulse', isdefault: true },
-	{ id: 8, name: 'CH4 Pulse', isdefault: true },
-	{ id: 9, name: 'Albedo Increase', isdefault: true },
-	{ id: 10, name: 'RCP85 + Geoengineering 1', isdefault: true },
-	{ id: 11, name: 'RCP85 + Geoengineering 2', isdefault: true },
-	{ id: 13, name: 'Forcing switched off 2020', isdefault: true },
-	{ id: 16, name: 'Changes in TSI', isdefault: true },
-	{ id: 17, name: 'Volcanic Eruption', isdefault: true },
+	{ id: 8, name: 'Methane Pulse', isdefault: true },
+	{ id: 9, name: 'White Roofs', isdefault: true },
+	{ id: 10, name: 'Geo-Engineering 1', isdefault: true },
+	{ id: 11, name: 'Geo-Engineering 2', isdefault: true },
+	{ id: 13, name: 'Zero Emissions', isdefault: true },
+	{ id: 16, name: 'Solar Variations', isdefault: true },
+	{ id: 17, name: 'Mega Volcano', isdefault: true },
 ];
 
 /**

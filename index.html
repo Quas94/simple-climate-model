@@ -126,10 +126,10 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">Details</div>
 							<div class="panel-body">
-								<p>Scenario Name: {{ activeScenario.name }}</p>
-								<p>Scenario Range: {{ getYearsRange() }}</p>
-								<p ng-bind-html="'Description: ' + getBriefDescription(activeScenario.id)"></p>
-								<button class="btn" data-toggle="modal" data-target="#scenario-detail-modal">Full Description</button>
+								<p><strong>Scenario Name:</strong> {{ activeScenario.name }}</p>
+								<p><strong>Scenario Range:</strong> {{ getYearsRange() }}</p>
+								<p ng-bind-html="getBriefDescription(activeScenario.id)"></p>
+								<button class="btn btn-inverse" data-toggle="modal" data-target="#scenario-detail-modal">Full Description</button>
 							</div>
 						</div>
 					</div>
@@ -304,10 +304,9 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-					<h4 class="modal-title">Scenario {{ activeScenario.name }} - Detailed Information</h4>
+					<h4 class="modal-title">Scenario: {{ activeScenario.name }} - Detailed Information</h4>
 				</div>
 				<div class="modal-body">
-					<h4 class="text-center padding-10px">Description</h4>
 					<p class="text-justify" ng-bind-html="descriptions[activeScenario.id]"></p>
 				</div>
 				<div class="modal-footer">
