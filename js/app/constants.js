@@ -18,10 +18,10 @@ var MIN_NUM_YEARS = 100; // scenarios cannot run for less than 100 years
  */
 var DEFAULT_SCENARIOS = [
 	// id = 0 signifies no scenario
-	{ id: 1, name: 'RCP6', isdefault: true },
-	{ id: 2, name: 'RCP45', isdefault: true },
-	{ id: 3, name: 'RCP3', isdefault: true },
-	{ id: 4, name: 'RCP85', isdefault: true },
+	{ id: 1, name: 'RCP3', isdefault: true },
+	{ id: 2, name: 'RCP4.5', isdefault: true },
+	{ id: 3, name: 'RCP6', isdefault: true },
+	{ id: 4, name: 'RCP8.5', isdefault: true },
 	{ id: 7, name: 'CO2 Pulse', isdefault: true },
 	{ id: 8, name: 'CH4 Pulse', isdefault: true },
 	{ id: 9, name: 'Albedo Increase', isdefault: true },
