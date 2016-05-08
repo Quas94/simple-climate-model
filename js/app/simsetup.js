@@ -104,10 +104,6 @@ var simulationSetup = function(scenarioId) {
 			emissions.CH4 = arrcpy(rcphi[48]);
 			emissions.CO2 = arrcpy(rcphi[47]);
 			emissions.SO2 = arrcpy(rcphi[60]);
-			// set all elements in TSI equal to the first one
-			for (var i = 1; i < TSI.length; i++) {
-				TSI[i] = TSI[0];
-			}
 			break;
 		case 4:
 			scenario = 'RCP8.5';
@@ -128,19 +124,13 @@ var simulationSetup = function(scenarioId) {
 		case 7:
 			// create synthetic time series
 			scenario = 'CO2 Pulse';
-			/*
-			F3 = 0; // SO2
-			F4 = 0; // volcanics
-			F5 = 0; // solar
-			F6 = 0; // internal variability
-			*/
 
 			years = interpC(0, DT, 2000); // equivalent to Matlab syntax of years = 0:DT:2000
 
 			var numYears = years.length;
-			var ts = interpC(1, 1, numYears); // 1:length(years)
-			for (var i = 0; i < ts.length; i++) {
-				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
+			var ts = [];
+			for (var i = 0; i < numYears; i++) {
+				ts.push(0);
 			}
 
 			emissions.CH4 = arrcpy(ts);
@@ -156,28 +146,21 @@ var simulationSetup = function(scenarioId) {
 
 			// solar irradiance
 			mTSI = 1365;
-			// TSIcycle=cos(years/11*2*pi)/4; TSI=mTSI+TSIcycle;
 			for (var i = 0; i < numYears; i++) {
-				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
+				TSI[i] = mTSI;
 			}
 		    break;
 
 		case 8:
 			// create synthetic time series
 			scenario = 'CH4 Pulse';
-			/*
-			F3 = 0; // SO2
-			F4 = 0; // volcanics
-			F5 = 0; // solar
-			F6 = 0; // internal variability
-			*/
 
 			years = interpC(0, DT, 500); // equivalent to Matlab syntax of years = 0:DT:2000
 
 			var numYears = years.length;
-			var ts = interpC(1, 1, numYears); // 1:length(years)
-			for (var i = 0; i < ts.length; i++) {
-				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
+			var ts = [];
+			for (var i = 0; i < numYears; i++) {
+				ts.push(0);
 			}
 
 			emissions.CH4 = arrcpy(ts); // call arrcpy for deep copy because this will be modified
@@ -192,9 +175,8 @@ var simulationSetup = function(scenarioId) {
 
 			// solar irradiance
 			mTSI = 1365;
-			// TSIcycle=cos(years/11*2*pi)/4; TSI=mTSI+TSIcycle;
 			for (var i = 0; i < numYears; i++) {
-				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
+				TSI[i] = mTSI;
 			}
 
 			break;
@@ -202,21 +184,14 @@ var simulationSetup = function(scenarioId) {
 		case 9:
 			// create synthetic time series
 			scenario = 'Albedo Increase';
-			/*
-			F1 = 0;
-			F2 = 0;
-			F3 = 0; // SO2
-			F4 = 0; // volcanics
-			F5 = 1; // solar
-			F6 = 0; // internal variability
-			*/
+
 			years = interpC(0, DT, 2000);
 
 			// ts=(1:length(years))/length(years);
 			var numYears = years.length;
-			var ts = interpC(1, 1, numYears); // 1:length(years)
-			for (var i = 0; i < ts.length; i++) {
-				ts[i] /= numYears; // ts = (1:length(years)) / length(years)
+			var ts = [];
+			for (var i = 0; i < numYears; i++) {
+				ts.push(0);
 			}
 
 			emissions.CH4 = arrcpy(ts);
@@ -226,28 +201,21 @@ var simulationSetup = function(scenarioId) {
 
 			// solar irradiance
 			mTSI = 1365;
-			// TSIcycle=cos(years/11*2*pi)/4; TSI=mTSI+TSIcycle;
 			for (var i = 0; i < numYears; i++) {
-				TSI[i] = mTSI + (cos(years[i] / 11 * 2 * Math.PI) / 4);
+				TSI[i] = mTSI;
 			}
 
 			// albedo
 			albSet = true; // mark the albedo as already set so the default initialisation chunk below won't overwrite
-			for (var i = 1; i <= numYears; i++) {
-				alb[i - 1] = alb0 + 0.1; // alb(1:length(years))=alb0+0.1;
+
+			// set defaults
+			for (var i = 0; i < years.length; i++) {
+				alb[i] = alb0;
 			}
-			for (var i = 1; i <= (1 / DT); i++) {
-				alb[i - 1] = alb0 + i / (1 / DT) / 10; // alb(1:1/DT*1)=alb0+(1:1/DT*1)/(1/DT*1)/10;
-			}
-			// alb(1/DT*1000+1:1/DT*1001)=alb0+0.1-(1:1/DT*1)/(1/DT*1)/10;
-			var j = 1;
-			for (var i = 1 / DT * 1000 + 1; i <= 1 / DT * 1001; i++) {
-				alb[i - 1] = alb0 + 0.1 - j / (1 / DT) / 10;
-				j++;
-			}
-			// alb(1/DT*1001:end)=alb0;
-			for (var i = (1 / DT * 1001); i <= numYears; i++) {
-				alb[i - 1] = alb0;
+
+			// increment years 100 to 1000 by 0.1
+			for (var i = (100 / DT); i < (1000 / DT); i++) {
+				alb[i] += 0.1;
 			}
 
 			break;
