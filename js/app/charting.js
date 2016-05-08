@@ -6,7 +6,7 @@
 var BOOTSTRAP_MIN_WIDTH_MD = 992;
 
 // returns a set of options
-var getChartOptions = function() {
+var getChartOptions = function(units) {
 	// work out width and height of chart
 	var winWidth = window.innerWidth;
 	var winHeight = window.innerHeight;
@@ -21,6 +21,11 @@ var getChartOptions = function() {
 	// height is 67% of width (for now)
 	var height = Math.round(width / 3 * 2);
 
+	// units of measurement on y-axis
+	if (typeof units === 'undefined') {
+		units = 'not defined';
+	}
+
 	// construct options object
 	var options = {
 		width: width,
@@ -32,6 +37,29 @@ var getChartOptions = function() {
 		lineSmooth: Chartist.Interpolation.simple({
 			divisor: 5
 		}),
+		plugins: [
+			Chartist.plugins.ctAxisTitle({
+				axisX: {
+					axisTitle: 'Years',
+					axisClass: 'ct-axis-title',
+					offset: {
+						x: 0,
+						y: 35
+					},
+					textAnchor: 'middle'
+				},
+                axisY: {
+                    axisTitle: units,
+                    axisClass: 'ct-axis-title',
+                    offset: {
+						x: 0,
+						y: 12
+                    },
+					textAnchor: 'middle',
+                    flipTitle: true
+                }
+			})
+		],
 	};
 	return options;
 };
@@ -40,7 +68,7 @@ var getChartOptions = function() {
  * Plots the set of data on the page (onto the div element with the given id).
  * Automatically detects the number of sets of data and deals with it accordingly.
  */
-var plotData = function(chartId, years, data, popup) {
+var plotData = function(chartId, years, data, popup, units) {
 	// make sure that data series lengths are all equivalent, and same as years length
 	for (var i = 0; i < data.length; i++) {
 		// console.log('data = ' + JSON.stringify(data));
@@ -49,7 +77,7 @@ var plotData = function(chartId, years, data, popup) {
 		}
 	}
 
-	var options = getChartOptions();
+	var options = getChartOptions(units);
 
 	// if this is plotting a popup chart, override default chart options size
 	if (typeof popup !== 'undefined' && popup) {
@@ -95,8 +123,8 @@ var plotData = function(chartId, years, data, popup) {
  *
  * @TODO make this 'empty' chart truly empty, and prettier
  */
-var plotEmptyChart = function(chartId) {
-	var options = getChartOptions();
+var plotEmptyChart = function(chartId, units) {
+	var options = getChartOptions(units);
 	var plot = {
 		labels: [ 0 ],
 		series: [ [ 0 ] ]

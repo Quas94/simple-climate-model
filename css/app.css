@@ -2,6 +2,13 @@
 	font-family: 'Raleway', sans-serif;
 }
 
+.ct-axis-title {
+  font-family: 'Raleway', sans-serif;
+  color: rgba(0,0,0,.4);
+  fill: rgba(0,0,0,.4);
+  font-weight: bold;
+}
+
 /* don't carry uppercase into hint.css hints */
 [data-hint]:after {
   text-transform: none;
@@ -192,6 +199,10 @@ div[id*='base-chart-'] {
 /**
  * Chartist graphs styles
  */
+.ct-chart {
+  margin-left: 20px;
+}
+
 .ct-label {
   font-size: 1.2rem;
   font-weight: bold;

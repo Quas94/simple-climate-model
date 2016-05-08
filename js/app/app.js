@@ -331,17 +331,17 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 
 			// draw input charts and link plot data to the element for use by popup window setup later
-			var co2Chart = plotData('chart-co2-emissions', setup.years, [ setup.emissions.CO2 ]);
+			var co2Chart = plotData('chart-co2-emissions', setup.years, [ setup.emissions.CO2 ], false, INPUT_AXIS_LABELS.CO2);
 			document.getElementById('chart-co2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CO2 ] };
-			var ch4Chart = plotData('chart-ch4-emissions', setup.years, [ setup.emissions.CH4 ]);
+			var ch4Chart = plotData('chart-ch4-emissions', setup.years, [ setup.emissions.CH4 ], false, INPUT_AXIS_LABELS.CH4);
 			document.getElementById('chart-ch4-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.CH4 ] };
-			var so2Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ]);
+			var so2Chart = plotData('chart-so2-emissions', setup.years, [ setup.emissions.SO2 ], false, INPUT_AXIS_LABELS.SO2);
 			document.getElementById('chart-so2-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.SO2 ] };
-			var albChart = plotData('chart-alb', setup.years, [ setup.alb ] );
+			var albChart = plotData('chart-alb', setup.years, [ setup.alb ], false, INPUT_AXIS_LABELS.alb );
 			document.getElementById('chart-alb').plotInfo = { y: setup.years, data: [ setup.alb ] };
-			var solarChart = plotData('chart-solar-input', setup.years, [ setup.TSI ]);
+			var solarChart = plotData('chart-solar-input', setup.years, [ setup.TSI ], false, INPUT_AXIS_LABELS.TSI);
 			document.getElementById('chart-solar-input').plotInfo = { y: setup.years, data: [ setup.TSI ] };
-			var volcChart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ]);
+			var volcChart = plotData('chart-volc-emissions', setup.years, [ setup.emissions.volc ], false, INPUT_AXIS_LABELS.volc);
 			document.getElementById('chart-volc-emissions').plotInfo = { y: setup.years, data: [ setup.emissions.volc ] };
 
 			$scope.inputCharts.push(co2Chart);
@@ -472,10 +472,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						$scope.outputCharts = [];
 						for (var i = 0; i < retData.length; i++) {
 							var dataLen = retData[i].data.length;
-							var newChart = plotData(retData[i].id, retYears, retData[i].data);
+							var cid = retData[i].id;
+							var newChart = plotData(cid, retYears, retData[i].data, false, OUTPUT_AXIS_LABELS[cid]);
 							$scope.outputCharts.push(newChart);
 							// link plot data to the element for use by popup window setup later
-							document.getElementById(retData[i].id).plotInfo = { y: retYears, data: retData[i].data };
+							document.getElementById(cid).plotInfo = { y: retYears, data: retData[i].data };
 							// make the output chart div visible
 							$scope.setChartVisible($scope.outputChartActive, true);
 						}
