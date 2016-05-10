@@ -265,15 +265,20 @@ var simulationSetup = function(scenarioId) {
 			break;
 
 		case 16:
-			scenario = 'Changes in TSI';
-			emissions.CH4 = arrcpy(years);
-			emissions.CO2 = arrcpy(years);
-			emissions.SO2 = arrcpy(years);
-			emissions.volc = arrcpy(years);
+			scenario = 'Solar Variations';
+			var zeroes = [];
+			for (var i = 0; i < years.length; i++) {
+				zeroes.push(0);
+			}
+			emissions.CH4 = arrcpy(zeroes);
+			emissions.CO2 = arrcpy(zeroes);
+			emissions.SO2 = arrcpy(zeroes);
+			emissions.volc = arrcpy(zeroes);
 			mTSI = 1365;
 			for (var i = 0; i < TSI.length; i++) {
 				TSI[i] = mTSI;
 			}
+
 			var indStart = arrfind(years, 1900);
 			var indEnd = arrfind(years, 1910);
 			for (var i = indStart; i < indEnd; i++) {
@@ -282,16 +287,20 @@ var simulationSetup = function(scenarioId) {
 			indStart = arrfind(years, 2000);
 			indEnd = arrfind(years, 2010);
 			for (var i = indStart; i < indEnd; i++) {
-				TSI[i] = mTSI + 20;
+				TSI[i] = mTSI + 10;
 			}
 			break;
 
 		case 17:
-			scenario = 'Volcanic Eruption';
-			emissions.CH4 = arrcpy(years);
-			emissions.CO2 = arrcpy(years);
-			emissions.SO2 = arrcpy(years);
-			emissions.volc = arrcpy(years);
+			scenario = 'Mega Volcano';
+			var zeroes = [];
+			for (var i = 0; i < years.length; i++) {
+				zeroes.push(0);
+			}
+			emissions.CH4 = arrcpy(zeroes);
+			emissions.CO2 = arrcpy(zeroes);
+			emissions.SO2 = arrcpy(zeroes);
+			emissions.volc = arrcpy(zeroes);
 			var indStart = arrfind(years, 2000);
 			var indEnd = arrfind(years, 2002);
 			for (var i = indStart; i < indEnd; i++) {
