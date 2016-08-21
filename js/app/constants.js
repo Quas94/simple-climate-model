@@ -51,10 +51,10 @@ var INPUT_CHART_INFOS = [
 	{ id: 'chart-volc-emissions', name: 'Volcanic Emissions', varname: 'volc', lines: 1 },
 ];
 var INPUT_AXIS_LABELS = {
-	CO2: 'Gigatonnes Carbon per year (GtC/yr)',
-	CH4: 'Terragrammes of methane per year (TgCH4/yr)',
-	SO2: 'Terragrammes of sulphates per year (TgSO2/yr)',
-	TSI: 'Watts per square meter (W/m2 )',
+	CO2: 'CO2 emissions (GtC/yr)',
+	CH4: 'Methane emissions (TgCH4/yr)',
+	SO2: 'Aerosol emissions (TgSO2/yr)',
+	TSI: 'Solar energy (W/m2)',
 	volc: '',
 	alb: '',
 };
@@ -82,17 +82,17 @@ var OUTPUT_CHART_INFOS = [
 	}
 ];
 var OUTPUT_AXIS_LABELS = {
-	'base-chart-temperatures': 'Degrees Centigrade',
-	'chart-co2-concentration': 'parts per million (ppm)',
-	'chart-ch4-concentration': 'parts per billion (ppb)',
-	'chart-gg': 'Watts per square metre (W/m²)',
-	'chart-aerosols': 'Watts per square metre (W/m²)',
+	'base-chart-temperatures': 'Temperature change (°C)',
+	'chart-co2-concentration': 'Atmospheric CO2 (ppm)',
+	'chart-ch4-concentration': 'Atmospheric methane (ppb)',
+	'chart-gg': 'CO2/CH4 radiative forcing (W/m²)',
+	'chart-aerosols': 'Aerosol radiative forcing (W/m²)',
 	'chart-solar': '',
-	'chart-at-up-lo': 'Gigatonnes of carbon (GtC)',
-	'chart-veg-soil-npp': 'Gigatonnes of carbon (GtC)',
+	'chart-at-up-lo': 'Carbon inventories (GtC)',
+	'chart-veg-soil-npp': 'Carbon inventories (GtC)',
 	'chart-ph': '',
 	'chart-lw': '',
-	'chart-sea-level': 'meters',
+	'chart-sea-level': 'Sea level change (m)',
 };
 
 /**
