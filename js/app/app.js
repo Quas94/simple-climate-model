@@ -10,6 +10,16 @@ var cmApp = angular.module('cmApp', [
 		'ui.bootstrap'
 	]);
 
+cmApp.directive('aboutPage', function() {
+	return {
+		templateUrl: 'about.html',
+		scope: {
+			user: '=data'
+		},
+		restrict: 'E'
+	};
+});
+
 cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 	function($scope, $rootScope, $timeout, $interval) {
 		// check for the following and show warning message if any are not supported:

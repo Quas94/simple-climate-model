@@ -4,9 +4,13 @@
 
 .ct-axis-title {
   font-family: 'Raleway', sans-serif;
-  color: rgba(0,0,0,.4);
-  fill: rgba(0,0,0,.4);
+  color: rgba(0,0,0,.6);
+  fill: rgba(0,0,0,.6);
   font-weight: bold;
+}
+
+.no-outline:focus {
+  outline: none !important;
 }
 
 /* don't carry uppercase into hint.css hints */
