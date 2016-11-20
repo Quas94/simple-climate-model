@@ -96,13 +96,22 @@
 						<div class="panel panel-success">
 							<div class="panel-heading">Actions</div>
 							<div class="panel-body">
-								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Run the current scenario with the input datasets below" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
-								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit settings such as number of years, etc' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()" data-toggle="modal" data-target="#edit-custom-settings-modal">Edit Scenario Settings</button>
-								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit the data values on this scenario\'s input charts' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" ng-click="openCustomInputEdits()">Edit Scenario Data</button>
+								<button class="btn btn-primary btn-lg btn-wide hint--right" data-hint="Run the current scenario with the input datasets below" data-toggle="modal" data-target="#progress-modal" ng-click="runScenario()" ng-disabled="activeScenario == null" id="runScenarioButton"><span class="glyphicon glyphicon-play"></span> Run Scenario</button>
+
+								<hr class="hr-sm" />
+
+								<!-- <button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit settings such as number of years, etc' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" ng-click="openEditScenarioSettings()" data-toggle="modal" data-target="#edit-custom-settings-modal">Edit Scenario Settings</button>
+								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Edit the data values on this scenario\'s input charts' }}" ng-disabled="inputCharts.length == 0 || standardActive == 'active'" data-toggle="modal" data-target="#edit-custom-inputs-modal" ng-click="openCustomInputEdits()">Edit Scenario Data</button> -->
+
 								<button class="btn btn-default btn-sm btn-wide hint--right" data-hint="Edit global variables which are shared by every scenario" data-toggle="modal" data-target="#edit-globals-modal" ng-click="openEditGlobals()">Edit Global Variables</button>
+
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button> -->
-								<button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
+
+								<button class="btn btn-warning btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#import-dataset-modal">Import Scenario Data</button>
+								<button class="btn btn-warning btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#import-dataset-modal">Export Scenario Data</button>
+
+								<!-- <button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button> -->
 							</div>
 						</div>
 					</div>

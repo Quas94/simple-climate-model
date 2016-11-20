@@ -2,6 +2,11 @@
 	font-family: 'Raleway', sans-serif;
 }
 
+.hr-sm {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 .ct-axis-title {
   font-family: 'Raleway', sans-serif;
   color: rgba(0,0,0,.6);
