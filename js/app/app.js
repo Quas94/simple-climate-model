@@ -226,6 +226,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// work out chart popup window title
 			var popupTitle = $scope.activeScenario.name + ': ' + chartInfo.name;
 
+			var yAxisTitle;
+			if (input)
+				yAxisTitle = INPUT_AXIS_LABELS[chartInfo.varname];
+			else // output chart
+				yAxisTitle = OUTPUT_AXIS_LABELS[chartInfo.id];
+
 			// check if any existing popups have this title: if so, change focus to them and return early
 			for (var i = 0; i < popupList.length; i++) {
 				if (popupList[i].document.title === popupTitle) {
@@ -241,7 +247,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				info: chartInfo,
 				years: plotInfo.y,
 				data: plotInfo.data,
-				title: popupTitle
+				title: popupTitle,
+				yAxisTitle: yAxisTitle
 			};
 			// open the popup, which will access the values set above
 			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=800,height=600');

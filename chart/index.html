@@ -40,8 +40,9 @@
 		document.getElementById('panel-title').innerHTML = data.title;
 
 		var id = 'popupChart';
+		var yAxisTitle = data.yAxisTitle;
 
-		plotData(id, data.years, data.data, true);
+		plotData(id, data.years, data.data, true, yAxisTitle);
 
 	</script>
 </body>
