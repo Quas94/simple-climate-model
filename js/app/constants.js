@@ -60,16 +60,81 @@ var INPUT_AXIS_LABELS = {
 };
 
 var OUTPUT_CHART_INFOS = [
-	{ id: 'chart-gg', name: 'Greenhouse Gases', lines: 2 },
-	{ id: 'chart-aerosols', name: 'Aerosols', lines: 2 },
-	{ id: 'chart-solar', name: 'Solar', lines: 1 },
-	{ id: 'chart-at-up-lo', name: 'AT, UP & LO Inventories', lines: 3 },
-	{ id: 'chart-veg-soil-npp', name: 'Veg, Soil & NPP Inventories', lines: 3 },
-	{ id: 'chart-ph', name: 'pH', lines: 1 },
-	{ id: 'chart-lw', name: '60W Light Bulbs', lines: 5 },
-	{ id: 'chart-sea-level', name: 'Sea Level Change', lines: 1 },
-	{ id: 'chart-ch4-concentration', name: 'CH4 Concentration', lines: 1 },
-	{ id: 'chart-co2-concentration', name: 'CO2 Concentration', lines: 1 },
+	{
+		id: 'chart-gg',
+		name: 'Greenhouse Gases',
+		lines: 2,
+		legend: {
+			'red': 'CO2',
+			'blue': 'CH4'
+		}
+	},
+	{
+		id: 'chart-aerosols',
+		name: 'Aerosols',
+		lines: 2,
+		legend: {
+			'red': 'SO2',
+			'blue': 'Volcanic emissions'
+		}
+	},
+	{
+		id: 'chart-solar',
+		name: 'Solar',
+		lines: 1
+	},
+	{
+		id: 'chart-at-up-lo',
+		name: 'AT, UP & LO Inventories',
+		lines: 3,
+		legend: {
+			'red': 'AT',
+			'blue': 'UP',
+			'green': 'LO'
+		}
+	},
+	{
+		id: 'chart-veg-soil-npp',
+		name: 'Veg, Soil & NPP Inventories',
+		lines: 3,
+		legend: {
+			'red': 'Vegetation Carbon',
+			'blue': 'Soil Carbon',
+			'green': 'NPP'
+		}
+	},
+	{
+		id: 'chart-ph',
+		name: 'pH',
+		lines: 1
+	},
+	{
+		id: 'chart-lw',
+		name: '60W Light Bulbs',
+		lines: 5,
+		legend: {
+			'red': 'bulbs_in_lw',
+			'blue': 'bulbs_in_sw',
+			'green': 'bulbs_out_lw',
+			'orange': 'bulbs_out_sw',
+			'black': 'bulbs_net'
+		}
+	},
+	{
+		id: 'chart-sea-level',
+		name: 'Sea Level Change',
+		lines: 1
+	},
+	{
+		id: 'chart-ch4-concentration',
+		name: 'CH4 Concentration',
+		lines: 1
+	},
+	{
+		id: 'chart-co2-concentration',
+		name: 'CO2 Concentration',
+		lines: 1
+	},
 	// Chartbase has to come last as it doesn't have absolute positioning
 	{
 		id: 'base-chart-temperatures',
