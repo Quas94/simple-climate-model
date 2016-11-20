@@ -111,16 +111,6 @@ var simulationSetup = function(scenarioId) {
 			emissions.CO2 = arrcpy(rcphi[56]);
 			emissions.SO2 = arrcpy(rcphi[63]);
 			break;
-		case 5:
-			// create synthetic time series
-			scenario = 'Synthetic Emissions';
-			// @TODO - needs central_diff
-			break;
-		case 6:
-			// create synthetic time series
-			scenario = 'Volcanic Eruption - Pinatubo';
-			// @TODO - needs central_diff
-			break;
 		case 7:
 			// create synthetic time series
 			scenario = 'CO2 Pulse';

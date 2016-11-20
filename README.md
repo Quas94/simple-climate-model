@@ -12,11 +12,10 @@ Milestones:
 
 Bugs list:
 - fix year increments - caused by year endings that aren't quite right (see default scenario years range)
+- editing scenario settings - changing years causes blank input chunks
 
 To-do list:
 - chart axis labels, legend
 - outputting results in savable data format
 - ability to save/load global variables set, and make it clearer that global variables are global across scenarios? maybe rename them to 'Simulation variables' and allow them to be attached to scenarios (and thus vary between)
 - validation of global variables when user modifies them
-- revisit popup windows name detection once modifying scenarios is working
-- resizing issues to do with page layout and graph display (including popups)
