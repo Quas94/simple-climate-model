@@ -18,11 +18,11 @@
   outline: none !important;
 }
 
-#about-modal .modal-dialog {
+#help-modal .modal-dialog {
   width: 50%;
   overflow-y: initial !important
 }
-#about-modal .modal-body .tab-content {
+#help-modal .modal-body .tab-content {
     max-height: 70vh;
     overflow-y: auto;
 }
@@ -330,4 +330,9 @@ div[id*='legend-box-'] {
 
 .underline {
   text-decoration: underline;
+}
+
+.contributors-list li {
+  margin-top: 3px;
+  margin-bottom: 3px;
 }

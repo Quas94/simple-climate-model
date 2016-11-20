@@ -10,6 +10,16 @@ var cmApp = angular.module('cmApp', [
 		'ui.bootstrap'
 	]);
 
+cmApp.directive('helpPage', function() {
+	return {
+		templateUrl: 'help.html',
+		scope: {
+			user: '=data'
+		},
+		restrict: 'E'
+	};
+});
+
 cmApp.directive('aboutPage', function() {
 	return {
 		templateUrl: 'about.html',

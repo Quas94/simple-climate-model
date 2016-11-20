@@ -64,10 +64,10 @@
 				<ul class="nav navbar-nav">
 					<li class="{{ standardActive }} hint--bottom" data-hint="Standard mode contains all the default scenarios,&#10;which cannot be modified" id="li-standard-mode"><a href="#" ng-click="changeMode('standard')">Standard</a></li>
 					<li class="{{ advancedActive }} hint--bottom" data-hint="Custom mode allows you to edit scenario input data,&#10;and also create new scenarios based off any of the&#10;default scenarios, or from a blank canvas"><a href="#" ng-click="changeMode('advanced')">Advanced</a></li>
-					<li><a data-toggle="modal" data-target="#about-modal" class="no-outline" href="#">About</a></li>
+					<li><a data-toggle="modal" data-target="#help-modal" class="no-outline" href="#">Help</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">Report a bug</a></li>
+					<li><a data-toggle="modal" data-target="#about-modal" class="no-outline" href="#">About</a></li>
 				</ul>
 			</div>
 		</div>
@@ -408,6 +408,24 @@
 		</div>
 	</div>
 
+	<!-- Help modal -->
+	<div id="help-modal" class="modal fade" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title">Help &amp; Explanations</h4>
+				</div>
+				<div class="modal-body">
+					<help-page></help-page>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- About modal -->
 	<div id="about-modal" class="modal fade" role="dialog" tabindex="-1">
 		<div class="modal-dialog">
@@ -420,7 +438,7 @@
 					<about-page></about-page>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>
