@@ -248,7 +248,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				years: plotInfo.y,
 				data: plotInfo.data,
 				title: popupTitle,
-				yAxisTitle: yAxisTitle
+				yAxisTitle: yAxisTitle,
+				legend: chartInfo.legend // is undefined for all inputChartInfos and a few outputChartInfos
 			};
 			// open the popup, which will access the values set above
 			var popup = window.open('./chart', '_blank', 'menubar=0,toolbar=0,status=0,titlebar=0,location=0,width=800,height=600');

@@ -27,6 +27,13 @@
 	<div class="panel panel-default no-border">
 		<div class="panel-heading" id="panel-title">Chart</div>
 		<div class="panel-body no-padding-bottom">
+			<div id="legend-box-output">
+				<div><p><span id="popupLegend_red" style="color: red; visibility: hidden"><i class="glyphicon glyphicon-stop"></i> <span id="popupLegend_redValue"></span></span></p></div>
+				<div><p><span id="popupLegend_blue" style="color: blue; visibility: hidden"><i class="glyphicon glyphicon-stop"></i> <span id="popupLegend_blueValue"></span></span></p></div>
+				<div><p><span id="popupLegend_green" style="color: green; visibility: hidden"><i class="glyphicon glyphicon-stop"></i> <span id="popupLegend_greenValue"></span></span></p></div>
+				<div><p><span id="popupLegend_orange" style="color: orange; visibility: hidden"><i class="glyphicon glyphicon-stop"></i> <span id="popupLegend_orangeValue"></span></span></p></div>
+				<div><p><span id="popupLegend_black" style="color: black; visibility: hidden"><i class="glyphicon glyphicon-stop"></i> <span id="popupLegend_blackValue"></span></span></p></div>
+			</div>
 			<div class="ct-chart" id="popupChart"></div>
 		</div>
 	</div>
@@ -41,6 +48,16 @@
 
 		var id = 'popupChart';
 		var yAxisTitle = data.yAxisTitle;
+
+		var legend = data.legend;
+		if (typeof legend !== 'undefined' && legend !== null) {
+			for (var colour in legend) {
+				if (legend.hasOwnProperty(colour)) {
+					document.getElementById('popupLegend_' + colour).style.visibility = 'visible';
+					document.getElementById('popupLegend_' + colour + 'Value').innerHTML = legend[colour];
+				}
+			}
+		}
 
 		plotData(id, data.years, data.data, true, yAxisTitle);
 
