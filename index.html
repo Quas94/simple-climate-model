@@ -112,10 +112,12 @@
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button> -->
 
-								<span class="btn btn-primary btn-file btn-sm btn-wide hint--right">
-									Import From CSV &lt;&lt;
-									<input type="file" id="csvLoader" />
-								</span>
+								<div class="hint--right btn-wide no-margin-bottom" data-hint="{{ standardActive == 'active' ? 'Only enabled for advanced scenarios' : 'Import new input data to this scenario' }}">
+									<span class="btn btn-primary btn-file btn-sm btn-wide" ng-disabled="activeScenario == null || activeScenario.isdefault">
+										Import From CSV &lt;&lt;
+										<input type="file" id="csvLoader" ng-disabled="activeScenario == null || activeScenario.isdefault" class="hint--right" data-hint="Test Test Test" />
+									</span>
+								</div>
 								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Exports this scenario's input and output data to .csv file" ng-click="exportScenarioData()">Export To CSV &gt;&gt;</button>
 
 								<!-- <button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button> -->

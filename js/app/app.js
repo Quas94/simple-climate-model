@@ -968,6 +968,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// importing and exporting
 
 		$scope.importScenarioData = function(evt) {
+			// don't do anything if disabled
+			if ($scope.activeScenario == null || $scope.activeScenario.isdefault)
+				return;
+
 			// parse csv
 			var file = evt.target.files[0];
 

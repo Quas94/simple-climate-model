@@ -364,3 +364,7 @@ div[id*='legend-box-'] {
     cursor: inherit;
     display: block;
 }
+
+.no-margin-bottom {
+  margin-bottom: 0 !important;
+}
