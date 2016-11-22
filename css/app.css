@@ -2,6 +2,14 @@
 	font-family: 'Raleway', sans-serif;
 }
 
+.panel-primary {
+  border-color: #98978b !important;
+}
+
+.panel-primary .panel-heading {
+  background-color: #3e3f3a !important;
+}
+
 .hr-sm {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -335,4 +343,24 @@ div[id*='legend-box-'] {
 .contributors-list li {
   margin-top: 3px;
   margin-bottom: 3px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
 }

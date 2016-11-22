@@ -967,6 +967,46 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// importing and exporting
 
+		$scope.importScenarioData = function(evt) {
+			// parse csv
+			var file = evt.target.files[0];
+
+			Papa.parse(file, {
+
+				header: false,
+				dynamicTyping: true,
+				skipEmptyLines: true,
+
+				complete: function(results) {
+					try {
+						if (results.errors.length > 0) throw Error(result.errors[0].message);
+
+						console.log(results.data);
+
+						var rows = results.data;
+						var setup = {
+							emissions: {}
+						};
+						for (var i = 0; i < rows.length; i++) {
+							var name = rows[i][0].toLowerCase();
+							rows[i].shift(); // remove the first element in the row, after reading it
+							if (name === 'ch4' || name === 'co2' || name === 'so2') {
+								setup.emissions[name] = rows[i];
+								console.log('rows[i][0] = ' + rows[i][0]);
+							} else {
+								setup[name] = rows[i];
+							}
+						}
+
+						console.log(setup);
+						// @TODO create the scenario
+					} catch (err) {
+						alert('There was an error parsing the CSV input file. Please check that it is valid.');
+					}
+				}
+			});
+		};
+
 		$scope.exportScenarioData = function() {
 			var scenarioId = $scope.activeScenario.id;
 			var setupData = getUninterpolatedSimsetup(scenarioId);
@@ -984,6 +1024,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 			downloadAsCsv(lines);
 		};
+
+		// add listener for import button
+		var csvLoader = document.getElementById('csvLoader');
+		csvLoader.addEventListener('change', $scope.importScenarioData, false);
 
 	}]);
 
