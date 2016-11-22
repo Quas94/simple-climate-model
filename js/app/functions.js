@@ -287,3 +287,15 @@ var yearsAltered = function(data, range) {
         curYearBase++;
     }
 };
+
+// download file
+var downloadAsCsv = function(data) {
+    var csvString = data.join('\n');
+    var a         = document.createElement('a');
+    a.href        = 'data:attachment/csv,' +  encodeURIComponent(csvString);
+    a.target      = '_blank';
+    a.download    = 'scenario_input_data.csv';
+
+    document.body.appendChild(a);
+    a.click();
+};

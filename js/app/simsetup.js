@@ -2,6 +2,16 @@
  * Contains setup function that fetches inputs for the default scenarios.
  */
 
+var getDefaultVolc = function() {
+	var ret = arrcpy(TAU_LINE);
+	return ret;
+};
+
+var getDefaultTSI = function(years) {
+	var ret = interp1(XLS_TSI[0], XLS_TSI[2], years);
+	return ret;
+};
+
 /**
  * Takes in one parameter, the scenario id. The majority of the body of this function
  * previously resided in simulate.js' main simulate() function, but was extracted in
@@ -50,11 +60,6 @@ var simulationSetup = function(scenarioId) {
 		var lastYear = XLS_RCPH[0][XLS_RCPH_COLS - 1];
 		years = interpC(firstYear, DT, lastYear); // equivalent to firstYear:DT:lastYear in Matlab syntax
 
-		if (scenarioId == 13) {
-			// @TODO special case for scenario 13
-			// years=rcp_hist_RF_CO2e(1,1):DT:2200
-		}
-
 		for (var i = 0; i < XLS_RCPH_ROWS; i++) {
 			rcphi[i] = interp1(XLS_RCPH[0], XLS_RCPH[i], years);
 		}
@@ -70,11 +75,11 @@ var simulationSetup = function(scenarioId) {
 
 		// Volcanic stuff precalculated by Matlab and plugged into TAU_LINE constant (defined in data.js)
 		// may need to be altered in the future depending on specifics of custom data input
-		emissions.volc = arrcpy(TAU_LINE);
+		emissions.volc = getDefaultVolc();
 
 		// SOLAR
 		// load 'TSI_WLS_ann_1610_2008.xls'
-		TSI = interp1(XLS_TSI[0], XLS_TSI[2], years);
+		TSI = getDefaultTSI(years);
 		// mTSI is equal to the mean of all the non-NaN elements of TSI
 		mTSI = nanmean(TSI);
 		// if TSI has NaN elements, set those to equal mTSI

@@ -490,6 +490,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 					// update message - update progress bar
 					var percent = e.data.percent;
 					document.getElementById('simulation-progress-bar').style.width = percent + '%';
+				} else if (e.data.type === 'print') {
+					console.log('Message from webworker:\n' + e.data.message);
 				} else if (e.data.type === 'finish') {
 					$scope.scenarioHasRun = true;
 					$timeout(function() {
@@ -962,6 +964,27 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			// success
 			return true;
 		};
+
+		// importing and exporting
+
+		$scope.exportScenarioData = function() {
+			var scenarioId = $scope.activeScenario.id;
+			var setupData = getUninterpolatedSimsetup(scenarioId);
+
+			var lines = [];
+
+			lines.push('years,' + setupData.years.toString());
+			lines.push('CH4,' + setupData.emissions.CH4.toString());
+			lines.push('CO2,' + setupData.emissions.CO2.toString());
+			lines.push('SO2,' + setupData.emissions.SO2.toString());
+			lines.push('volcanic,' + setupData.emissions.volc.toString());
+			lines.push('TSI,' + setupData.TSI.toString());
+			lines.push('mTSI,' + setupData.mTSI);
+			lines.push('albedo,' + setupData.alb.toString());
+
+			downloadAsCsv(lines);
+		};
+
 	}]);
 
 // page has fully loaded

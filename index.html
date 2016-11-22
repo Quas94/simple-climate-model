@@ -47,6 +47,7 @@
 	<script type="text/javascript" src="./js/app/simulate.js"></script>
 	<!-- Simulation setup -->
 	<script type="text/javascript" src="./js/app/simsetup.js"></script>
+	<script type="text/javascript" src="./js/app/simsetup2.js"></script>
 	<!-- Custom charting functions -->
 	<script type="text/javascript" src="./js/app/charting.js"></script>
 
@@ -108,8 +109,8 @@
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button> -->
 
-								<button class="btn btn-warning btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#import-dataset-modal">Import Scenario Data</button>
-								<button class="btn btn-warning btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#import-dataset-modal">Export Scenario Data</button>
+								<button class="btn btn-warning btn-sm btn-wide hint--right">Import Scenario Data</button>
+								<button class="btn btn-warning btn-sm btn-wide hint--right" data-hint="{{ scenarioHasRun ? 'Exports this scenario\'s output data to .csv file' : 'You must first run the scenario before you can export' }}" ng-disabled="!scenarioHasRun" ng-click="exportScenarioData()">Export Scenario Data</button>
 
 								<!-- <button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button> -->
 							</div>
