@@ -625,45 +625,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 		};
 
-		// plots the custom inputs chart in the edit custom data modal
-		$scope.plotCustomInputsChart = function() {
-			// reduce the data for plotting only
-			var editData = simulationSetupReducedCustom(customScenarioData[$scope.activeScenario.id]);
-			var editDataInput;
-			if ($scope.inputChartActive.varname === 'alb') {
-				editDataInput = [ editData.alb ];
-			} else if ($scope.inputChartActive.varname === 'TSI') {
-				editDataInput = [ editData.TSI ];
-			} else {
-				editDataInput = [ editData.emissions[$scope.inputChartActive.varname] ];
-			}
-			plotData('edit-custom-inputs-chart', editData.years, editDataInput);
-		};
-
-		// called when the custom input edits modal is opened
-		$scope.openCustomInputEdits = function() {
-			// draw the chart in the modal
-			$scope.plotCustomInputsChart();
-			// set changed flag to false
-			$scope.editCustomInputsChanged = false;
-			// set open flag to true
-			$scope.editInputsOpen = true;
-		};
-
-		// saves the changes made in the edit custom inputs modal, and clears the fields
-		$scope.closeCustomInputEdits = function() {
-			// set inputs mode to initial
-			$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
-			// update flag
-			$scope.editInputsOpen = false;
-
-			// if inputs were changed, redraw the current active input chart
-			if ($scope.editCustomInputsChanged) {
-				$scope.destroyCharts();
-				$scope.showInputCharts();
-			}
-		};
-
 		// returns a string displaying the range of years in the current scenario
 		$scope.getYearsRange = function() {
 			if ($scope.activeScenario === null) {
@@ -681,187 +642,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				endYear = yearsArray[yearsArray.length - 1];
 			}
 			return Math.round(startYear) + ' - ' + Math.round(endYear);
-		};
-
-		// called when the custom settings modal is opened
-		$scope.openEditScenarioSettings = function() {
-			// update years model
-			var data = customScenarioData[$scope.activeScenario.id];
-			var min = data.years[0];
-			var max = data.years[data.years.length - 1];
-			var csy = $scope.customScenarioYears;
-			csy.min = min;
-			csy.max = max;
-			csy.newMin = min;
-			csy.newMax = max;
-			// update slider positions
-			numYearsSlider.setValue([min, max]);
-			// set error and warning to blank
-			$scope.editScenarioSettingsError = '';
-			$scope.editScenarioSettingsWarning = '';
-		};
-
-		var numYearsSlider = new Slider('#numYearsSlider', {
-			step: 10,
-			tooltip: 'hide',
-			focus: true,
-			min: MIN_SIMULATION_YEAR,
-			max: MAX_SIMULATION_YEAR,
-			value: [ MIN_SIMULATION_YEAR, MAX_SIMULATION_YEAR ]
-		});
-
-		// attach listeners to slider
-		numYearsSlider.on('slide', function(value) {
-			var valueA = value[0];
-			var valueB = value[1];
-			// set newMin (use Math.min/max because sometimes value[0] < value[1] due to a bug in bootstrap-slider library)
-			$scope.customScenarioYears.newMin = Math.min(valueA, valueB);
-			$scope.customScenarioYears.newMax = Math.max(valueA, valueB);
-			// update warning
-			var csy = $scope.customScenarioYears;
-			var deletion = (csy.newMin > csy.min) || (csy.newMax < csy.max);
-			var diffSatisfactory = (Math.abs(csy.newMin - csy.newMax) >= MIN_NUM_YEARS);
-			// use $timeout to force into angular's digest cycle
-			$timeout(function() {
-				if (deletion) {
-					$scope.editScenarioSettingsWarning =
-						'You are deleting years. The input data for those years will also be deleted (unrecoverable).';
-				} else {
-					$scope.editScenarioSettingsWarning = '';
-				}
-				if (!diffSatisfactory) {
-					$scope.editScenarioSettingsError = 'Scenario must run for a minimum of ' + MIN_NUM_YEARS + ' years.';
-				} else {
-					$scope.editScenarioSettingsError = '';
-				}
-			}, 0);
-		});
-
-		// whether or not scenario years have been altered
-		$scope.scenarioSettingsChanged = function() {
-			return ($scope.customScenarioYears.newMin !== $scope.customScenarioYears.min ||
-					$scope.customScenarioYears.newMax !== $scope.customScenarioYears.max);
-		};
-
-		// modal has been saved and closed, so update the input datasets
-		$scope.editScenarioSettings = function() {
-			if ($scope.scenarioSettingsChanged()) { // no need to update if no changes were made
-				var range = $scope.customScenarioYears;
-				var data = customScenarioData[$scope.activeScenario.id];
-				// update data values
-				yearsAltered(data, range);
-				// re-draw input charts to show changes
-				$scope.showInputCharts();
-				// purge output charts because inputs have been changed
-				$scope.destroyOutputCharts();
-			}
-		};
-
-		// changes mode when the edit custom inputs button is clicked
-		$scope.editInputsSetMode = function(mode) {
-			$scope.editCustomInputsMode = mode;
-
-			// if setting mode to initial, clear the fields
-			if (mode === $scope.EDIT_MODE_INITIAL) {
-				$scope.editCustomInputsFields = {};
-				$scope.editCustomInputsError = '';
-				$scope.editCustomInputsSuccess = '';
-			}
-		};
-
-		// tests the input edits, and shows the effects
-		$scope.editInputsTest = function() {
-			// is integer function for use below
-			var isInteger = function(num) {
-				return ((num % 1) === 0);
-			};
-			// current custom scenario data
-			var currentCustomScenarioData = customScenarioData[$scope.activeScenario.id];
-			// work out minimum and maximum years
-			var dataYears = currentCustomScenarioData.years;
-			var minYear = dataYears[0];
-			var maxYear = dataYears[dataYears.length - 1];
-			// @TODO possibly adjust bounds?
-			// bounds of input data
-			var maxValue = 10000;
-			var minValue = -maxValue;
-			// error messages array
-			var errs = [];
-			// firstly, check that the input values are numeric and within bounds
-			var fields = $scope.editCustomInputsFields;
-			var startYear = parseInt(fields.startYear);
-			var endYear = parseInt(fields.endYear);
-			if (!isInteger(fields.startYear) || startYear < minYear || startYear >= maxYear) {
-				errs.push('Start year invalid.');
-			}
-			if (!isInteger(fields.endYear) || endYear <= minYear || endYear > maxYear) {
-				errs.push('End year invalid.');
-			}
-			if (isNaN(fields.startValue) || startValue < minValue || startValue > minValue) {
-				errs.push('Start value invalid.');
-			}
-			if (isNaN(fields.endValue) || endValue < minValue || endValue > maxValue) {
-				errs.push('End value invalid.');
-			}
-			if (errs.length == 0 && startYear >= endYear) {
-				errs.push('Start year must come before end year.');
-			}
-			if (errs.length > 0) {
-				// errors were discovered, don't process - spit out error message and return from function early
-				$scope.editCustomInputsError = errs.join('<br />');
-				return;
-			}
-
-			// no errors
-			// clear errors text
-			$scope.editCustomInputsError = '';
-			// fill success text
-			$scope.editCustomInputsSuccess = 'Success! Check the new chart on the right and save if you wish to make these changes permanent.';
-			// set mode to confirmation
-			$scope.editInputsSetMode($scope.EDIT_MODE_CONFIRM);
-
-			// update chart being shown in modal
-			var startValue = Number(fields.startValue);
-			var endValue = Number(fields.endValue);
-			// make a copy of the input data and modify the copy
-			var dataCopyValues;
-			if ($scope.inputChartActive.varname === 'alb') {
-				dataCopyValues = arrcpy(currentCustomScenarioData.alb);
-			} else if ($scope.inputChartActive.varname === 'TSI') {
-				dataCopyValues = arrcpy(currentCustomScenarioData.TSI);
-			} else {
-				dataCopyValues = arrcpy(currentCustomScenarioData.emissions[$scope.inputChartActive.varname]);
-			}
-			var dataCopyYears = currentCustomScenarioData.years; // years won't be modified
-
-			var valuesDiff = endValue - startValue;
-			var gradient = valuesDiff / (endYear - startYear); // rise divided by run
-
-			if (dataCopyValues.length != dataCopyYears.length) {
-				throw new Error('values and years lengths are different, ' + dataCopyValues.length + ' and ' + dataCopyYears.length + ' respectively');
-			}
-
-			// loop through the copy and update the values
-			for (var i = 0; i < dataCopyYears.length; i++) {
-				// check that this index is within the modification year range specified by user
-				if (dataCopyYears[i] >= startYear && dataCopyYears[i] <= endYear) {
-					var diffYears = dataCopyYears[i] - startYear;
-					dataCopyValues[i] = startValue + (diffYears * gradient);
-				}
-			}
-
-			// backup original data first, then insert copy into scenario data and redraw chart
-			if ($scope.inputChartActive.varname === 'alb') {
-				$scope.editCustomInputsBackup = currentCustomScenarioData.alb;
-				currentCustomScenarioData.alb = dataCopyValues;
-			} else if ($scope.inputChartActive.varname === 'TSI') {
-				$scope.editCustomInputsBackup = currentCustomScenarioData.TSI;
-				currentCustomScenarioData.TSI = dataCopyValues;
-			} else {
-				$scope.editCustomInputsBackup = currentCustomScenarioData.emissions[$scope.inputChartActive.varname];
-				currentCustomScenarioData.emissions[$scope.inputChartActive.varname] = dataCopyValues;
-			}
-			$scope.plotCustomInputsChart();
 		};
 
 		// notifies of confirmation choice - discard (false) vs save (true)
@@ -894,7 +674,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// fetches the brief description of the scenario with the given id
 		// the 'brief description' is just the first 100 characters of the description
 		$scope.getBriefDescription = function(sid) {
-			var text = $scope.descriptions[sid] || '< BLANK >';
+			var text = $scope.descriptions[sid] || '';
 			if (text.length > DESCRIPTION_CUTOFF_LIMIT) {
 				return text.substring(0, DESCRIPTION_CUTOFF_LIMIT) + '...';
 			}
@@ -923,46 +703,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				}
 			}
 			return nameTaken;
-		};
-
-		// clears the create scenario modal
-		$scope.clearNewScenario = function() {
-			$scope.createScenarioName = '';
-			$scope.createScenarioBase = '0'; // default option
-			$scope.createScenarioDesc = '';
-			$scope.createScenarioStartYear = '';
-			$scope.createScenarioEndYear = '';
-		};
-
-		// returns true if base is 'none' and start year is valid in the create scenario modal
-		$scope.createScenarioValidateStartYear = function() {
-			if ($scope.createScenarioBase != 0) return true;
-			return isValidYear($scope.createScenarioStartYear);
-		};
-
-		// returns true if base is 'none' and end year is valid in the create scenario modal
-		$scope.createScenarioValidateEndYear = function() {
-			if ($scope.createScenarioBase != 0) return true;
-			return isValidYear($scope.createScenarioEndYear);
-		};
-
-		// returns true if end year isn't empty, and end year is numerically larger than start year
-		$scope.createScenarioEndYearGreater = function() {
-			return (Number($scope.createScenarioEndYear) > Number($scope.createScenarioStartYear));
-		};
-
-		$scope.createScenarioButtonEnabled = function() {
-			// required for based and non-based custom scenarios
-			if ($scope.createScenarioName == '' || $scope.scenarioNameTaken()) {
-				return false;
-			}
-			// required for based custom scenarios
-			if ($scope.createScenarioBase == 0 && (!$scope.createScenarioValidateStartYear() ||
-				!$scope.createScenarioValidateEndYear() || !$scope.createScenarioEndYearGreater())) {
-				return false;
-			}
-			// success
-			return true;
 		};
 
 		// importing and exporting
@@ -1029,9 +769,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			downloadAsCsv(lines);
 		};
 
-		// add listener for import button
-		var csvLoader = document.getElementById('csvLoader');
-		csvLoader.addEventListener('change', $scope.importScenarioData, false);
+		// add listener for import buttons
+		document.getElementById('csvLoader').addEventListener('change', $scope.importScenarioData, false);
+		document.getElementById('csvLoaderSidebar').addEventListener('change', $scope.importScenarioData, false);
 
 	}]);
 

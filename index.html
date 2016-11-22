@@ -84,7 +84,15 @@
 			<div class="col-md-2 col-lg-1 sidebar">
 				<ul class="nav nav-sidebar">
 					<!-- Show 'create scenario' button only if mode is advanced -->
-					<li ng-if="advancedActive == 'active'"><button class="btn btn-default btn-sm btn-wide" href="#" data-toggle="modal" data-target="#create-scenario-modal" id="a-create-scenario" ng-click="clearNewScenario()"><span class="glyphicon glyphicon-plus"></span> Import Scenario</button></li>
+					<!-- <li ng-if="advancedActive == 'active'"><button class="btn btn-default btn-sm btn-wide" href="#" data-toggle="modal" data-target="#create-scenario-modal" id="a-create-scenario" ng-click="clearNewScenario()"><span class="glyphicon glyphicon-plus"></span> Import Scenario</button></li> -->
+
+					<li ng-show="advancedActive == 'active'" class="btn-wide no-margin-bottom">
+						<span class="btn btn-default btn-file btn-sm btn-wide">
+							<span class="glyphicon glyphicon-plus"></span> Import Scenario
+							<input type="file" id="csvLoaderSidebar" />
+						</span>
+					</li>
+
 					<li ng-repeat="scenario in scenarios" ng-class="scenario.active ? 'active' : ''">
 						<a class="sidebar-li" href="#" ng-click="selectScenario(scenario.id)">{{ scenario.name }}</a>
 					</li>
@@ -115,7 +123,7 @@
 								<div class="hint--right btn-wide no-margin-bottom" data-hint="{{ standardActive == 'active' ? 'Only enabled for advanced scenarios' : 'Import new input data to this scenario' }}">
 									<span class="btn btn-primary btn-file btn-sm btn-wide" ng-disabled="activeScenario == null || activeScenario.isdefault">
 										Import From CSV &lt;&lt;
-										<input type="file" id="csvLoader" ng-disabled="activeScenario == null || activeScenario.isdefault" class="hint--right" data-hint="Test Test Test" />
+										<input type="file" id="csvLoader" ng-disabled="activeScenario == null || activeScenario.isdefault" />
 									</span>
 								</div>
 								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Exports this scenario's input and output data to .csv file" ng-click="exportScenarioData()">Export To CSV &gt;&gt;</button>
@@ -353,65 +361,6 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
 					<button type="button" class="btn btn-primary" ng-click="editScenarioSettings()" ng-disabled="editScenarioSettingsError !== '' || !scenarioSettingsChanged()" data-dismiss="modal">Update</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Edit custom scenario inputs modal -->
-	<div id="edit-custom-inputs-modal" class="modal fade" role="dialog" data-backdrop="static" tabindex="-1" data-keyboard="false">
-		<div class="modal-dialog edit-custom-inputs-modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Editing Data: <span class="underline">{{ activeScenario.name }}</span></h4>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3">
-							<span class="dropdown">
-								<button class="btn btn-inverse btn-sm btn-wide dropdown-toggle" type="button" data-toggle="dropdown" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">{{ inputChartActive.name }} <span class="caret"></span></button>
-								<ul class="dropdown-menu full-width">
-									<li ng-repeat="chart in inputChartInfos"><a href="#" ng-click="selectInputChart(chart)">{{ chart.name }}</a></li>
-								</ul>
-							</span>
-							<hr />
-							<div id="edit-custom-inputs-btn" ng-if="editCustomInputsMode == EDIT_MODE_INITIAL">
-								<button class="btn btn-default" ng-click="editInputsSetMode(EDIT_MODE_FORM)">Edit</button>
-								<button class="btn btn-default" ng-click="drawNewInputs()">Draw New</button>
-							</div>
-							<div id="edit-custom-inputs-range" ng-if="editCustomInputsMode != EDIT_MODE_INITIAL">
-								<div class="form-group">
-									Range Start
-									<input class="form-control" type="text" placeholder="start year" ng-model="editCustomInputsFields.startYear" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
-									<input class="form-control" type="text" placeholder="start value" ng-model="editCustomInputsFields.startValue" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
-								</div>
-								<div class="form-group">
-									Range End
-									<input class="form-control" type="text" placeholder="end year" ng-model="editCustomInputsFields.endYear" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
-									<input class="form-control" type="text" placeholder="end value" ng-model="editCustomInputsFields.endValue" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">
-								</div>
-								<div ng-if="editCustomInputsMode == EDIT_MODE_FORM">
-									<div class="col-xs-6 no-padding min-padding-right"><button class="btn btn-primary btn-wide" ng-click="editInputsSetMode(EDIT_MODE_INITIAL)">Cancel</button></div>
-									<div class="col-xs-6 no-padding min-padding-left"><button class="btn btn-warning btn-wide" ng-click="editInputsTest()">Test</button></div>
-								</div>
-								<div ng-if="editCustomInputsMode == EDIT_MODE_CONFIRM">
-									<div class="col-xs-6 no-padding min-padding-right"><button class="btn btn-primary btn-wide" ng-click="editInputsConfirmationChoice(false)">Retry</button></div>
-									<div class="col-xs-6 no-padding min-padding-left"><button class="btn btn-success btn-wide" ng-click="editInputsConfirmationChoice(true)">Save</button></div>
-								</div>
-								<div class="clearfix"></div>
-								<p ng-if="editCustomInputsError !== ''" class="span-error margin-top-10px" ng-bind-html="editCustomInputsError"></p>
-								<p ng-if="editCustomInputsSuccess !== ''" class="span-success margin-top-10px">
-									{{ editCustomInputsSuccess }}
-								</p>
-							</div>
-						</div>
-						<div class="col-md-9">
-							<div class="ct-chart" id="edit-custom-inputs-chart"></div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer margin-top-25px">
-					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeCustomInputEdits()" id="edit-globals-save" ng-disabled="editCustomInputsMode == EDIT_MODE_CONFIRM">Finish</button>
 				</div>
 			</div>
 		</div>
