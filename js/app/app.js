@@ -514,23 +514,32 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			};
 		};
 
-		// forces all data array lengths to be the same length as years
-		var checkImportedDataLengths = function(customScenarioId) {
+		// checks that all inputs exist, if not, sets to zero
+		// also forces all data array lengths to be the same length as years
+		var adjustImportedData = function(customScenarioId) {
 			var data = customScenarioData[customScenarioId];
 
 			// interpolate years
 			var firstYear = data.years[0];
 			var lastYear = data.years[data.years.length - 1];
-			if (typeof DT === 'undefined') throw Error('DT undefined');
 			var beforeInterpYears = data.years;
 			data.years = interpC(firstYear, DT, lastYear);
+
+			// create missing inputs
+			var yearsLength = data.years.length;
+			if (!data.emissions.CH4) data.emissions.CH4 = createAndFillArray(yearsLength, 0);
+			if (!data.emissions.CO2) data.emissions.CO2 = createAndFillArray(yearsLength, 0);
+			if (!data.emissions.SO2) data.emissions.SO2 = createAndFillArray(yearsLength, 0);
+			if (!data.emissions.volc) data.emissions.volc = createAndFillArray(yearsLength, 0);
+			if (!data.TSI) data.TSI = createAndFillArray(yearsLength, DEFAULT_TSI_VALUE);
+			if (!data.mTSI) data.mTSI = nanmean(data.TSI);
+			if (!data.alb) data.alb = createAndFillArray(yearsLength, DEFAULT_ALB_VALUE);
 
 			var checkLengthFunc = function(array) {
 				if (typeof array === 'undefined')
 					return;
 
 				if (data.years.length !== array.length) {
-					console.log('mismatch found: ' + data.years.length + ' vs ' + array.length);
 					if (data.years.length > array.length) {
 						// interpolate
 						array = interp1(beforeInterpYears, array, data.years);
@@ -562,7 +571,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 					$scope.importScenario.id = nextCustomScenarioId;
 					customScenarioData[nextCustomScenarioId] = $scope.importScenario;
-					checkImportedDataLengths(nextCustomScenarioId);
+					adjustImportedData(nextCustomScenarioId);
 
 					// change to the newly created scenario
 					$scope.selectScenario(nextCustomScenarioId);
@@ -576,6 +585,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		$scope.importScenarioButtonEnabled = function() {
 			// required for based and non-based custom scenarios
 			if ($scope.createScenarioName == '' || $scope.scenarioNameTaken()) {
+				return false;
+			}
+			if (!$scope.importScenario.years) {
 				return false;
 			}
 			// success
@@ -665,8 +677,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// importing and exporting
 
 		$scope.importScenarioData = function(evt) {
-			console.log('received event, parsing');
-
 			// parse csv
 			var file = evt.target.files[0];
 
@@ -719,7 +729,26 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		$scope.exportScenarioData = function() {
 			var scenarioId = $scope.activeScenario.id;
-			var setupData = getUninterpolatedSimsetup(scenarioId);
+			var setupData;
+
+			if (scenarioId >= CUSTOM_SCENARIO_ID_START) {
+				// custom scenario
+				setupData = {
+					emissions: {}
+				};
+				var custom = customScenarioData[scenarioId];
+				setupData.years = reducePoints(custom.years);
+				setupData.emissions.CH4 = reducePoints(custom.emissions.CH4);
+				setupData.emissions.SO2 = reducePoints(custom.emissions.SO2);
+				setupData.emissions.CO2 = reducePoints(custom.emissions.CO2);
+				setupData.emissions.volc = reducePoints(custom.emissions.volc);
+				setupData.TSI = reducePoints(custom.TSI);
+				setupData.mTSI = custom.mTSI;
+				setupData.alb = reducePoints(custom.alb);
+			} else {
+				// default scenario
+				setupData = getUninterpolatedSimsetup(scenarioId);
+			}
 
 			var lines = [];
 

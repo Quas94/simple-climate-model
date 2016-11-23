@@ -5,6 +5,12 @@
  */
 
 /**
+ * Default values for inputs if not specified in import file
+ */
+var DEFAULT_TSI_VALUE = 1365;
+var DEFAULT_ALB_VALUE = 0.31;
+
+/**
  * Simulation year bounds and constraints
  */
 var MIN_SIMULATION_YEAR = 0;

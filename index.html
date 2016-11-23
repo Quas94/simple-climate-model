@@ -306,37 +306,38 @@
 								<tbody>
 									<tr>
 										<td>Years</td>
-										<td>{{ importScenario.years[0] }} - {{ importScenario.years[importScenario.years.length - 1] }}</td>
+										<td ng-show="importScenario.years">{{ importScenario.years[0] }} - {{ importScenario.years[importScenario.years.length - 1] }}</td>
+										<td ng-show="!importScenario.years" class="span-error"><i class="glyphicon glyphicon-exclamation-sign"></i> Not found - invalid import file</td>
 									</tr>
 									<tr>
 										<td>CH4</td>
 										<td ng-show="importScenario.emissions.CH4"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
-										<td ng-show="!importScenario.emissions.CH4"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+										<td ng-show="!importScenario.emissions.CH4"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using empty values)</td>
 									</tr>
 									<tr>
 										<td>CO2</td>
 										<td ng-show="importScenario.emissions.CO2"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
-										<td ng-show="!importScenario.emissions.CO2"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+										<td ng-show="!importScenario.emissions.CO2"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using empty values)</td>
 									</tr>
 									<tr>
 										<td>SO2</td>
 										<td ng-show="importScenario.emissions.SO2"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
-										<td ng-show="!importScenario.emissions.SO2"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+										<td ng-show="!importScenario.emissions.SO2"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using empty values)</td>
 									</tr>
 									<tr>
 										<td>Volcanic</td>
 										<td ng-show="importScenario.emissions.volc"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
-										<td ng-show="!importScenario.emissions.volc"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+										<td ng-show="!importScenario.emissions.volc"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using empty values)</td>
 									</tr>
 									<tr>
 										<td>TSI</td>
 										<td ng-show="importScenario.TSI"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
-										<td ng-show="!importScenario.TSI"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+										<td ng-show="!importScenario.TSI"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using empty values)</td>
 									</tr>
 									<tr>
 										<td>Albedo</td>
 										<td ng-show="importScenario.alb"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
-										<td ng-show="!importScenario.alb"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+										<td ng-show="!importScenario.alb"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using empty values)</td>
 									</tr>
 								<tbody>
 							</table>

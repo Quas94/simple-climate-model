@@ -193,6 +193,15 @@ var isValidYear = function(year) {
     return true;
 };
 
+// creates an array of specified length, all with thhe given value
+var createAndFillArray = function(length, value) {
+    var ret = [];
+    for (var i = 0; i < length; i++) {
+        ret[i] = value;
+    }
+    return ret;
+};
+
 // checks whether all the arrays within the given array all have equal length
 var arrLensEqual = function(twoDimArray) {
     if (twoDimArray.length < 2) {
