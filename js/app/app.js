@@ -82,17 +82,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		var popupList = [];
 		$scope.popupListLength = popupList.length;
 
-		// model linked to input for new scenario name, base and description, and start/end years if no base
+		// model linked to import modal
 		$scope.createScenarioName = '';
-		$scope.createScenarioBase = '0';
 		$scope.createScenarioDesc = '';
-		$scope.createScenarioStartYear = '';
-		$scope.createScenarioEndYear = '';
+		$scope.importScenario = {};
 
-		// whether or not the edit inputs modal is open
-		$scope.editInputsOpen = false;
-		// status of the 'save' button in the edit custom scenario inputs modal
-		$scope.editInputsSaveDisabled = true;
 		// modes of the edit custom inputs modal
 		$scope.EDIT_MODE_INITIAL = 0;
 		$scope.EDIT_MODE_FORM = 1;
@@ -302,10 +296,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			$scope.inputChartActive = chart;
 			$scope.setChartVisible(chart, true);
 			// if the 'edit data' modal is open, also update the chart being displayed in that, and set mode to initial
-			if ($scope.editInputsOpen) {
-				$scope.plotCustomInputsChart();
-				$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
-			}
 		};
 
 		// destroys output charts only
@@ -524,6 +514,41 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			};
 		};
 
+		// forces all data array lengths to be the same length as years
+		var checkImportedDataLengths = function(customScenarioId) {
+			var data = customScenarioData[customScenarioId];
+
+			// interpolate years
+			var firstYear = data.years[0];
+			var lastYear = data.years[data.years.length - 1];
+			if (typeof DT === 'undefined') throw Error('DT undefined');
+			var beforeInterpYears = data.years;
+			data.years = interpC(firstYear, DT, lastYear);
+
+			var checkLengthFunc = function(array) {
+				if (typeof array === 'undefined')
+					return;
+
+				if (data.years.length !== array.length) {
+					console.log('mismatch found: ' + data.years.length + ' vs ' + array.length);
+					if (data.years.length > array.length) {
+						// interpolate
+						array = interp1(beforeInterpYears, array, data.years);
+					} else {
+						array = reducePoints(array, data.years.length);
+					}
+				}
+				return array;
+			};
+
+			data.emissions.CH4 = checkLengthFunc(data.emissions.CH4);
+			data.emissions.CO2 = checkLengthFunc(data.emissions.CO2);
+			data.emissions.SO2 = checkLengthFunc(data.emissions.SO2);
+			data.emissions.volc = checkLengthFunc(data.emissions.volc);
+			data.TSI = checkLengthFunc(data.TSI);
+			data.alb = checkLengthFunc(data.alb);
+		};
+
 		// creates a new scenario
 		$scope.createScenario = function() {
 			if ($scope.scenarios === customScenarios) { // check that we do have the custom scenarios active right now
@@ -534,68 +559,27 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						name: $scope.createScenarioName,
 						isdefault: false,
 					});
-					// add description to descriptions array
-					$scope.descriptions[nextCustomScenarioId] = $scope.createScenarioDesc;
 
-					// copy over data from the chosen base scenario
-					// $scope.createScenarioBase models the base scenario id
-					var baseId = $scope.createScenarioBase;
-					if (baseId != 0) { // if we are basing it off a default scenario
-						// copy the emissions and other setup data over
-						// (simulationSetup returns a copy of all the referenced data)
-						customScenarioData[nextCustomScenarioId] = simulationSetup(baseId);
-					} else {
-						// create blank canvas for the new scenario
-						// blank emissions elements - fill with zeroes
-						var blankEmissionsArray = [];
-						var yearsArray = [];
-						var startYear = Number($scope.createScenarioStartYear);
-						var endYear = Number($scope.createScenarioEndYear);
-						for (var i = startYear; i <= endYear; i++) {
-							blankEmissionsArray.push(0);
-							yearsArray.push(i);
-						}
-						// albedo
-						var albArray = [];
-						for (var i = 0; i < yearsArray.length; i++) {
-							albArray[i] = alb0;
-						}
-						// TSI/mTSI, copied from ~line 75 of simsetup
-						var TSI = interp1(XLS_TSI[0], XLS_TSI[2], yearsArray);
-						var mTSI = nanmean(TSI); // mTSI is equal to the mean of all the non-NaN elements of TSI
-						// if TSI has NaN elements, set those to equal mTSI
-						for (var i = 0; i < TSI.length; i++) {
-							if (isNaN(TSI[i])) {
-								TSI[i] = mTSI;
-							}
-						}
-						// data object for new scenario
-						var blankData = {
-							scenario: $scope.createScenarioName,
-							emissions: {
-								CO2: arrcpy(blankEmissionsArray),
-								CH4: arrcpy(blankEmissionsArray),
-								SO2: arrcpy(blankEmissionsArray),
-								volc: arrcpy(blankEmissionsArray)
-							},
-							// @TODO determine values for blank TSI, mTSI, alb
-							TSI: TSI,
-							mTSI: mTSI,
-							alb: albArray,
-							years: yearsArray,
-							// @TODO confirm rcphi not needed in data that's plugged into simulate()
-							// rcphi: rcphi
-						};
-						// push into custom scenario data array for use
-						customScenarioData[nextCustomScenarioId] = blankData;
-					}
+					$scope.importScenario.id = nextCustomScenarioId;
+					customScenarioData[nextCustomScenarioId] = $scope.importScenario;
+					checkImportedDataLengths(nextCustomScenarioId);
 
 					// change to the newly created scenario
 					$scope.selectScenario(nextCustomScenarioId);
+
 					// increment next custom scenario id counter
 					nextCustomScenarioId++;
 				}, 0);
 			}
+		};
+
+		$scope.importScenarioButtonEnabled = function() {
+			// required for based and non-based custom scenarios
+			if ($scope.createScenarioName == '' || $scope.scenarioNameTaken()) {
+				return false;
+			}
+			// success
+			return true;
 		};
 
 		// try to delete the current scenario
@@ -644,33 +628,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			return Math.round(startYear) + ' - ' + Math.round(endYear);
 		};
 
-		// notifies of confirmation choice - discard (false) vs save (true)
-		$scope.editInputsConfirmationChoice = function(choice) {
-			if (choice) {
-				// set changed flag to true
-				$scope.editCustomInputsChanged = true;
-				// set mode back to initial, changes already made in $scope.editInputsTest() function
-				$scope.editInputsSetMode($scope.EDIT_MODE_INITIAL);
-			} else {
-				// discard the changes - re-instate backup
-				if ($scope.inputChartActive.varname === 'alb') {
-					customScenarioData[$scope.activeScenario.id].alb = $scope.editCustomInputsBackup;
-				} else if ($scope.inputChartActive.varname === 'TSI') {
-					customScenarioData[$scope.activeScenario.id].TSI = $scope.editCustomInputsBackup;
-				} else {
-					customScenarioData[$scope.activeScenario.id].emissions[$scope.inputChartActive.varname] = $scope.editCustomInputsBackup;
-				}
-				// get rid of success message
-				$scope.editCustomInputsSuccess = '';
-				// redraw chart
-				$scope.plotCustomInputsChart();
-				// set mode back to form
-				$scope.editInputsSetMode($scope.EDIT_MODE_FORM);
-			}
-			// clear backup
-			$scope.editCustomInputsBackup = null;
-		};
-
 		// fetches the brief description of the scenario with the given id
 		// the 'brief description' is just the first 100 characters of the description
 		$scope.getBriefDescription = function(sid) {
@@ -708,9 +665,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// importing and exporting
 
 		$scope.importScenarioData = function(evt) {
-			// don't do anything if disabled
-			if ($scope.activeScenario == null || $scope.activeScenario.isdefault)
-				return;
+			console.log('received event, parsing');
 
 			// parse csv
 			var file = evt.target.files[0];
@@ -724,31 +679,42 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				complete: function(results) {
 					try {
 						if (results.errors.length > 0) throw Error(result.errors[0].message);
-
-						console.log(results.data);
+						//console.log(results.data);
 
 						var rows = results.data;
-						var setup = {
+						$scope.importScenario = {
 							emissions: {}
 						};
 						for (var i = 0; i < rows.length; i++) {
-							var name = rows[i][0].toLowerCase();
+							var name = rows[i][0].toLowerCase().trim();
 							rows[i].shift(); // remove the first element in the row, after reading it
-							if (name === 'ch4' || name === 'co2' || name === 'so2') {
-								setup.emissions[name] = rows[i];
-								console.log('rows[i][0] = ' + rows[i][0]);
+
+							if (name === 'ch4' || name === 'co2' || name === 'so2' || name === 'volc') {
+								if (name !== 'volc') name = name.toUpperCase();
+
+								$scope.importScenario.emissions[name] = rows[i];
 							} else {
-								setup[name] = rows[i];
+								if (name === 'tsi') name = 'TSI';
+								else if (name === 'mtsi') name = 'mTSI';
+								$scope.importScenario[name] = rows[i];
 							}
 						}
 
-						console.log(setup);
-						// @TODO create the scenario
+						$timeout(function() {
+							$('#import-scenario-modal').modal('show');
+						}, 0);
+
 					} catch (err) {
-						alert('There was an error parsing the CSV input file. Please check that it is valid.');
+						var alertMessage = 'There was an error parsing the CSV input file. Please check that it is valid.\n' +
+							'Error message:\n"' + err.toString() + '"';
+						alert(alertMessage);
 					}
 				}
 			});
+		};
+
+		$scope.closeImportScenarioModal = function() {
+			$('#import-scenario-modal').modal('hide');
 		};
 
 		$scope.exportScenarioData = function() {
@@ -761,17 +727,21 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			lines.push('CH4,' + setupData.emissions.CH4.toString());
 			lines.push('CO2,' + setupData.emissions.CO2.toString());
 			lines.push('SO2,' + setupData.emissions.SO2.toString());
-			lines.push('volcanic,' + setupData.emissions.volc.toString());
+			lines.push('volc,' + setupData.emissions.volc.toString());
 			lines.push('TSI,' + setupData.TSI.toString());
 			lines.push('mTSI,' + setupData.mTSI);
-			lines.push('albedo,' + setupData.alb.toString());
+			lines.push('alb,' + setupData.alb.toString());
 
 			downloadAsCsv(lines);
 		};
 
 		// add listener for import buttons
-		document.getElementById('csvLoader').addEventListener('change', $scope.importScenarioData, false);
-		document.getElementById('csvLoaderSidebar').addEventListener('change', $scope.importScenarioData, false);
+		var csvLoader = document.getElementById('csvLoaderSidebar');
+		csvLoader.addEventListener('change', $scope.importScenarioData, false);
+		csvLoader.onclick = function() {
+			// so we can select the same file again and still get a popup
+			this.value = null;
+		};
 
 	}]);
 

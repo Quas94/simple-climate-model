@@ -30,16 +30,17 @@ var updateProgress = function() {
  *
  * Reduction is done by only preserving every x-th value, where x denotes the number of original values divided by GOAL_POINTS.
  */
-var reducePoints = function(original) {
-	// @TODO work out optimal number of goal points that doesn't produce any negative effect on output results
-	var GOAL_POINTS = 500; // number of points in the result
+var reducePoints = function(original, goalPoints) {
+	if (typeof goalPoints === 'undefined')
+		goalPoints = 500; // number of points in the result
+
 	var result = []; // the array that will be returned
-	var x = original.length / GOAL_POINTS;
+	var x = original.length / goalPoints;
 	if (x < 2) {
 		// just return original, no reductions required
 		return original;
 	}
-	for (var i = 0; i < GOAL_POINTS; i++) {
+	for (var i = 0; i < goalPoints; i++) {
 		// set result[i] to the closest corresponding index in original
 		result[i] = original[Math.round(i * x)];
 	}
@@ -366,8 +367,8 @@ onmessage = function(e) {
 	this.alb = setup.alb;
 	this.years = setup.years;
 
-	// wait half a second before running
+	// wait a bit before running
 	setTimeout(function() {
 		simulate();
-	}, 500);
+	}, 200);
 };

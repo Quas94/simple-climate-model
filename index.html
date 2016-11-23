@@ -120,15 +120,15 @@
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="popupListLength == 0" ng-click="closeAllPopups()">Close Chart Windows</button> -->
 								<!-- <button class="btn btn-default btn-sm btn-wide" ng-disabled="outputCharts.length == 0" ng-click="destroyOutputCharts()">Clear Output Charts</button> -->
 
-								<div class="hint--right btn-wide no-margin-bottom" data-hint="{{ standardActive == 'active' ? 'Only enabled for advanced scenarios' : 'Import new input data to this scenario' }}">
+								<!-- <div class="hint--right btn-wide no-margin-bottom" data-hint="{{ standardActive == 'active' ? 'Only enabled for advanced scenarios' : 'Import new input data to this scenario' }}">
 									<span class="btn btn-primary btn-file btn-sm btn-wide" ng-disabled="activeScenario == null || activeScenario.isdefault">
 										Import From CSV &lt;&lt;
 										<input type="file" id="csvLoader" ng-disabled="activeScenario == null || activeScenario.isdefault" />
 									</span>
-								</div>
-								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Exports this scenario's input and output data to .csv file" ng-click="exportScenarioData()">Export To CSV &gt;&gt;</button>
+								</div> -->
+								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Exports this scenario's input and output data to .csv file" ng-click="exportScenarioData()" ng-disabled="activeScenario === null">Export To CSV &gt;&gt;</button>
 
-								<!-- <button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Only enabled for custom scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button> -->
+								<button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Cannot delete default scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
 							</div>
 						</div>
 					</div>
@@ -279,7 +279,7 @@
 	</div>
 
 	<!-- Create scenario modal -->
-	<div id="create-scenario-modal" class="modal fade" role="dialog" tabindex="-1">
+	<div id="import-scenario-modal" class="modal fade" role="dialog" tabindex="-1" data-backdrop="static">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -290,35 +290,63 @@
 					<div class="col-xs-10 col-xs-offset-1">
 						<form class="form-horizontal">
 							<div class="form-group">
-								<label class="control-label">Scenario Name* <span class="span-error" ng-if="scenarioNameTaken()">already in use</span></label>
+								<label class="control-label">Scenario Name <span class="span-error" ng-if="scenarioNameTaken()">already in use</span></label>
 								<input type="text" class="form-control input-sm" ng-model="createScenarioName">
-							</div>
-							<div class="form-group">
-								<label for="base-scenario">Base Scenario</label>
-								<select class="form-control input-sm" ng-model="createScenarioBase">
-									<option value="0">[ None ]</option>
-									<option ng-repeat="scenario in defaultScenarios" ng-value="scenario.id">{{ scenario.name }}</option>
-								</select>
-							</div>
-							<div class="form-group" ng-show="createScenarioBase == 0">
-								<label class="control-label">Start Year* <span class="span-error" ng-if="createScenarioStartYear !== '' && !createScenarioValidateStartYear()">invalid</span></label>
-								<input type="text" class="form-control input-sm" ng-model="createScenarioStartYear">
-							</div>
-							<div class="form-group" ng-show="createScenarioBase == 0">
-								<label class="control-label">End Year* <span class="span-error" ng-if="createScenarioEndYear !== '' && (!createScenarioValidateEndYear() || !createScenarioEndYearGreater())">invalid</span><span class="span-error" ng-if="createScenarioEndYear !== '' && createScenarioValidateEndYear() && !createScenarioEndYearGreater()"> (must be greater than start year)</span></label>
-								<input type="text" class="form-control input-sm" ng-model="createScenarioEndYear">
 							</div>
 							<div class="form-group">
 								<label for="new-scenario-desc">Description</label>
 								<textarea class="form-control" rows="5" class="textarea-no-resize" id="new-scenario-desc" ng-model="createScenarioDesc"></textarea>
 							</div>
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<td colspan="2"><strong>Imported Fields:</strong></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Years</td>
+										<td>{{ importScenario.years[0] }} - {{ importScenario.years[importScenario.years.length - 1] }}</td>
+									</tr>
+									<tr>
+										<td>CH4</td>
+										<td ng-show="importScenario.emissions.CH4"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
+										<td ng-show="!importScenario.emissions.CH4"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+									</tr>
+									<tr>
+										<td>CO2</td>
+										<td ng-show="importScenario.emissions.CO2"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
+										<td ng-show="!importScenario.emissions.CO2"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+									</tr>
+									<tr>
+										<td>SO2</td>
+										<td ng-show="importScenario.emissions.SO2"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
+										<td ng-show="!importScenario.emissions.SO2"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+									</tr>
+									<tr>
+										<td>Volcanic</td>
+										<td ng-show="importScenario.emissions.volc"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
+										<td ng-show="!importScenario.emissions.volc"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+									</tr>
+									<tr>
+										<td>TSI</td>
+										<td ng-show="importScenario.TSI"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
+										<td ng-show="!importScenario.TSI"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+									</tr>
+									<tr>
+										<td>Albedo</td>
+										<td ng-show="importScenario.alb"><i class="glyphicon glyphicon-ok-sign span-success"></i> Imported</td>
+										<td ng-show="!importScenario.alb"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i> Not found (using default values)</td>
+									</tr>
+								<tbody>
+							</table>
 						</form>
 					</div>
 				</div>
 				<div class="clearfix padding-20px"></div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="createScenario()" ng-disabled="!createScenarioButtonEnabled()">Create</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button type="button" class="btn btn-primary" ng-click="closeImportScenarioModal();createScenario()" ng-disabled="!importScenarioButtonEnabled()">Import</button>
+					<button type="button" class="btn btn-danger" ng-click="closeImportScenarioModal()">Cancel</button>
 				</div>
 			</div>
 		</div>
@@ -337,30 +365,6 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Edit custom scenario settings modal -->
-	<div id="edit-custom-settings-modal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-					<h4 class="modal-title">Editing Settings: {{ activeScenario.name }}</h4>
-				</div>
-				<div class="modal-body">
-					<div class="text-center">
-						<p>Years: {{ customScenarioYears.newMin }} - {{ customScenarioYears.newMax }}</p>
-						<p><input id="numYearsSlider" type="text" /></p>
-						<p ng-if="editScenarioSettingsWarning !== ''" class="span-highlight">{{ editScenarioSettingsWarning }}</p>
-						<p ng-if="editScenarioSettingsError !== ''" class="span-error">{{ editScenarioSettingsError }}</p>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-					<button type="button" class="btn btn-primary" ng-click="editScenarioSettings()" ng-disabled="editScenarioSettingsError !== '' || !scenarioSettingsChanged()" data-dismiss="modal">Update</button>
 				</div>
 			</div>
 		</div>
