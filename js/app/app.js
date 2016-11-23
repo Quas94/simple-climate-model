@@ -692,7 +692,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				complete: function(results) {
 					try {
 						if (results.errors.length > 0) throw Error(result.errors[0].message);
-						//console.log(results.data);
+
+						// clear import modal fields: title and description
+						$scope.createScenarioName = '';
+						$scope.createScenarioDesc = '';
 
 						var rows = results.data;
 						$scope.importScenario = {
@@ -702,7 +705,11 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							var name = rows[i][0].toLowerCase().trim();
 							rows[i].shift(); // remove the first element in the row, after reading it
 
-							if (name === 'ch4' || name === 'co2' || name === 'so2' || name === 'volc') {
+							if (name === 'name') {
+								$scope.createScenarioName = rows[i][0];
+							} else if (name === 'description') {
+								$scope.createScenarioDesc = rows[i][0];
+							} else if (name === 'ch4' || name === 'co2' || name === 'so2' || name === 'volc') {
 								if (name !== 'volc') name = name.toUpperCase();
 
 								$scope.importScenario.emissions[name] = rows[i];
@@ -712,10 +719,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 								$scope.importScenario[name] = rows[i];
 							}
 						}
-
-						// clear import modal fields: title and description
-						$scope.createScenarioName = '';
-						$scope.createScenarioDesc = '';
 
 						$timeout(function() {
 							$('#import-scenario-modal').modal('show');
@@ -752,13 +755,24 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				setupData.TSI = reducePoints(custom.TSI);
 				setupData.mTSI = custom.mTSI;
 				setupData.alb = reducePoints(custom.alb);
+
+				setupData.scenarioName = $scope.activeScenario.name;
+				setupData.scenarioDesc = $scope.descriptions[scenarioId];
 			} else {
 				// default scenario
 				setupData = getUninterpolatedSimsetup(scenarioId);
+				setupData.scenarioName = getDefaultScenarioNameById(scenarioId);
+				setupData.scenarioDesc = '';
 			}
+
+			// escape the description
+			setupData.scenarioName = csvEscape(setupData.scenarioName);
+			setupData.scenarioDesc = csvEscape(setupData.scenarioDesc);
 
 			var lines = [];
 
+			lines.push('name,' + setupData.scenarioName);
+			lines.push('description,' + setupData.scenarioDesc);
 			lines.push('years,' + setupData.years.toString());
 			lines.push('CH4,' + setupData.emissions.CH4.toString());
 			lines.push('CO2,' + setupData.emissions.CO2.toString());

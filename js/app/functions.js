@@ -308,3 +308,9 @@ var downloadAsCsv = function(data) {
     document.body.appendChild(a);
     a.click();
 };
+
+var csvEscape = function(str) {
+    str = str.replace('"', '""');
+    str = '"' + str + '"';
+    return str;
+}

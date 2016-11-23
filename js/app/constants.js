@@ -38,6 +38,14 @@ var DEFAULT_SCENARIOS = [
 	{ id: 17, name: 'Mega Volcano', isdefault: true },
 ];
 
+var getDefaultScenarioNameById = function(id) {
+	for (var i = 0; i < DEFAULT_SCENARIOS.length; i++) {
+		if (DEFAULT_SCENARIOS[i].id == id)
+			return DEFAULT_SCENARIOS[i].name;
+	}
+	throw Error('Default scenario with id = ' + id + ' not found');
+};
+
 /**
  * The id number at which custom scenarios begin.
  */
