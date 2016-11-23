@@ -569,6 +569,9 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						isdefault: false,
 					});
 
+					// add description
+					$scope.descriptions[nextCustomScenarioId] = $scope.createScenarioDesc;
+
 					$scope.importScenario.id = nextCustomScenarioId;
 					customScenarioData[nextCustomScenarioId] = $scope.importScenario;
 					adjustImportedData(nextCustomScenarioId);
@@ -709,6 +712,10 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 								$scope.importScenario[name] = rows[i];
 							}
 						}
+
+						// clear import modal fields: title and description
+						$scope.createScenarioName = '';
+						$scope.createScenarioDesc = '';
 
 						$timeout(function() {
 							$('#import-scenario-modal').modal('show');

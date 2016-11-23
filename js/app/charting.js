@@ -11,13 +11,13 @@ var getChartOptions = function(units) {
 	var winWidth = window.innerWidth;
 	var winHeight = window.innerHeight;
 	var width;
-	if (winWidth >= BOOTSTRAP_MIN_WIDTH_MD) {
-		// we're on the larger setting
-		var sidebarWidth = winWidth / 12; // sidebar takes 1 column only
-		width = Math.round((winWidth - sidebarWidth) / 2 * 0.9); // ~10% of space reserved for labels, margins etc
-	} else {
-		// @TODO smaller settings
-	}
+	// if (winWidth >= BOOTSTRAP_MIN_WIDTH_MD) {
+	// we're on the larger setting
+	var sidebarWidth = winWidth / 12; // sidebar takes 1 column only
+	width = Math.round((winWidth - sidebarWidth) / 2 * 0.9); // ~10% of space reserved for labels, margins etc
+	// } else {
+	// 	// @TODO smaller settings
+	// }
 	// height is 67% of width (for now)
 	var height = Math.round(width / 3 * 2);
 
