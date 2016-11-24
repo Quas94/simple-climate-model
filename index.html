@@ -376,7 +376,7 @@
 				</div>
 				<div class="modal-body">
 					<button class="btn btn-lg btn-primary" ng-click="exportScenarioData()">Export Input Data</button>
-					<button class="btn btn-lg btn-primary" ng-class="{ 'hint--right': !scenarioHasRun }" data-hint="Must run the scenario before exporting output data" ng-disabled="!scenarioHasRun" ng-click="exportOutputData()">Export Output Data</button>
+					<button class="btn btn-lg btn-primary" ng-class="{ 'hint--right': !scenarioHasRun }" data-hint="{{ scenarioHasRun ? '' : 'Must run the scenario before exporting output data' }}" ng-disabled="!scenarioHasRun" ng-click="exportOutputData()">Export Output Data</button>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
