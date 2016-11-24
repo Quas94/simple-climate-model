@@ -160,6 +160,32 @@ var OUTPUT_CHART_INFOS = [
 		}
 	}
 ];
+
+var getOutputChartInfoById = function(id) {
+	for (var i = 0; i < OUTPUT_CHART_INFOS.length; i++) {
+		if (OUTPUT_CHART_INFOS[i].id === id)
+			return OUTPUT_CHART_INFOS[i];
+	}
+	throw Error('invalid output chart id search for: ' + id);
+};
+
+var getOutputChartInfoColourFromIndex = function(index) {
+	switch (index) {
+		case 0:
+			return 'red';
+		case 1:
+			return 'blue';
+		case 2:
+			return 'green';
+		case 3:
+			return 'orange';
+		case 4:
+			return 'black';
+		default:
+			throw Error('invalid index number: ' + index);
+	}
+}
+
 var OUTPUT_AXIS_LABELS = {
 	'base-chart-temperatures': 'Temperature change (°C)',
 	'chart-co2-concentration': 'Atmospheric CO2 (ppm)',

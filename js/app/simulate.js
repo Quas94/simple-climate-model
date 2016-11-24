@@ -253,6 +253,8 @@ var simulate = function() {
 		type: 'finish',
 		y: years,
 		charts: [
+			// NOTE: if the order inside the data arrays is altered at all, changes must also be
+			// reflected in constants.js -> OUTPUT_CHART_INFOS
 			{
 				id: 'base-chart-temperatures',
 				data: [ Tsurf, To ]

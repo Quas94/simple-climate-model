@@ -126,7 +126,7 @@
 										<input type="file" id="csvLoader" ng-disabled="activeScenario == null || activeScenario.isdefault" />
 									</span>
 								</div> -->
-								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Exports this scenario's input and output data to .csv file" ng-click="exportScenarioData()" ng-disabled="activeScenario === null">Export To CSV &gt;&gt;</button>
+								<button class="btn btn-primary btn-sm btn-wide hint--right" data-hint="Export this scenario's input and output data to a CSV file" ng-disabled="activeScenario === null" data-toggle="modal" data-target="#exportChooseModal">Export To CSV &gt;&gt;</button>
 
 								<button class="btn btn-danger btn-sm btn-wide hint--right" data-hint="{{ standardActive == 'active' ? 'Cannot delete default scenarios' : 'Delete this scenario forever' }}" ng-disabled="activeScenario == null || activeScenario.isdefault" data-toggle="modal" data-target="#confirmation-modal">Delete Scenario</button>
 							</div>
@@ -306,7 +306,7 @@
 								<tbody>
 									<tr>
 										<td>Years</td>
-										<td ng-show="importScenario.years">{{ importScenario.years[0] }} - {{ importScenario.years[importScenario.years.length - 1] }}</td>
+										<td ng-show="importScenario.years">{{ round(importScenario.years[0]) }} - {{ round(importScenario.years[importScenario.years.length - 1]) }}</td>
 										<td ng-show="!importScenario.years" class="span-error"><i class="glyphicon glyphicon-exclamation-sign"></i> Not found - invalid import file</td>
 									</tr>
 									<tr>
@@ -348,6 +348,25 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-primary" ng-click="closeImportScenarioModal();createScenario()" ng-disabled="!importScenarioButtonEnabled()">Import</button>
 					<button type="button" class="btn btn-danger" ng-click="closeImportScenarioModal()">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Export scenario modal, select between inputs and outputs -->
+	<div id="exportChooseModal" class="modal fade" role="dialog" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+					<h4 class="modal-title">Export scenario to CSV</h4>
+				</div>
+				<div class="modal-body">
+					<button class="btn btn-lg btn-primary" ng-click="exportScenarioData()">Export Input Data</button>
+					<button class="btn btn-lg btn-primary" ng-class="{ 'hint--right': scenarioHasRun }" data-hint="Must run the scenario before exporting output data" ng-disabled="!scenarioHasRun" ng-click="exportOutputData()">Export Output Data</button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
 			</div>
 		</div>

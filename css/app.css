@@ -182,7 +182,7 @@
 /**
  * Modal stuff: progress modal, edit globals modal, etc
  */
-#progress-modal {
+#progress-modal, #exportChooseModal {
   top: 35%;
   text-align: center;
 }

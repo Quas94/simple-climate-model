@@ -125,6 +125,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		// forcing name descriptions
 		$scope.forcingsNames = FORCINGS_NAMES;
 
+		$scope.round = Math.round;
+
 		// gets forcing variable name (just appends 'F' to beginning)
 		$scope.getForcingVar = function(n) {
 			return 'F' + n;
@@ -492,6 +494,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 						// fetch chart data and plot
 						var retYears = e.data.y;
 						var retData = e.data.charts;
+						$scope.yearsForExport = retYears;
+						$scope.outputDataForExport = e.data.charts;
 						// set output charts to new array
 						$scope.outputCharts = [];
 						for (var i = 0; i < retData.length; i++) {
@@ -783,6 +787,37 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			lines.push('alb,' + setupData.alb.toString());
 
 			downloadAsCsv(lines);
+
+			// close modal
+			$('#exportChooseModal').modal('hide');
+		};
+
+		$scope.exportOutputData = function() {
+			if (!$scope.scenarioHasRun)
+				return;
+
+			var lines = [];
+
+			lines.push('name,' + csvEscape($scope.activeScenario.name));
+			lines.push('years,' + $scope.yearsForExport.toString());
+
+			var outputs = $scope.outputDataForExport;
+			for (var i = 0; i < outputs.length; i++) {
+				if (outputs[i].data.length === 1) {
+					// only 1 line on the chart, no need to separate
+					lines.push(outputs[i].id + ',' + outputs[i].data[0].toString());
+				} else {
+					for (var j = 0; j < outputs[i].data.length; j++) {
+						var suffix = getOutputChartInfoById(outputs[i].id).legend[getOutputChartInfoColourFromIndex(j)];
+						lines.push(outputs[i].id + '-' + suffix + ',' + outputs[i].data[j].toString());
+					}
+				}
+			}
+
+			downloadAsCsv(lines);
+
+			// close modal
+			$('#exportChooseModal').modal('hide');
 		};
 
 		// add listener for import buttons
