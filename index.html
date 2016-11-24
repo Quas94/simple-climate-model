@@ -252,6 +252,9 @@
 				<div class="clearfix"></div> <!-- Prevents the footer from being all mangled and squished in the corner -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-warning pull-left" id="edit-globals-restore-defaults" ng-click="restoreDefaultGlobals()" ng-disabled="true">Restore Defaults</button>
+					<button type="button" class="btn btn-primary pull-left" ng-click="exportGlobals()">Export to CSV</button>
+					<button type="button" class="btn btn-primary pull-left" ng-click="importGlobals()">Import from CSV</button>
+
 					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeGlobals(true)" id="edit-globals-save" ng-disabled="true">Save</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="closeGlobals(false)">Cancel</button>
 				</div>
@@ -363,7 +366,7 @@
 				</div>
 				<div class="modal-body">
 					<button class="btn btn-lg btn-primary" ng-click="exportScenarioData()">Export Input Data</button>
-					<button class="btn btn-lg btn-primary" ng-class="{ 'hint--right': scenarioHasRun }" data-hint="Must run the scenario before exporting output data" ng-disabled="!scenarioHasRun" ng-click="exportOutputData()">Export Output Data</button>
+					<button class="btn btn-lg btn-primary" ng-class="{ 'hint--right': !scenarioHasRun }" data-hint="Must run the scenario before exporting output data" ng-disabled="!scenarioHasRun" ng-click="exportOutputData()">Export Output Data</button>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -298,12 +298,15 @@ var yearsAltered = function(data, range) {
 };
 
 // download file
-var downloadAsCsv = function(data) {
+var downloadAsCsv = function(data, fileName) {
+    if (typeof fileName === 'undefined')
+        throw Error('file name not specified in downloadAsCsv()');
+
     var csvString = data.join('\n');
     var a         = document.createElement('a');
     a.href        = 'data:attachment/csv,' +  encodeURIComponent(csvString);
     a.target      = '_blank';
-    a.download    = 'scenario_input_data.csv';
+    a.download    = fileName;
 
     document.body.appendChild(a);
     a.click();

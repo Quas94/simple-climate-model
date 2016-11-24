@@ -786,7 +786,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			lines.push('mTSI,' + setupData.mTSI);
 			lines.push('alb,' + setupData.alb.toString());
 
-			downloadAsCsv(lines);
+			downloadAsCsv(lines, 'scenario_input_data.csv');
 
 			// close modal
 			$('#exportChooseModal').modal('hide');
@@ -814,10 +814,21 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				}
 			}
 
-			downloadAsCsv(lines);
+			downloadAsCsv(lines, 'scenario_output_data.csv');
 
 			// close modal
 			$('#exportChooseModal').modal('hide');
+		};
+
+		$scope.exportGlobals = function() {
+			var lines = [];
+
+			globalVariableNames = Object.keys($scope.globalVariables);
+			globalVariableNames.forEach(function(varname) {
+				lines.push(varname + ':' + $scope.globalVariables[varname]);;
+			});
+
+			downloadAsCsv(lines, 'global_variables.txt');
 		};
 
 		// add listener for import buttons
