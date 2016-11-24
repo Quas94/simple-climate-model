@@ -45,6 +45,8 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 
 		// create a copy of the default simulation constants to use as our 'global variables'
 		$scope.globalVariables = objcpy(DEFAULT_SIM_CONSTS);
+		$scope.globalsHasJustImported = false;
+		$scope.globalsJustImported = {}; // used for feedback on which global variables were just imported from file
 		// whether the app is in standard mode or advanced mode
 		$scope.standardActive = 'active'; // start with standard mode
 		$scope.advancedActive = '';
@@ -168,22 +170,28 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		    }
 		    return $scope.forcings[$scope.getForcingVar(fnum)];
 		};
-		// opens the edit globals modal. right now, only task is to set 'save' button to disabled
+
+		// opens the edit globals modal and clears globalsJustImported
 		$scope.openEditGlobals = function() {
+			$scope.globalsHasJustImported = false;
+			$scope.globalsJustImported = {};
 			document.getElementById('edit-globals-save').disabled = true;
 		};
 
-		// fetches the values from $scope.globalVariables and pops them into the input fields
-		$scope.updateGlobalsView = function() {
+		// fetches the values from backingObject and pops them into the input fields
+		$scope.updateGlobalsView = function(backingObject) {
 			// manually copy every element over
-			var keys = Object.keys($scope.globalVariables);
+			var keys = Object.keys(backingObject);
 			for (var i = 0; i < keys.length; i++) {
-				document.getElementById('global-var-input-' + keys[i]).value = $scope.globalVariables[keys[i]];
+				document.getElementById('global-var-input-' + keys[i]).value = backingObject[keys[i]];
 			}
 		};
 
 		// sets all the input fields to the default values (but doesn't save, need user to click on save button)
 		$scope.restoreDefaultGlobals = function() {
+			$scope.globalsHasJustImported = false;
+			$scope.globalsJustImported = {};
+
 			// manually copy every element over
 			var keys = Object.keys(DEFAULT_SIM_CONSTS);
 			for (var i = 0; i < keys.length; i++) {
@@ -191,8 +199,6 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			}
 			// set the 'save' button to enabled
 			document.getElementById('edit-globals-save').disabled = false;
-			// set restore defaults button to disabled
-			document.getElementById('edit-globals-restore-defaults').disabled = true;
 		};
 
 		// if the save parameter is true, this function saves the values from the text input fields to the $scope.globalVariables object
@@ -210,7 +216,7 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 				}
 			} else {
 				// restore all the values
-				$scope.updateGlobalsView();
+				$scope.updateGlobalsView($scope.globalVariables);
 			}
 		};
 
@@ -829,6 +835,51 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 			});
 
 			downloadAsCsv(lines, 'global_variables.txt');
+
+			$('#edit-globals-modal').modal('hide');
+		};
+
+		$scope.importGlobals = function(evt) {
+			// parse csv
+			var file = evt.target.files[0];
+
+			var fr = new FileReader();
+			fr.onload = function(e) {
+				$timeout(function() {
+					$scope.globalsJustImported = {};
+					$scope.globalsHasJustImported = true;
+
+					var text = fr.result;
+					var lines = text.split('\n');
+
+					var clonedGlobals = objcpy($scope.globalVariables);
+
+					// iterate through each line and try to update the variables
+					lines.forEach(function(line) {
+						if (line.indexOf(':') === -1) // invalid line
+							return;
+
+						var splitted = line.split(':');
+						if (splitted.length !== 2) // invalid line
+							return;
+
+						var varname = splitted[0];
+						var value = splitted[1];
+						if (!clonedGlobals.hasOwnProperty(varname))
+							return;
+
+						$scope.globalsJustImported[varname] = true;
+
+						clonedGlobals[varname] = value;
+					});
+
+					// update to UI
+					$scope.updateGlobalsView(clonedGlobals);
+					// enable save button
+					enableDefaultAndSaveButtons();
+				}, 0);
+			}
+			fr.readAsText(file);
 		};
 
 		// add listener for import buttons
@@ -836,6 +887,12 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 		csvLoader.addEventListener('change', $scope.importScenarioData, false);
 		csvLoader.onclick = function() {
 			// so we can select the same file again and still get a popup
+			this.value = null;
+		};
+
+		var globalsLoader = document.getElementById('globalsLoader');
+		globalsLoader.addEventListener('change', $scope.importGlobals, false);
+		globalsLoader.onclick = function() {
 			this.value = null;
 		};
 
@@ -852,5 +909,4 @@ angular.element(document).ready(function() {
 // on change of input fields in edit globals modal, enable save and restore buttons
 var enableDefaultAndSaveButtons = function() {
 	document.getElementById('edit-globals-save').disabled = false;
-	document.getElementById('edit-globals-restore-defaults').disabled = false;
 };

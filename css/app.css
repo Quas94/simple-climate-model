@@ -48,6 +48,7 @@
 [data-hint]:after {
   text-transform: none;
   white-space: pre;
+  font-weight: normal !important;
 }
 
 [data-hint] {
@@ -367,4 +368,8 @@ div[id*='legend-box-'] {
 
 .no-margin-bottom {
   margin-bottom: 0 !important;
+}
+
+.small-margin-right {
+  margin-right: 5px;
 }

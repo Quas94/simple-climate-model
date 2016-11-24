@@ -243,17 +243,27 @@
 					<div class="col-md-2" ng-repeat="col in globalVarCols">
 						<form class="form-horizontal">
 							<div ng-repeat="key in col">
-								<label class="control-label">{{ key }}</label>
-								<input type="text" class="form-control input-sm" value="{{ globalVariables[key] }}" ng-attr-id="{{ 'global-var-input-' + key }}" onkeypress="enableDefaultAndSaveButtons()">
+								<label class="control-label">
+									{{ key }}
+									<span ng-show="globalsHasJustImported && globalsJustImported[key]" class="hint--right" data-hint="successfully imported"><i class="glyphicon glyphicon-ok-sign span-success"></i></span>
+									<span ng-show="globalsHasJustImported && !globalsJustImported[key]" class="hint--right" data-hint="not found/modified"><i class="glyphicon glyphicon-exclamation-sign span-highlight"></i></span>
+								</label>
+								<input type="text" class="form-control input-sm" value="{{ globalVariables[key] }}" ng-attr-id="{{ 'global-var-input-' + key }}" onkeydown="enableDefaultAndSaveButtons()">
 							</div>
 						</form>
 					</div>
 				</div>
 				<div class="clearfix"></div> <!-- Prevents the footer from being all mangled and squished in the corner -->
 				<div class="modal-footer">
-					<button type="button" class="btn btn-warning pull-left" id="edit-globals-restore-defaults" ng-click="restoreDefaultGlobals()" ng-disabled="true">Restore Defaults</button>
-					<button type="button" class="btn btn-primary pull-left" ng-click="exportGlobals()">Export to CSV</button>
-					<button type="button" class="btn btn-primary pull-left" ng-click="importGlobals()">Import from CSV</button>
+					<button type="button" class="btn btn-warning pull-left" id="edit-globals-restore-defaults" ng-click="restoreDefaultGlobals()">Restore Defaults</button>
+					<button type="button" class="btn btn-primary pull-left small-margin-right" ng-class="{ 'hint--bottom': globalsHasJustImported }" data-hint="{{ globalsHasJustImported ? 'Save globals first before exporting' : '' }}" id="exportGlobalsButton" ng-click="exportGlobals()" ng-disabled="globalsHasJustImported">Export to CSV</button>
+
+					<span class="no-margin-bottom pull-left">
+						<span class="btn btn-primary btn-file">
+							Import from CSV
+							<input type="file" id="globalsLoader" />
+						</span>
+					</span>
 
 					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="closeGlobals(true)" id="edit-globals-save" ng-disabled="true">Save</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="closeGlobals(false)">Cancel</button>

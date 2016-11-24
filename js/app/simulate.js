@@ -345,21 +345,9 @@ onmessage = function(e) {
 		importScripts('simsetup.js');
 
 		setup = simulationSetup(scenarioId);
-
-		// postMessage({type:'print',message: 'emissions.CH4.length = ' + setup.emissions.CH4.length +
-		// 	',\nemissions.CO2.length = ' + setup.emissions.CO2.length +
-		// 	',\nemissions.SO2.length = ' + setup.emissions.SO2.length +
-		// 	',\nemissions.volc.length = ' + setup.emissions.volc.length +
-		// 	',\nyears.length = ' + setup.years.length +
-		// 	',\nyears[0] = ' + setup.years[0] + ', years[1] = ' + setup.years[1] +
-		// 	',\nTSI.length = ' + setup.TSI.length + 
-		// 	',\nXLS_TSI[0].length = ' + XLS_TSI[0].length + 
-		// 	',\nXLS_TSI[2].length = ' + XLS_TSI[2].length });
 	} else {
 		// custom scenario - directly copy from data
 		setup = data.customData;
-		// if (setup === undefined) setup = 'undefined';
-		// postMessage({ type: 'error', error: setup });
 	}
 	
 	// this.scenario = setup.scenario;
