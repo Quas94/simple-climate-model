@@ -715,6 +715,15 @@ cmApp.controller('mainCtrl', ['$scope', '$rootScope', '$timeout', '$interval',
 							var name = rows[i][0].toLowerCase().trim();
 							rows[i].shift(); // remove the first element in the row, after reading it
 
+							// remove all elements that are empty
+							if (name !== 'name' && name !== 'description') {
+								for (var r = 0; r < rows[i].length; r++) {
+									if (isNaN(rows[i][r])) {
+										rows[i] = rows[i].splice(0, r);
+									}
+								}
+							}
+
 							if (name === 'name') {
 								$scope.createScenarioName = rows[i][0];
 							} else if (name === 'description') {
